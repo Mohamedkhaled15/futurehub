@@ -1,0 +1,169 @@
+query Orders($page: Int, $employee: Int) {
+  orders(page: $page, employee_id: $employee) {
+    paginatorInfo {
+      count
+      currentPage
+      total
+      lastPage
+      hasMorePages
+    }
+    data {
+      id
+      user {
+        id
+        name
+        national_id
+        mobile
+        gender
+        image_path
+        wallet_limit
+        type
+        email
+      }
+      reference_number
+      price
+      total_price
+      discount
+      discount_value
+      vat
+      vat_value
+      coupon {
+        id
+        title
+        discount
+        code
+      }
+      puncher {
+        id
+        name
+        mobile
+        email
+        imageUrl
+      }
+      company {
+        id
+        name
+      }
+      status
+      name
+      products {
+        product {
+          id
+          title
+          price
+          image_path
+          discount
+        }
+        unit_price
+        total_price
+        quantity
+        discount
+        discount_value
+      }
+      created_at
+    }
+  }
+}
+
+query OrderById($referenceNumber: String) {
+  orderById(reference_number: $referenceNumber) {
+    id
+    user {
+      id
+      name
+      national_id
+      mobile
+      gender
+      image_path
+      wallet_limit
+      type
+      email
+    }
+    reference_number
+    price
+    total_price
+    discount
+    discount_value
+    vat
+    vat_value
+    coupon {
+      id
+      title
+      discount
+      code
+    }
+    puncher {
+      id
+      name
+      mobile
+      email
+      imageUrl
+    }
+    company {
+      id
+      name
+    }
+    status
+    name
+    products {
+      product {
+        id
+        title
+        price
+        image_path
+        discount
+      }
+      unit_price
+      total_price
+      quantity
+      discount
+      discount_value
+    }
+    created_at
+  }
+}
+
+mutation CancelOrder($referenceNumber: String!) {
+  cancelOrder(input: { reference_number: $referenceNumber }) {
+    error
+    status
+    message
+  }
+}
+mutation SendOtpToEmployee($referenceNumber: String!) {
+  validateQrCodeOrder(input: { reference_number: $referenceNumber }) {
+    error
+    status
+    message
+  }
+}
+
+mutation ConfirmOrder($code: String!, $referenceNumber: String!) {
+  confirmOrder(input: { code: $code, reference_number: $referenceNumber }) {
+    status
+    message
+    error
+  }
+}
+
+mutation ValidateCoupon(
+  $puncherId: Int!
+  $products: [ProductItem!]!
+  $coupon: String
+) {
+  validateCoupon(
+    input: { puncher: $puncherId, products: $products, coupon: $coupon }
+  ) {
+    status
+    message
+    error
+    data {
+      price
+      total_price
+      vat
+      discount
+      vat_value
+      discount_value
+    }
+  }
+}

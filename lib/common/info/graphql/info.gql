@@ -1,0 +1,27 @@
+query Info{
+    aboutUs{
+        email
+        phone
+        about
+        terms_condition
+        privacy
+        excel_user_upload_example
+        imagePath
+    }
+    questions{
+        paginatorInfo{
+            count
+            currentPage
+            firstItem
+            hasMorePages
+            lastItem
+            total
+        }
+        data{
+            id
+            title
+            description
+            active
+        }
+    }
+}

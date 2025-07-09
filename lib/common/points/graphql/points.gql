@@ -1,0 +1,104 @@
+# query Points($page: Int) {
+#   points(page: $page) {
+#     paginatorInfo {
+#       count
+#       total
+#       hasMorePages
+#     }
+#     data {
+
+#     }
+#   }
+# }
+
+mutation ScanProductPointsCode($referenceNumber: String!) {
+    scanQrCodeProduct(input: { reference_number: $referenceNumber }) {
+        status
+        message
+        error
+        data {
+            points
+        }
+    }
+}
+
+mutation CreateUserCoupon($points:Int!){
+    createUserCoupon(input: {points: $points}){
+        status
+        message
+        data{
+            id
+            yougotagift_id
+            yougotagift_status
+            reference_number
+            barcode
+            gift_voucher_label
+            gift_voucher_value
+            expiry_date
+            redemption_instructions
+            egift_card_gift_verification_pin
+            amount
+            points
+        }
+    }
+}
+
+query GiftBrand($page:Int!){
+    giftBrands(page: $page){
+      data{
+        id
+        logo
+        name
+        brand_code
+        description
+        product_image
+        denominations{
+            SAR {
+                amount
+                is_active
+            }
+        }
+      }
+      paginatorInfo{
+        count
+        currentPage
+        total
+        hasMorePages
+      }
+    }
+}
+
+query PreviousGifts($page:Int!){
+    gifts(page: $page){
+        paginatorInfo {
+            count
+            currentPage
+            total
+            lastPage
+            hasMorePages
+        }
+        data {
+            id
+            yougotagift_id
+            yougotagift_status
+            reference_number
+            barcode
+            gift_voucher_label
+            gift_voucher_value
+            expiry_date
+            redemption_instructions
+            egift_card_gift_verification_pin
+            amount
+            points
+        }
+    }
+}
+
+query NumberPoints{
+    aboutUs {
+        number_point
+    }
+}
+
+
+

@@ -1,0 +1,100 @@
+query CarBrands {
+  car_brands {
+    id
+    title
+    image_path
+  }
+}
+
+query CarModels($brandId: Int!) {
+  car_models(car_brand_id: $brandId) {
+    id
+    title
+  }
+}
+
+query CarYears {
+  car_years {
+    id
+    title
+  }
+}
+
+query CarOils($brandId:[Int!]!,$carModelId:[Int!]!,$carYearId:[Int!]!,$page:Int){
+  car_oils(car_brand_id: $brandId,car_model_id: $carModelId,car_year_id: $carYearId,page: $page){
+    paginatorInfo {
+      lastPage
+      count
+      currentPage
+      hasMorePages
+    }
+    data {
+      oil_products {
+        oilCoolants {
+          id
+          title
+          description
+          price
+          company_price
+          image_path
+        }
+        oilAutomaticTransmission {
+          id
+          title
+          description
+          price
+          company_price
+          image_path
+        }
+        oilDifferential {
+          id
+          title
+          description
+          price
+          company_price
+          image_path
+        }
+        oilDifferentialFront {
+          id
+          title
+          description
+          price
+          company_price
+          image_path
+        }
+        oilEngine {
+          id
+          title
+          description
+          price
+          company_price
+          image_path
+        }
+        oilManualTransmission {
+          id
+          title
+          description
+          price
+          company_price
+          image_path
+        }
+        oilPowerSteering {
+          id
+          title
+          description
+          price
+          company_price
+          image_path
+        }
+        oilTransferBox {
+          id
+          title
+          description
+          price
+          company_price
+          image_path
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,154 @@
+query Employees($page: Int) {
+  employees(page: $page) {
+    paginatorInfo {
+      hasMorePages
+      total
+    }
+    data {
+      id
+      name
+      email
+      mobile
+      type
+      active
+      national_id
+      wallet_limit
+      image_path
+      created_at
+      wallet
+      withdrawal
+    }
+  }
+}
+
+mutation AddSingleEmployee(
+  $name: String!
+  $phone: String!
+  $email: String!
+  $idNumber: String!
+  $limit: Float
+) {
+  createEmployee(
+    input: {
+      name: $name
+      mobile: $phone
+      national_id: $idNumber
+      email: $email
+      wallet_limit: $limit
+    }
+  ) {
+    error
+    status
+    message
+    user {
+      id
+      name
+      email
+      mobile
+      type
+      active
+      national_id
+      wallet_limit
+      image_path
+      created_at
+      wallet
+      withdrawal
+    }
+  }
+}
+
+mutation AddEmployeeFile($file: String!) {
+  uploadEmployee(input: { file: $file }) {
+    status
+    message
+    error
+  }
+}
+
+mutation StopEmployee($id: Int!) {
+  stopEmployee(input: { employee_id: $id }) {
+    status
+    error
+    message
+  }
+}
+mutation EditEmployee(
+  $name: String!
+  $phone: String!
+  $email: String!
+  $idNumber: String!
+  $limit: Float
+  $id: Int!
+  $image: String
+) {
+  updateEmployee(
+    input: {
+      name: $name
+      mobile: $phone
+      national_id: $idNumber
+      email: $email
+      wallet_limit: $limit
+      employee_id: $id
+      image: $image
+    }
+  ) {
+    error
+    status
+    message
+  }
+}
+
+mutation ActivateEmployee($id: Int!) {
+  activeEmployee(input: { employee_id: $id }) {
+    status
+    error
+    message
+  }
+}
+
+mutation DeleteEmployee($id: Int!) {
+  deleteEmployee(input: { employee_id: $id }) {
+    status
+    error
+    message
+  }
+}
+
+mutation AddToEmployeeWallet(
+  $id: ID!
+  $amount: Float!
+  $payment_method: PaymentMethod
+) {
+  createWalletEmployee(
+    input: {
+      employee_id: $id
+      amount: $amount
+      payment_method: $payment_method
+    }
+  ) {
+    status
+    message
+    error
+    wallet {
+      id
+      wallet {
+        customer {
+          id
+          name
+          wallet
+          wallet_limit
+          withdrawal
+          created_at
+        }
+      }
+      transaction_number
+      amount
+      status
+      payment_method
+      description
+      type
+      created_at
+      attachment
+    }
+  }
+}

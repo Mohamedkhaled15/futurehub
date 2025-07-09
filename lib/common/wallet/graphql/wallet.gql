@@ -1,0 +1,89 @@
+query Wallet($page: Int, $employee: Int) {
+  wallets(page: $page, employee_id: $employee) {
+    paginatorInfo {
+      count
+      currentPage
+      hasMorePages
+      total
+      lastPage
+    }
+    data {
+      id
+      title
+      wallet {
+        customer {
+          id
+          name
+          national_id
+          email
+          mobile
+          birth_date
+          type
+          wallet_limit
+          withdrawal
+          deposit
+          wallet
+        }
+      }
+      transaction_number
+      amount
+      status
+      payment_method
+      order {
+        id
+        user {
+          id
+          name
+          mobile
+          email
+        }
+      }
+      description
+      type
+      attachment
+      created_at
+    }
+  }
+}
+
+mutation DepositToCompanyWallet(
+  $title: String
+  $amount: Float!
+  $payment_method: PaymentMethod
+  $attachment: String
+) {
+  createWallet(
+    input: {
+      title: $title
+      amount: $amount
+      payment_method: $payment_method
+      attachment: $attachment
+    }
+  ) {
+    status
+    message
+    error
+    wallet {
+      id
+      wallet {
+        customer {
+          id
+          name
+          wallet
+          wallet_limit
+          withdrawal
+          created_at
+        }
+      }
+      title
+      transaction_number
+      amount
+      status
+      payment_method
+      description
+      type
+      created_at
+      attachment
+    }
+  }
+}

@@ -1,0 +1,25 @@
+mutation CreateOrder(
+  $puncher: Int!
+  $branch: Int!
+  $coupon: String
+  $products: [ProductItem!]!
+) {
+  createOrder(
+    input: {
+      puncher: $puncher
+      branch: $branch
+      coupon: $coupon
+      products: $products
+    }
+  ) {
+    id
+    reference_number
+    price
+    total_price
+    discount
+    discount_value
+    vat
+    vat_value
+    status
+  }
+}

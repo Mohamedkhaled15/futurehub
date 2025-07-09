@@ -1,0 +1,58 @@
+query Products($page:Int){
+    products(page:$page){
+        paginatorInfo{
+            count
+            currentPage
+            total
+            lastPage
+            hasMorePages
+        }
+        data{
+            id
+            title
+            price
+            discount
+            image_path
+            company_price
+            tax{
+                id
+                title
+            }
+            unit{
+                id
+                title
+            }
+            description
+            categories {
+                id
+                title
+            }
+        }
+    }
+}
+
+query Categories($page:Int){
+    categories(page: $page){
+        paginatorInfo {
+            count
+            currentPage
+            total
+            lastPage
+            hasMorePages
+        }
+        data {
+            id
+            title
+            image_path
+        }
+    }
+}
+
+mutation UpdateProduct($price:Float!,$product_id:String!){
+    updateProduct(input: {price: $price,product_id: $product_id}){
+        error
+        status
+        message
+        update
+    }
+}

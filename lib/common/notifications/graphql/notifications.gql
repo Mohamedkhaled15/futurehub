@@ -1,0 +1,35 @@
+query Notifications($page: Int) {
+  notifications(page: $page) {
+    paginatorInfo {
+      hasMorePages
+      total
+    }
+    data {
+      id
+      title
+      message
+      seen
+      created_at
+    }
+  }
+}
+
+mutation UpdateFCMToken(
+  $fcm_token: String!
+  $device_id: String!
+  $version: String!
+  $platform: String!
+) {
+  updateFCMToken(
+    input: {
+      fcm_token: $fcm_token
+      device_id: $device_id
+      version: $version
+      platform: $platform
+    }
+  ) {
+    error
+    status
+    message
+  }
+}

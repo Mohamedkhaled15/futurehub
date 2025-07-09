@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "496897074221",
+    "project_id": "rugged-habitat-415113",
+    "storage_bucket": "rugged-habitat-415113.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:496897074221:android:7771d9f302211319ff04a4",
+        "android_client_info": {
+          "package_name": "com.futurehu.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDN1rWPrH-UEI9acQe6eOKnGMG4vElQ2eU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

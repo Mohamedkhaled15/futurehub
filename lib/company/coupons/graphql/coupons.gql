@@ -1,0 +1,20 @@
+query Coupons($page:Int){
+    coupons(page: $page){
+        paginatorInfo{
+            count
+            currentPage
+            total
+            lastPage
+            hasMorePages
+        }
+        data {
+            id
+            title
+            code
+            discount
+            discount_type
+            expire_at
+            start_at
+        }
+    }
+}

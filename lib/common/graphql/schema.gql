@@ -1,0 +1,1022 @@
+type Query {
+  me: User!
+  aboutUs: Setting!
+  cities: [City!]!
+  areas(city_id: Int!): [City!]!
+  orderById(reference_number: String): Order!
+  car_brands: [CarBrand!]!
+  car_models(car_brand_id: Int!): [CarModel!]!
+  car_years: [CarYear!]!
+  giftBrands(page: Int!): GiftBrand
+  employeeById(id: ID!): User!
+  questions(
+    # Limits number of fetched items. Maximum allowed value: 100.
+    first: Int = 10
+
+    # The offset from which items are returned.
+    page: Int
+  ): ContentPaginator
+  notifications(
+    # Limits number of fetched items. Maximum allowed value: 100.
+    first: Int = 10
+
+    # The offset from which items are returned.
+    page: Int
+  ): NotificationPaginator
+  orders(
+    employee_id: Int
+
+    # Limits number of fetched items. Maximum allowed value: 100.
+    first: Int = 10
+
+    # The offset from which items are returned.
+    page: Int
+  ): OrderPaginator
+  wallets(
+    employee_id: Int
+
+    # Limits number of fetched items. Maximum allowed value: 100.
+    first: Int = 10
+
+    # The offset from which items are returned.
+    page: Int
+  ): WalletTransactionPaginator
+  car_oils(
+    car_brand_id: [Int!]!
+    car_model_id: [Int!]!
+    car_year_id: [Int!]!
+
+    # Limits number of fetched items. Maximum allowed value: 100.
+    first: Int = 20
+
+    # The offset from which items are returned.
+    page: Int
+  ): CarOilPaginator
+  points(
+    # Limits number of fetched items. Maximum allowed value: 100.
+    first: Int = 10
+
+    # The offset from which items are returned.
+    page: Int
+  ): PointPaginator
+  gifts(
+    # Limits number of fetched items. Maximum allowed value: 100.
+    first: Int = 10
+
+    # The offset from which items are returned.
+    page: Int
+  ): UserGiftPaginator
+  employees(
+    # Limits number of fetched items. Maximum allowed value: 100.
+    first: Int = 10
+
+    # The offset from which items are returned.
+    page: Int
+  ): UserPaginator
+  products(
+    category_id: Int
+
+    # Limits number of fetched items. Maximum allowed value: 100.
+    first: Int = 10
+
+    # The offset from which items are returned.
+    page: Int
+  ): ProductPaginator
+  categories(
+    category_id: Int
+
+    # Limits number of fetched items. Maximum allowed value: 100.
+    first: Int = 10
+
+    # The offset from which items are returned.
+    page: Int
+  ): CategoryPaginator
+  coupons(
+    # Limits number of fetched items. Maximum allowed value: 100.
+    first: Int = 10
+
+    # The offset from which items are returned.
+    page: Int
+  ): CouponPaginator
+  punchers(
+    latitude: String
+    longitude: String
+    puncher_id: Int
+
+    # Limits number of fetched items. Maximum allowed value: 100.
+    first: Int = 20
+
+    # The offset from which items are returned.
+    page: Int
+  ): BranchPaginator
+}
+
+type User {
+  id: ID!
+  name: String
+  email: String
+  mobile: String
+  lang: String
+  gender: String
+  birth_date: String
+  image_path: String
+  type: String
+  national_id: String
+  username: String
+  first_login: Boolean
+  active: Boolean
+  created_at: String
+  wallet_limit: Float
+  wallet: Float
+  withdrawal: Float
+  deposit: Float
+  user_company: Company
+  points: Int
+}
+
+type Company {
+  id: ID
+  name: String
+  can_update_price: Boolean
+  customer_points_benefit: Boolean
+  points_benefit: Boolean
+  image_path: String
+}
+
+type Setting {
+  email: String
+  phone: String
+  about: String
+  terms_condition: String
+  privacy: String
+  youTube: String
+  facebook: String
+  instagram: String
+  twitter: String
+  linkedIn: String
+  snapchat: String
+  imagePath: String
+  number_point: Float
+  excel_user_upload_example: String
+}
+
+type City {
+  id: ID!
+  title: String!
+  active: Int!
+  position: Int!
+}
+
+type Order {
+  id: ID!
+  user: User
+  reference_number: String
+  price: Float
+  total_price: Float
+  discount: Float
+  discount_value: Float
+  vat: Float
+  vat_value: Float
+  coupon: Coupon
+  puncher: Puncher
+  company: Company
+  status: Int
+  name: String
+  email: String
+  mobile: String
+  puncher_name: String
+  puncher_email: String
+  puncher_mobile: String
+  company_name: String
+  company_email: String
+  company_mobile: String
+  products: [OrderProduct!]
+  created_at: String
+}
+
+type Coupon {
+  id: ID!
+  title: String!
+  code: String
+  active: Int!
+  discount: Float!
+  no_usage: Int!
+  discount_type: Int!
+  expire_at: Date
+  start_at: Date
+}
+
+# A date string with format `Y-m-d`, e.g. `2011-05-23`.
+scalar Date
+
+type Puncher {
+  id: ID!
+  name: String
+  owner_name: String
+  general_manager: String
+  email: String
+  mobile: String
+  imageUrl: String
+  commerce_letter: String
+  national_id: String
+  commercial_record: String
+  active: String
+  group_id: String
+}
+
+type OrderProduct {
+  product: Product
+  unit_price: Float
+  total_price: Float
+  discount: Float
+  discount_value: Float
+  quantity: Int
+}
+
+type Product {
+  id: ID!
+  title: String
+  price: Float
+  discount: Float
+  sku: String
+  image_path: String
+  tax: Tax
+  brand: Brand
+  unit: Unit
+  description: String
+  company_price: Float
+  packing: Packing
+  categories: [Category]
+  images: [String]
+}
+
+type Tax {
+  id: ID!
+  title: String!
+  active: Int
+  position: Int
+}
+
+type Brand {
+  id: ID!
+  title: String!
+  active: Int
+  position: Int
+}
+
+type Unit {
+  id: ID!
+  title: String!
+  active: Int
+  position: Int
+}
+
+type Packing {
+  id: ID!
+  title: String!
+  active: Int
+  position: Int
+}
+
+type Category {
+  id: ID!
+  title: String!
+  active: Int
+  position: Int
+  image_path: String
+}
+
+type CarBrand {
+  id: ID!
+  title: String!
+  active: Int
+  position: Int
+  image_path: String
+}
+
+type CarModel {
+  id: ID!
+  title: String!
+  active: Int
+  position: Int
+  car_brand: CarBrand
+}
+
+type CarYear {
+  id: ID!
+  title: String!
+  active: Int
+  position: Int
+}
+
+type GiftBrand {
+  data: [GiftBrandData]
+  paginatorInfo: GiftBrandPaginatorInfo
+}
+
+type GiftBrandData {
+  id: Int
+  brand_code: String
+  logo: String
+  name: String
+  product_image: String
+  description: String
+  denominations: Price
+}
+
+type Price {
+  SAR: [PriceCurrency]
+}
+
+type PriceCurrency {
+  amount: Float
+  is_active: Boolean
+}
+
+type GiftBrandPaginatorInfo {
+  lastItem: Int
+  count: Int
+  firstItem: Int
+  total: Int
+  hasMorePages: Boolean
+  perPage: Int
+  currentPage: Int
+}
+
+# A paginated list of Content items.
+type ContentPaginator {
+  # Pagination information about the list of items.
+  paginatorInfo: PaginatorInfo!
+
+  # A list of Content items.
+  data: [Content!]!
+}
+
+# Information about pagination using a fully featured paginator.
+type PaginatorInfo {
+  # Number of items in the current page.
+  count: Int!
+
+  # Index of the current page.
+  currentPage: Int!
+
+  # Index of the first item in the current page.
+  firstItem: Int
+
+  # Are there more pages after this one?
+  hasMorePages: Boolean!
+
+  # Index of the last item in the current page.
+  lastItem: Int
+
+  # Index of the last available page.
+  lastPage: Int!
+
+  # Number of items per page.
+  perPage: Int!
+
+  # Number of total available items.
+  total: Int!
+}
+
+type Content {
+  id: ID!
+  title: String!
+  description: String
+  active: Int!
+  position: Int!
+}
+
+# A paginated list of Notification items.
+type NotificationPaginator {
+  # Pagination information about the list of items.
+  paginatorInfo: PaginatorInfo!
+
+  # A list of Notification items.
+  data: [Notification!]!
+}
+
+type Notification {
+  id: ID!
+  title: String!
+  message: String!
+  seen: Boolean
+  created_at: Date
+}
+
+# A paginated list of Order items.
+type OrderPaginator {
+  # Pagination information about the list of items.
+  paginatorInfo: PaginatorInfo!
+
+  # A list of Order items.
+  data: [Order!]!
+}
+
+# A paginated list of WalletTransaction items.
+type WalletTransactionPaginator {
+  # Pagination information about the list of items.
+  paginatorInfo: PaginatorInfo!
+
+  # A list of WalletTransaction items.
+  data: [WalletTransaction!]!
+}
+
+type WalletTransaction {
+  id: ID!
+  title: String
+  wallet: Wallet
+  transaction_number: String
+  amount: String
+  status: String
+  payment_method: String
+  order: Order
+  description: String
+  type: String
+  attachment: String
+  created_at: String
+}
+
+type Wallet {
+  customer: User
+}
+
+# A paginated list of CarOil items.
+type CarOilPaginator {
+  # Pagination information about the list of items.
+  paginatorInfo: PaginatorInfo!
+
+  # A list of CarOil items.
+  data: [CarOil!]!
+}
+
+type CarOil {
+  id: ID!
+  active: Int
+  position: Int
+  image_path: String
+  brands: [CarBrand]
+  models: [CarModel]
+  years: [CarYear]
+  oil_products: OilProducts
+}
+
+type OilProducts {
+  oilCoolants: [Product!]
+  oilDifferential: [Product!]
+  oilDifferentialFront: [Product!]
+  oilEngine: [Product!]
+  oilPowerSteering: [Product!]
+  oilTransferBox: [Product!]
+  oilAutomaticTransmission: [Product!]
+  oilManualTransmission: [Product!]
+}
+
+# A paginated list of Point items.
+type PointPaginator {
+  # Pagination information about the list of items.
+  paginatorInfo: PaginatorInfo!
+
+  # A list of Point items.
+  data: [Point!]!
+}
+
+type Point {
+  points: Int
+  type: Int
+  order: Order
+  qrCode: QrCode
+}
+
+type QrCode {
+  id: ID
+  reference_number: String
+  points: Int
+  status: Int
+  scan_at: String
+  productQrCode: ProductQrCode
+}
+
+type ProductQrCode {
+  product: Product
+}
+
+# A paginated list of UserGift items.
+type UserGiftPaginator {
+  # Pagination information about the list of items.
+  paginatorInfo: PaginatorInfo!
+
+  # A list of UserGift items.
+  data: [UserGift!]!
+}
+
+type UserGift {
+  id: ID
+  yougotagift_id: Int
+  yougotagift_status: Int
+  reference_number: String
+  barcode: String
+  gift_voucher_label: String
+  gift_voucher_value: String
+  expiry_date: String
+  redemption_instructions: String
+  egift_card_gift_verification_pin: String
+  amount: Float
+  points: Int
+}
+
+# A paginated list of User items.
+type UserPaginator {
+  # Pagination information about the list of items.
+  paginatorInfo: PaginatorInfo!
+
+  # A list of User items.
+  data: [User!]!
+}
+
+# A paginated list of Product items.
+type ProductPaginator {
+  # Pagination information about the list of items.
+  paginatorInfo: PaginatorInfo!
+
+  # A list of Product items.
+  data: [Product!]!
+}
+
+# A paginated list of Category items.
+type CategoryPaginator {
+  # Pagination information about the list of items.
+  paginatorInfo: PaginatorInfo!
+
+  # A list of Category items.
+  data: [Category!]!
+}
+
+# A paginated list of Coupon items.
+type CouponPaginator {
+  # Pagination information about the list of items.
+  paginatorInfo: PaginatorInfo!
+
+  # A list of Coupon items.
+  data: [Coupon!]!
+}
+
+# A paginated list of Branch items.
+type BranchPaginator {
+  # Pagination information about the list of items.
+  paginatorInfo: PaginatorInfo!
+
+  # A list of Branch items.
+  data: [Branch!]!
+}
+
+type Branch {
+  id: ID
+  title: String
+  address: String
+  latitude: String
+  longitude: String
+  city: City
+  distance: Float
+  puncher: PuncherSimple
+}
+
+type PuncherSimple {
+  id: ID!
+  name: String
+  imageUrl: String
+  error: Result
+}
+
+type Result {
+  error: Int!
+  status: String!
+  message: String
+  update: Boolean
+}
+
+type Mutation {
+  # Upload a file that is publicly available.
+  upload(file: Upload!): String
+  register(input: RegisterInput): AccessToken!
+  login(input: LoginInput): AccessToken!
+  logout: Result!
+  deleteAccount: Result!
+  validateMobile(input: ValidateMobileInput): ValidateMobileResult
+  changeLanguage(input: ChangeLanguageInput): Result
+  updateProfile(input: UpdateProfileInput): Result
+  updateProfilePhoto(input: UpdateProfilePhotoInput): Result
+  updateFCMToken(input: UpdateFCMTokenInput!): Result
+  sendMobileCode(input: ForgotPasswordInput): Result!
+  confirmMobileCode(input: ForgotPasswordCodeInput): ConfirmResult!
+  resetPasswordByCode(input: ResetPasswordByCodeInput): AccessToken!
+  updatePassword(input: UpdatePasswordInput): Result!
+  sendFeedback(input: sendFeedbackInput): Result!
+  createOrder(input: CreateOrder): Order!
+  validateCoupon(input: CreateOrder): OrderResult!
+  confirmOrder(input: OrderValidateByCode): Result!
+  cancelOrder(input: OrderReferenceNumber): Result!
+  validateQrCodeOrder(input: OrderReferenceNumber): Result!
+  scanQrCodeProduct(input: ScanQrProductInput): PointResult!
+  createEmployee(input: CreateEmployeeInput): Employee!
+  updateEmployee(input: UpdateEmployeeInput): Result!
+  deleteEmployee(input: SingleEmployeeInput): Result!
+  activeEmployee(input: SingleEmployeeInput): Result!
+  stopEmployee(input: SingleEmployeeInput): Result!
+  uploadEmployee(input: UploadEmployeeInput): Result!
+  updateProduct(input: UpdateProductInput): Result!
+  createCoupon(input: CreateCouponInput): Result!
+  updateCoupon(input: UpdateCouponInput): Result!
+  deleteCoupon(input: SingleCouponInput): Result!
+  createWallet(input: CreateWalletInput): WalletResult!
+  createWalletEmployee(input: CreateEmployeeWalletInput): WalletResult!
+  createUserCoupon(input: CreateUserCouponInput!): UserGiftResult
+}
+
+# Can be used as an argument to upload files using https://github.com/jaydenseric/graphql-multipart-request-spec
+scalar Upload
+
+input RegisterInput {
+  name: String!
+  email: String!
+  mobile: String!
+  password: String!
+  password_confirmation: String!
+}
+
+type AccessToken {
+  token: String
+  user: User
+  error: Int!
+  status: String!
+  message: String
+  update: Boolean
+  first_login: Boolean!
+}
+
+input LoginInput {
+  mobile: String!
+  password: String!
+}
+
+input ValidateMobileInput {
+  mobile: String!
+}
+
+type ValidateMobileResult {
+  error: Int!
+  status: String!
+  message: String
+  update: Boolean
+  first_login: Boolean!
+}
+
+input ChangeLanguageInput {
+  lang: String!
+}
+
+input UpdateProfileInput {
+  name: String!
+  email: String!
+  mobile: String!
+  gender: String
+  birth_date: String
+}
+
+input UpdateProfilePhotoInput {
+  image: String!
+}
+
+input UpdateFCMTokenInput {
+  fcm_token: String!
+  device_id: String!
+  version: String!
+  platform: String!
+}
+
+input ForgotPasswordInput {
+  mobile: String!
+  type: VerifyEnum
+}
+
+enum VerifyEnum {
+  Verify
+  Reset
+}
+
+input ForgotPasswordCodeInput {
+  code: String!
+  mobile: String!
+  type: VerifyEnum
+}
+
+type ConfirmResult {
+  error: Int!
+  status: String!
+  message: String
+  update: Boolean
+  user: ValidateUser
+}
+
+type ValidateUser {
+  name: String
+  company_name: String
+}
+
+input ResetPasswordByCodeInput {
+  mobile: String!
+  code: String!
+  password: String!
+  password_confirmation: String!
+  type: VerifyEnum
+}
+
+input UpdatePasswordInput {
+  old_password: String!
+  password: String!
+  password_confirmation: String!
+}
+
+input sendFeedbackInput {
+  name: String
+  email: String
+  mobile: String
+  message: String
+}
+
+input CreateOrder {
+  products: [ProductItem!]!
+  coupon: String
+  branch: Int
+  puncher: Int!
+}
+
+input ProductItem {
+  quantity: Int!
+  product_id: Int!
+}
+
+type OrderResult {
+  error: Int!
+  status: String!
+  message: String
+  update: Boolean
+  data: OrderPricing
+}
+
+type OrderPricing {
+  total_price: Float
+  price: Float
+  vat: Float
+  vat_value: Float
+  discount: Float
+  discount_value: Float
+}
+
+input OrderValidateByCode {
+  code: String!
+  reference_number: String!
+}
+
+input OrderReferenceNumber {
+  reference_number: String!
+}
+
+input ScanQrProductInput {
+  reference_number: String
+}
+
+type PointResult {
+  error: Int!
+  status: String!
+  message: String
+  update: Boolean
+  data: Point
+}
+
+input CreateEmployeeInput {
+  name: String
+  email: String
+  mobile: String
+  national_id: String
+  wallet_limit: Float
+  image: String
+}
+
+type Employee {
+  user: User
+  error: Int!
+  status: String!
+  message: String
+  update: Boolean
+}
+
+input UpdateEmployeeInput {
+  name: String
+  email: String
+  mobile: String
+  national_id: String
+  employee_id: Int!
+  wallet_limit: Float
+  image: String
+}
+
+input SingleEmployeeInput {
+  employee_id: Int!
+}
+
+input UploadEmployeeInput {
+  file: String
+}
+
+input UpdateProductInput {
+  price: Float
+  product_id: String
+}
+
+input CreateCouponInput {
+  name: String
+  email: String
+  mobile: String
+  national_id: String
+}
+
+input UpdateCouponInput {
+  name: String
+  email: String
+  mobile: String
+  national_id: String
+  coupon_id: Int
+}
+
+input SingleCouponInput {
+  coupon_id: Int
+}
+
+input CreateWalletInput {
+  title: String
+  amount: Float!
+  payment_method: PaymentMethod
+  description: String
+  attachment: String
+}
+
+enum PaymentMethod {
+  ONLINE_METHOD
+  BANK_TRANSFER
+}
+
+type WalletResult {
+  error: Int!
+  status: String!
+  message: String
+  update: Boolean
+  wallet: WalletTransaction
+}
+
+input CreateEmployeeWalletInput {
+  title: String
+  amount: Float!
+  payment_method: PaymentMethod
+  description: String
+  attachment: String
+  employee_id: ID!
+}
+
+input CreateUserCouponInput {
+  points: Int!
+}
+
+type UserGiftResult {
+  error: Int!
+  status: String!
+  message: String
+  update: Boolean
+  data: UserGift
+}
+
+# A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`.
+scalar DateTime
+
+enum UserTypeEnum {
+  Customer
+  Company
+  Puncher
+}
+
+type CarOilBrand {
+  id: ID!
+  car_brand: CarBrand
+}
+
+type CarOilModel {
+  id: ID!
+  car_model: CarModel!
+}
+
+type CarOilYear {
+  id: ID!
+  car_year: CarYear!
+}
+
+# Directions for ordering a list of records.
+enum SortOrder {
+  # Sort records in ascending order.
+  ASC
+
+  # Sort records in descending order.
+  DESC
+}
+
+# Aggregate functions when ordering by a relation without specifying a column.
+enum OrderByRelationAggregateFunction {
+  # Amount of items.
+  COUNT
+}
+
+# Aggregate functions when ordering by a relation that may specify a column.
+enum OrderByRelationWithColumnAggregateFunction {
+  # Average.
+  AVG
+
+  # Minimum.
+  MIN
+
+  # Maximum.
+  MAX
+
+  # Sum.
+  SUM
+
+  # Amount of items.
+  COUNT
+}
+
+# Allows ordering a list of records.
+input OrderByClause {
+  # The column that is used for ordering.
+  column: String!
+
+  # The direction that is used for ordering.
+  order: SortOrder!
+}
+
+# Information about pagination using a simple paginator.
+type SimplePaginatorInfo {
+  # Number of items in the current page.
+  count: Int!
+
+  # Index of the current page.
+  currentPage: Int!
+
+  # Index of the first item in the current page.
+  firstItem: Int
+
+  # Index of the last item in the current page.
+  lastItem: Int
+
+  # Number of items per page.
+  perPage: Int!
+
+  # Are there more pages after this one?
+  hasMorePages: Boolean!
+}
+
+# Information about pagination using a Relay style cursor connection.
+type PageInfo {
+  # When paginating forwards, are there more items?
+  hasNextPage: Boolean!
+
+  # When paginating backwards, are there more items?
+  hasPreviousPage: Boolean!
+
+  # The cursor to continue paginating backwards.
+  startCursor: String
+
+  # The cursor to continue paginating forwards.
+  endCursor: String
+
+  # Total number of nodes in the paginated connection.
+  total: Int!
+
+  # Number of nodes in the current page.
+  count: Int!
+
+  # Index of the current page.
+  currentPage: Int!
+
+  # Index of the last available page.
+  lastPage: Int!
+}
+
+# Specify if you want to include or exclude trashed results from a query.
+enum Trashed {
+  # Only return trashed results.
+  ONLY
+
+  # Return both trashed and non-trashed results.
+  WITH
+
+  # Only return non-trashed results.
+  WITHOUT
+}

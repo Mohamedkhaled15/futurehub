@@ -1,0 +1,183 @@
+mutation ValidateMobile($phone: String!) {
+    validateMobile(input: { mobile: $phone }) {
+        status
+        error
+        message
+        first_login
+    }
+}
+mutation  Logout{
+    logout {
+        error
+        status
+        message
+    }
+}
+mutation Logina($phone: String!, $password: String!) {
+    login(input: { mobile: $phone, password: $password }) {
+        token
+        user {
+            id
+            name
+            mobile
+            email
+            lang
+            gender
+            birth_date
+            image_path
+            type
+            national_id
+            username
+            active
+            wallet_limit
+            wallet
+            withdrawal
+            points
+            user_company {
+                id
+                name
+                can_update_price
+                customer_points_benefit
+                points_benefit
+                image_path
+            }
+        }
+        error
+        status
+        message
+    }
+}
+
+mutation SendOTP($phone: String!, $type: VerifyEnum!) {
+    sendMobileCode(input: { mobile: $phone, type: $type }) {
+        error
+        status
+        message
+    }
+}
+
+mutation ConfirmOTP($phone: String!, $otp: String!, $type: VerifyEnum!) {
+    confirmMobileCode(input: { mobile: $phone, code: $otp, type: $type }) {
+        user {
+            name
+            company_name
+        }
+        error
+        status
+        message
+    }
+}
+
+mutation ResetPasswordByCode(
+    $phone: String!
+    $otp: String!
+    $password: String!
+    $confirmPassword: String!
+    $type: VerifyEnum!
+) {
+    resetPasswordByCode(
+        input: {
+            mobile: $phone
+            code: $otp
+            password: $password
+            password_confirmation: $confirmPassword
+            type: $type
+        }
+    ) {
+        token
+        user {
+            id
+            name
+            mobile
+            email
+            lang
+            gender
+            birth_date
+            image_path
+            type
+            national_id
+            username
+            active
+            wallet_limit
+            wallet
+            withdrawal
+            points
+            user_company {
+                id
+                name
+                can_update_price
+                customer_points_benefit
+                points_benefit
+                image_path
+            }
+        }
+        error
+        status
+        message
+    }
+}
+
+query Me {
+    me {
+        id
+        name
+        mobile
+        email
+        lang
+        gender
+        birth_date
+        image_path
+        type
+        national_id
+        username
+        active
+        wallet_limit
+        wallet
+        withdrawal
+        points
+        user_company {
+            id
+            name
+            can_update_price
+            customer_points_benefit
+            points_benefit
+            image_path
+        }
+    }
+}
+
+mutation UpdateProfile(
+    $name: String!
+    $email: String!
+    $phone: String!
+) {
+    updateProfile(input: { name: $name, email: $email, mobile: $phone }) {
+        status
+        error
+        message
+    }
+}
+
+mutation UpdateProfilePhoto($image: String!) {
+    updateProfilePhoto(input: { image: $image }) {
+        status
+        error
+        message
+    }
+}
+
+mutation UpdatePassword($oldPassword: String!, $password: String!, $confirmPassword: String!) {
+    updatePassword(input: { old_password: $oldPassword, password: $password, password_confirmation: $confirmPassword }) {
+        status
+        error
+        message
+    }
+}
+
+mutation DeleteAccount {
+    deleteAccount {
+        status
+        error
+        message
+    }
+}

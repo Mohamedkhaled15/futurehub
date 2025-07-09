@@ -1,0 +1,31 @@
+query Punchers($page: Int, $latitude: String, $longitude: String) {
+  punchers(page: $page, latitude: $latitude, longitude: $longitude) {
+    paginatorInfo {
+      count
+      currentPage
+      total
+      lastPage
+      hasMorePages
+    }
+
+    data {
+      id
+      title
+      address
+      latitude
+      longitude
+      city {
+        id
+        title
+        active
+        position
+      }
+      distance
+      puncher {
+        id
+        name
+        imageUrl
+      }
+    }
+  }
+}
