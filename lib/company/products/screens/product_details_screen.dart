@@ -58,10 +58,16 @@ class ProductDetailsScreen extends StatelessWidget {
                       children: [
                         Image.asset(
                           'assets/icons/product-back-1.png',
+                            filterQuality:
+                                FilterQuality.none, // Disable mipmapping
+                            isAntiAlias: false,
                           height: MediaQuery.sizeOf(context).height * 0.24,
                         ),
                         Image.asset(
                           'assets/icons/product-back-2.png',
+                            filterQuality:
+                                FilterQuality.none, // Disable mipmapping
+                            isAntiAlias: false,
                           height: MediaQuery.sizeOf(context).height * 0.24,
                         ),
                         AspectRatio(

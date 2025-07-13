@@ -4,7 +4,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 // import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:future_hub/common/auth/cubit/auth_cubit.dart';
@@ -30,6 +29,7 @@ import 'package:future_hub/puncher/orders/order_cubit/service_provider_orders_cu
 import 'package:google_fonts/google_fonts.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
+import '../../../l10n/app_localizations.dart';
 import 'common/notifications/services/notifications_service.dart';
 import 'common/shared/cubits/products_cubit/products_cubit.dart';
 import 'common/shared/services/remote/dio_manager.dart';
@@ -41,7 +41,8 @@ import 'employee/orders/cubit/employee_services_branches_cubit.dart';
 import 'firebase_options.dart';
 
 void main() async {
-  final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
+
   // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   // await initHiveForFlutter();

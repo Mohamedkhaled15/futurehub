@@ -84,7 +84,7 @@ class _CarouselExampleState extends State<CarouselExample> {
         ),
         DotsIndicator(
           dotsCount: 5,
-          position: _currentPage,
+          position: _currentPage.toDouble(),
           decorator: DotsDecorator(
             size: const Size.square(9.0),
             activeSize: const Size(18.0, 9.0),

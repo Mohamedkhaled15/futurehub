@@ -147,7 +147,8 @@ class _AccountDataScreenState extends State<AccountDataScreen> {
                                   )
                                 : Image.asset(
                                     'assets/images/edit-new.png',
-                                    height: 20,
+                                    height: 20,filterQuality: FilterQuality.none,  // Disable mipmapping
+  isAntiAlias: false, 
                                   ),
                           ),
                           Text(

@@ -94,6 +94,8 @@ class _EmployeeHomeCarouselState extends State<EmployeeHomeCarousel> {
           child: Image.asset(
             'assets/images/banner1.png',
             fit: BoxFit.cover,
+            filterQuality: FilterQuality.none, // Disable mipmapping
+            isAntiAlias: false,
           ),
         ),
         ClipRRect(
@@ -101,6 +103,8 @@ class _EmployeeHomeCarouselState extends State<EmployeeHomeCarousel> {
           child: Image.asset(
             'assets/images/banner2.png',
             fit: BoxFit.cover,
+            filterQuality: FilterQuality.none, // Disable mipmapping
+            isAntiAlias: false,
           ),
         ),
         ClipRRect(
@@ -108,6 +112,8 @@ class _EmployeeHomeCarouselState extends State<EmployeeHomeCarousel> {
           child: Image.asset(
             'assets/images/banner3.png',
             fit: BoxFit.cover,
+            filterQuality: FilterQuality.none, // Disable mipmapping
+            isAntiAlias: false,
           ),
         ),
       ];
@@ -151,7 +157,7 @@ class _EmployeeHomeCarouselState extends State<EmployeeHomeCarousel> {
                       activeSize: const Size(25.0, 9.0),
                       size: const Size(11, 8)),
                   dotsCount: images.length,
-                  position: index,
+                  position: index.toDouble(),
                 ),
               ),
             ],

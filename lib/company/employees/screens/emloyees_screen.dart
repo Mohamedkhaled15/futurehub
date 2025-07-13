@@ -96,14 +96,23 @@ class CompanyEmployeesScreen extends StatelessWidget {
                                     const SizedBox(
                                       width: 10,
                                     ),
-                                    Image.asset('assets/images/fire.png'),
+                                    Image.asset('assets/images/fire.png',
+                            filterQuality:
+                                FilterQuality.none, // Disable mipmapping
+                            isAntiAlias: false,),
                                     const SizedBox(
                                       width: 70,
                                     ),
-                                    Image.asset('assets/images/statistics.png'),
+                                    Image.asset('assets/images/statistics.png',
+                            filterQuality:
+                                FilterQuality.none, // Disable mipmapping
+                            isAntiAlias: false,),
                                   ],
                                 ),
-                                Image.asset('assets/images/grow.png'),
+                                Image.asset('assets/images/grow.png',
+                            filterQuality:
+                                FilterQuality.none, // Disable mipmapping
+                            isAntiAlias: false,),
                               ],
                             ),
 

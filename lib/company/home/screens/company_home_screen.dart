@@ -176,7 +176,10 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Image.asset('assets/images/trekker.png'),
+                                  Image.asset('assets/images/trekker.png',
+                            filterQuality:
+                                FilterQuality.none, // Disable mipmapping
+                            isAntiAlias: false,),
                                   const SizedBox(
                                     width: 10,
                                   ),
@@ -241,7 +244,10 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                                                             .center, // Center elements in the container
                                                     children: [
                                                       Image.asset(
-                                                          'assets/images/Group 7.png'),
+                                                          'assets/images/Group 7.png',
+                            filterQuality:
+                                FilterQuality.none, // Disable mipmapping
+                            isAntiAlias: false,),
                                                       const SizedBox(height: 5),
                                                       Text(
                                                         (state as AuthSignedIn)
@@ -304,7 +310,10 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                                                             .center, // Center elements in the container
                                                     children: [
                                                       Image.asset(
-                                                          'assets/images/Group 7.png'),
+                                                          'assets/images/Group 7.png',
+                            filterQuality:
+                                FilterQuality.none, // Disable mipmapping
+                            isAntiAlias: false,),
                                                       const SizedBox(
                                                         height: 5,
                                                       ),
@@ -378,7 +387,10 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                                                             .center, // Center elements in the container
                                                     children: [
                                                       Image.asset(
-                                                          'assets/images/Group 7.png'),
+                                                          'assets/images/Group 7.png',
+                            filterQuality:
+                                FilterQuality.none, // Disable mipmapping
+                            isAntiAlias: false,),
                                                       const SizedBox(
                                                         height: 5,
                                                       ),
@@ -442,7 +454,10 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                                                           .center, // Center elements in the container
                                                   children: [
                                                     Image.asset(
-                                                        'assets/images/down.png'),
+                                                        'assets/images/down.png',
+                            filterQuality:
+                                FilterQuality.none, // Disable mipmapping
+                            isAntiAlias: false,),
                                                     const SizedBox(
                                                       height: 13,
                                                     ),
@@ -584,7 +599,10 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Image.asset('assets/images/vector.png'),
+                                      Image.asset('assets/images/vector.png',
+                            filterQuality:
+                                FilterQuality.none, // Disable mipmapping
+                            isAntiAlias: false,),
                                       const SizedBox(
                                           width:
                                               10), // Spacing between icon and text
@@ -708,7 +726,10 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Image.asset('assets/images/people.png'),
+                                      Image.asset('assets/images/people.png',
+                            filterQuality:
+                                FilterQuality.none, // Disable mipmapping
+                            isAntiAlias: false,),
                                       const SizedBox(
                                           width:
                                               10), // Spacing between icon and text
@@ -909,6 +930,9 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                 child: Image.asset(
                   'assets/images/home-logo.png',
                   fit: BoxFit.contain,
+                            filterQuality:
+                                FilterQuality.none, // Disable mipmapping
+                            isAntiAlias: false,
                 ),
               ),
               // Second Image
@@ -916,7 +940,10 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                 opacity: showFirstImage ? 0.0 : 1.0, // Show/hide based on state
                 duration: const Duration(milliseconds: 500), // Fade duration
                 child: Image.asset(
-                  'assets/images/Service Provider.png', // Your second image
+                  'assets/images/Service Provider.png',
+                            filterQuality:
+                                FilterQuality.none, // Disable mipmapping
+                            isAntiAlias: false, // Your second image
                   fit: BoxFit.contain,
                 ),
               ),

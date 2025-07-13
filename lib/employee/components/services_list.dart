@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../l10n/app_localizations.dart';
 import 'package:future_hub/common/shared/services/remote/dio_manager.dart';
 import 'package:future_hub/common/shared/services/remote/end_points.dart';
 import 'package:future_hub/common/shared/utils/cache_manager.dart';
 import 'package:future_hub/employee/home/model/services-categories_model.dart';
 import 'package:future_hub/employee/orders/cubit/employee_services_branches_cubit.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../l10n/app_localizations.dart';
 
 class ServicesListWidget extends StatefulWidget {
   const ServicesListWidget({super.key});
@@ -76,94 +77,38 @@ class _ServicesListWidgetState extends State<ServicesListWidget> {
               final itemCount = snapshot.data!.categories.length;
               final rowCount = (itemCount / 2).ceil();
 
-              return Column(
-                children: List.generate(rowCount, (rowIndex) {
-                  final firstItemIndex = rowIndex * 2;
-                  final secondItemIndex = firstItemIndex + 1;
+              return Wrap(
+                spacing: 20,
+                children:
+                    List.generate(snapshot.data!.categories.length, (rowIndex) {
+                  // final firstItemIndex = rowIndex * 2;
+                  // final secondItemIndex = firstItemIndex + 1;
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 12),
-                    child: Row(
-                      children: [
-                        // First item in row
-                        if (firstItemIndex < itemCount)
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () async {
-                                context
-                                    .read<ServicesPunchersCubit>()
-                                    .resetPunchersState(0);
-                                context
-                                    .read<ServicesPunchersCubit>()
-                                    .loadServicesPunchers(
-                                      id: snapshot
-                                          .data!.categories[firstItemIndex].id,
-                                      refresh: true,
-                                    );
-                                context.push(
-                                  '/employees/services-branches',
-                                  extra:
-                                      snapshot.data!.categories[firstItemIndex],
-                                );
-                              },
-                              child: _ServiceItem(
-                                title:
-                                    CacheManager.locale! == const Locale("en")
-                                        ? snapshot.data!
-                                            .categories[firstItemIndex].title.en
-                                        : snapshot
-                                            .data!
-                                            .categories[firstItemIndex]
-                                            .title
-                                            .ar,
-                                imageUrl: snapshot
-                                    .data!.categories[firstItemIndex].image,
-                              ),
-                            ),
-                          ),
-                        const SizedBox(width: 12),
-                        // Second item in row (if exists)
-                        if (secondItemIndex < itemCount)
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () async {
-                                context
-                                    .read<ServicesPunchersCubit>()
-                                    .resetPunchersState(0);
-                                context
-                                    .read<ServicesPunchersCubit>()
-                                    .loadServicesPunchers(
-                                      id: snapshot
-                                          .data!.categories[secondItemIndex].id,
-                                      refresh: true,
-                                    );
-                                context.push(
-                                  '/employees/services-branches',
-                                  extra:
-                                      snapshot.data!.categories[firstItemIndex],
-                                );
-                              },
-                              child: _ServiceItem(
-                                title:
-                                    CacheManager.locale! == const Locale("en")
-                                        ? snapshot
-                                            .data!
-                                            .categories[secondItemIndex]
-                                            .title
-                                            .en
-                                        : snapshot
-                                            .data!
-                                            .categories[secondItemIndex]
-                                            .title
-                                            .ar,
-                                imageUrl: snapshot
-                                    .data!.categories[secondItemIndex].image,
-                              ),
-                            ),
-                          ),
-                        // Empty space if odd number of items
-                        if (secondItemIndex >= itemCount)
-                          const Expanded(child: SizedBox()),
-                      ],
+                    child: Expanded(
+                      child: GestureDetector(
+                        onTap: () async {
+                          context
+                              .read<ServicesPunchersCubit>()
+                              .resetPunchersState(0);
+                          context
+                              .read<ServicesPunchersCubit>()
+                              .loadServicesPunchers(
+                                id: snapshot.data!.categories[rowIndex].id,
+                                refresh: true,
+                              );
+                          context.push(
+                            '/employees/services-branches',
+                            extra: snapshot.data!.categories[rowIndex],
+                          );
+                        },
+                        child: _ServiceItem(
+                          title: CacheManager.locale! == const Locale("en")
+                              ? snapshot.data!.categories[rowIndex].title.en
+                              : snapshot.data!.categories[rowIndex].title.ar,
+                          imageUrl: snapshot.data!.categories[rowIndex].image,
+                        ),
+                      ),
                     ),
                   );
                 }),

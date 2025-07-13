@@ -58,7 +58,8 @@ class _MyPointsCardState extends State<MyPointsCard> {
               children: <Widget>[
                 Image.asset(
                   'assets/images/home-logo.png',
-                  height: height * 0.02,
+                  height: height * 0.02,filterQuality: FilterQuality.none,  // Disable mipmapping
+  isAntiAlias: false, 
                 ),
                 // Invisible widget to center the text properly
                 const Spacer(), // This will push the text to the center

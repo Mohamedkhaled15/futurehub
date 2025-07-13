@@ -87,7 +87,7 @@ class _EmployeeHomeOfferCarouselState extends State<EmployeeHomeOfferCarousel> {
                 activeSize: const Size(25.0, 9.0),
                 size: const Size(11, 8)),
             dotsCount: images.length,
-            position: index,
+            position: index.toDouble(),
           ),
         )
       ],

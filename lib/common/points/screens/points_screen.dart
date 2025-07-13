@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:future_hub/common/auth/cubit/auth_cubit.dart';
 import 'package:future_hub/common/auth/cubit/auth_state.dart';
@@ -13,6 +12,7 @@ import 'package:future_hub/common/shared/widgets/infinite_list_view.dart';
 import 'package:future_hub/common/shared/widgets/labeled_icon_placeholder.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../shared/palette.dart';
 import '../../shared/widgets/loading_indicator.dart';
 import '../widgets/my_points_card.dart';
@@ -77,7 +77,12 @@ class _PointsScreenState extends State<PointsScreen> {
                       },
                       child: Stack(
                         children: [
-                          Image.asset('assets/images/point_partners.png'),
+                          Image.asset(
+                            'assets/images/point_partners.png',
+                            filterQuality:
+                                FilterQuality.none, // Disable mipmapping
+                            isAntiAlias: false,
+                          ),
                           Positioned(
                             top: 0,
                             bottom: 0,
@@ -113,7 +118,12 @@ class _PointsScreenState extends State<PointsScreen> {
                       },
                       child: Stack(
                         children: [
-                          Image.asset('assets/images/about_points.png'),
+                          Image.asset(
+                            'assets/images/about_points.png',
+                            filterQuality:
+                                FilterQuality.none, // Disable mipmapping
+                            isAntiAlias: false,
+                          ),
                           Positioned(
                             top: 0,
                             bottom: 0,
@@ -150,6 +160,9 @@ class _PointsScreenState extends State<PointsScreen> {
                           'assets/images/scan-points-code.png',
                           height: height * 0.1,
                           width: width,
+                            filterQuality:
+                                FilterQuality.none, // Disable mipmapping
+                            isAntiAlias: false,
                         ),
                         Positioned(
                           top: 0,

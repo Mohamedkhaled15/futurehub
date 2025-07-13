@@ -59,7 +59,8 @@ class SocialMediaIcons extends StatelessWidget {
             child: Image.asset(
               social.iconPath,
               width: 48,
-              height: 48,
+              height: 48,filterQuality: FilterQuality.none,  // Disable mipmapping
+  isAntiAlias: false, 
             ),
           );
         }).toList(),

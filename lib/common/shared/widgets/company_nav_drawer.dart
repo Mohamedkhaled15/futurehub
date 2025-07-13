@@ -64,7 +64,8 @@ class CompanyNavDrawer extends StatelessWidget {
                             errorBuilder: (context, error, stackTrace) {
                               return Image.asset(
                                 'assets/images/people.png', // Replace with your local fallback image path
-                                fit: BoxFit.cover,
+                                fit: BoxFit.cover,filterQuality: FilterQuality.none,  // Disable mipmapping
+  isAntiAlias: false, 
                               );
                             },
                           ),

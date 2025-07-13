@@ -29,7 +29,7 @@ class EmployeeBottomNavBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SizedBox(
-                width: MediaQuery.of(context).size.width * 0.3,
+                width: MediaQuery.of(context).size.width * 0.32,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [

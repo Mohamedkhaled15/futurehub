@@ -71,7 +71,8 @@ class HomeHint extends StatelessWidget {
                   90.0),
               child: Image.asset(
                 'assets/images/home-hint.png',
-                fit: BoxFit.contain,
+                fit: BoxFit.contain,filterQuality: FilterQuality.none,  // Disable mipmapping
+  isAntiAlias: false, 
               ),
             ),
           ),

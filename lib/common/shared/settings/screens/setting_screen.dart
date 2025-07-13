@@ -50,7 +50,10 @@ class SettingsScreen extends StatelessWidget {
                 children: [
                   SettingListTile(
                     title: t.language,
-                    icon: Image.asset('assets/images/language.png'),
+                    icon: Image.asset('assets/images/language.png',
+                            filterQuality:
+                                FilterQuality.none, // Disable mipmapping
+                            isAntiAlias: false,),
                     onPressed: () => context.push('/language_screen'),
                     hasSubtitle: true,
                     subtitle: t.localeName == 'ar'
@@ -61,18 +64,27 @@ class SettingsScreen extends StatelessWidget {
                   ),
                   SettingListTile(
                     title: t.terms_and_conditions,
-                    icon: Image.asset('assets/images/terms_and_conditions.png'),
+                    icon: Image.asset('assets/images/terms_and_conditions.png',
+                            filterQuality:
+                                FilterQuality.none, // Disable mipmapping
+                            isAntiAlias: false,),
                     onPressed: () => context.push('/terms'),
                   ),
                   SettingListTile(
                     title: t.privacy_policy,
-                    icon: Image.asset('assets/images/pricay_policy.png'),
+                    icon: Image.asset('assets/images/pricay_policy.png',
+                            filterQuality:
+                                FilterQuality.none, // Disable mipmapping
+                            isAntiAlias: false,),
                     onPressed: () => context.push('/privacy'),
                   ),
                   SettingListTile(
                     showDivider: false,
                     title: t.support,
-                    icon: Image.asset('assets/images/support.png'),
+                    icon: Image.asset('assets/images/support.png',
+                            filterQuality:
+                                FilterQuality.none, // Disable mipmapping
+                            isAntiAlias: false,),
                     onPressed: () => context.push('/support_screen'),
                     subtitle: t.localeName == 'ar' ? t.arabic : t.english,
                   ),

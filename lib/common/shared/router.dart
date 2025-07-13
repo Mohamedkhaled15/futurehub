@@ -141,7 +141,7 @@ final router = GoRouter(
     GoRoute(
       path: '/sign-up',
       builder: (context, state) => SignUpScreen(
-        id: state.queryParameters['id']!,
+        id: state.uri.queryParameters['id']!,
       ),
     ),
     GoRoute(
@@ -189,7 +189,7 @@ final router = GoRouter(
             user: user,
             state.pathParameters['id']!,
             product: product,
-            company: state.queryParameters['company'] == 'true',
+            company: state.uri.queryParameters['company'] == 'true',
           );
         }),
     GoRoute(
@@ -283,14 +283,14 @@ final router = GoRouter(
     GoRoute(
       path: '/points/added',
       builder: (context, state) => PointsAddedScreen(
-        points: int.parse(state.queryParameters['points']!),
+        points: int.parse(state.uri.queryParameters['points']!),
       ),
     ),
     GoRoute(
       path: '/points/redeemed',
       builder: (context, state) => PointsRedeemedScreen(
         userGift: state.extra as UserGift,
-        old: state.queryParameters.containsKey('old'),
+        old: state.uri.queryParameters.containsKey('old'),
       ),
     ),
     GoRoute(
@@ -308,7 +308,7 @@ final router = GoRouter(
     GoRoute(
       path: '/employee/puncher-screen/:id',
       builder: (context, state) {
-        final categoryId = state.queryParameters['categoryId'];
+        final categoryId = state.uri.queryParameters['categoryId'];
         return EmployeePuncherScreen(
           int.parse(state.pathParameters['id']!),
           name: state.extra as String,
@@ -346,35 +346,35 @@ final router = GoRouter(
       path: '/employee/order-details',
       builder: (context, state) => EmployeeOrderDetailsScreen(
         order: state.extra as EmployeeOrder,
-        showActivate: state.queryParameters['showButton'] == "true",
+        showActivate: state.uri.queryParameters['showButton'] == "true",
       ),
     ),
     GoRoute(
       path: '/employees/order-details',
       builder: (context, state) => EmployeesOrderDetailsScreen(
         order: state.extra as Order,
-        showActivate: state.queryParameters['showButton'] == "true",
+        showActivate: state.uri.queryParameters['showButton'] == "true",
       ),
     ),
     GoRoute(
       path: '/company/employees/order-details',
       builder: (context, state) => CompanyEmployeeOrderDetailsScreen(
         order: state.extra as DriverOrder,
-        showActivate: state.queryParameters['showButton'] == "true",
+        showActivate: state.uri.queryParameters['showButton'] == "true",
       ),
     ),
     GoRoute(
       path: '/company/order-details',
       builder: (context, state) => CompanyOrderDetailsScreen(
         order: state.extra as CompanyOrder,
-        showActivate: state.queryParameters['showButton'] == "true",
+        showActivate: state.uri.queryParameters['showButton'] == "true",
       ),
     ),
     GoRoute(
       path: '/puncher/order-details-screen',
       builder: (context, state) => PuncherOrdersDetailsScreen(
         order: state.extra as Datum,
-        showActivate: state.queryParameters['showButton'] == "true",
+        showActivate: state.uri.queryParameters['showButton'] == "true",
       ),
     ),
     GoRoute(
@@ -395,7 +395,7 @@ final router = GoRouter(
       builder: (context, state) => EmployeeWalletScreen(
         transactionHistory: state.extra as List<TransactionHistory>,
         id: int.parse(state.pathParameters['id']!),
-        balance: double.parse(state.queryParameters['balance']!),
+        balance: double.parse(state.uri.queryParameters['balance']!),
       ),
     ),
     GoRoute(
@@ -409,7 +409,7 @@ final router = GoRouter(
     GoRoute(
       path: '/bank-transfer-screen',
       builder: (context, state) => PaymentScreen(
-        isBank: state.queryParameters['isBank'] == "true",
+        isBank: state.uri.queryParameters['isBank'] == "true",
         title: state.extra.toString(),
         amount: state.extra as double,
       ),

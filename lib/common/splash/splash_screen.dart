@@ -43,7 +43,8 @@ class _SplashScreenState extends State<SplashScreen>
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25),
                 child: Image.asset(
-                  "assets/images/logo.png",
+                  "assets/images/logo.png",filterQuality: FilterQuality.none,  // Disable mipmapping
+  isAntiAlias: false, 
                 ),
               ),
             ),
@@ -70,7 +71,8 @@ class _SplashScreenState extends State<SplashScreen>
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25),
                 child: Image.asset(
-                  "assets/images/logo.png",
+                  "assets/images/logo.png",filterQuality: FilterQuality.none,  // Disable mipmapping
+  isAntiAlias: false, 
                 ),
               ),
             ),

@@ -27,7 +27,11 @@ class BestCarOilCard extends StatelessWidget {
                       height: size.height * 0.16,
                       child: Image.asset(
                         'assets/images/car-oils.png',
-                        fit: BoxFit.contain,
+                        fit: BoxFit.contain
+                        ,
+                            filterQuality:
+                                FilterQuality.none, // Disable mipmapping
+                            isAntiAlias: false,
                       )),
                 ),
                 SizedBox(
@@ -83,6 +87,9 @@ class BestCarOilCard extends StatelessWidget {
                       flipX: direction == TextDirection.ltr,
                       child: Image.asset(
                         'assets/images/know.png',
+                            filterQuality:
+                                FilterQuality.none, // Disable mipmapping
+                            isAntiAlias: false,
                         height: 33,
                         width: 67,
                       )),

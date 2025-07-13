@@ -75,7 +75,8 @@ class _CompanyHomeWalletCardState extends State<CompanyHomeWalletCard> {
                   children: [
                     Image.asset(
                       'assets/images/employee-avatar.png',
-                      height: 50,
+                      height: 50,filterQuality: FilterQuality.none,  // Disable mipmapping
+  isAntiAlias: false, 
                     ),
                     const SizedBox(height: 8),
                     Text(

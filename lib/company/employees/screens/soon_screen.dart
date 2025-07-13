@@ -29,7 +29,10 @@ class SoonScreen extends StatelessWidget {
           const SizedBox(
             height: 30,
           ),
-          Image.asset('assets/images/soon.png'),
+          Image.asset('assets/images/soon.png',
+                            filterQuality:
+                                FilterQuality.none, // Disable mipmapping
+                            isAntiAlias: false,),
           Text(
             t.soon,
             style: const TextStyle(

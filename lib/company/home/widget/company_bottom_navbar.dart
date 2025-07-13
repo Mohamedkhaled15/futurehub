@@ -53,7 +53,11 @@ class CompanyBottomNavBar extends StatelessWidget {
                             1.0), // Adjust padding as needed
                         child: Image.asset(
                           'assets/images/man.png',
-                          height: 25,
+                          height: 25
+                          ,
+                            filterQuality:
+                                FilterQuality.none, // Disable mipmapping
+                            isAntiAlias: false,
                         ),
                       ),
                     ),
@@ -72,6 +76,9 @@ class CompanyBottomNavBar extends StatelessWidget {
                             8.0), // Adjust padding as needed
                         child: Image.asset(
                           'assets/images/box.png',
+                            filterQuality:
+                                FilterQuality.none, // Disable mipmapping
+                            isAntiAlias: false,
                           height: 25,
                         ),
                       ),

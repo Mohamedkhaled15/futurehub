@@ -239,7 +239,10 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
               },
               activeColor: Colors.purple,
             ),
-            Image.asset(icon, height: 25),
+            Image.asset(icon, height: 25,
+                            filterQuality:
+                                FilterQuality.none, // Disable mipmapping
+                            isAntiAlias: false,),
             const SizedBox(width: 10),
             Text(
               title,

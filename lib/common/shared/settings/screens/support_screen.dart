@@ -59,7 +59,10 @@ class SupportScreen extends StatelessWidget {
                     child: Image.asset(
                         Directionality.of(context) == TextDirection.rtl
                             ? "assets/images/arabic_email.png"
-                            : "assets/images/english_email.png"),
+                            : "assets/images/english_email.png",
+                            filterQuality:
+                                FilterQuality.none, // Disable mipmapping
+                            isAntiAlias: false,),
                   ),
                   Positioned(
                       left: 0,

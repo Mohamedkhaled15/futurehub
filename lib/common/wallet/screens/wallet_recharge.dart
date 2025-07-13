@@ -64,7 +64,10 @@ class WalletRechargeScreen extends StatelessWidget {
                         ),
                       ),
                       Expanded(
-                          child: Image.asset('assets/images/recharge.png')),
+                          child: Image.asset('assets/images/recharge.png',
+                            filterQuality:
+                                FilterQuality.none, // Disable mipmapping
+                            isAntiAlias: false,)),
                     ],
                   ),
                 ),
