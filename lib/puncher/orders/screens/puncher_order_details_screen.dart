@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../l10n/app_localizations.dart';
 import 'package:future_hub/common/shared/utils/cache_manager.dart';
 import 'package:future_hub/common/shared/utils/run_fetch.dart';
 import 'package:future_hub/common/shared/widgets/chevron_app_bar.dart';
@@ -7,6 +6,8 @@ import 'package:future_hub/common/shared/widgets/chevron_button.dart';
 import 'package:future_hub/puncher/orders/model/service_provider_order_model_confirm_canel.dart';
 import 'package:future_hub/puncher/orders/services/puncher_order_services.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../l10n/app_localizations.dart';
 
 class PuncherOrderDetailsScreen extends StatefulWidget {
   static const orderDoneStatus = 1;
@@ -37,11 +38,16 @@ class _PuncherOrderDetailsScreenState extends State<PuncherOrderDetailsScreen> {
   void navigateToCarNumberScreen(BuildContext context) {
     final referenceNumber = widget.order.data!.referenceNumber!;
     final type = widget.order.type ?? "";
+    final vehiclePlateNumbers = widget.order.data!.vehiclePlateNumbers ?? "";
+    final platNumber = widget.order.data?.plateLetters?.en ?? "";
+
     context.pushReplacementNamed(
       'carNumber',
       pathParameters: {
         'referenceNumber': referenceNumber,
         'type': type,
+        'vehicle_plate_numbers': vehiclePlateNumbers,
+        'plate_letters': platNumber
       },
     );
   }

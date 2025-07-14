@@ -60,9 +60,44 @@ void main() async {
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   // final fcmToken = await FirebaseMessaging.instance.getToken();
   // debugPrint(fcmToken);
+   await setupFCM();
   runApp(const FutureHubApp());
 }
+Future<void> setupFCM() async {
+  final messaging = FirebaseMessaging.instance;
+  
+  // Request permissions
+  await messaging.requestPermission(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
 
+  // Get token with retry logic
+  String? token;
+  int retryCount = 0;
+  
+  while (token == null && retryCount < 5) {
+    try {
+      token = await messaging.getToken();
+      print("FCM Token: $token");
+    } catch (e) {
+      print("FCM Error (retry ${retryCount+1}): $e");
+      await Future.delayed(Duration(seconds: 2));
+      retryCount++;
+    }
+  }
+  
+  // Handle token
+  if (token != null) {
+    // Send token to your server
+  } else {
+    print("Failed to get FCM token after 5 attempts");
+  }
+
+  // Handle background messages
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+}
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   NotificationsService().showNotification(message);

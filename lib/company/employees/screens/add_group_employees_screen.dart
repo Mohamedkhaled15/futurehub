@@ -1,10 +1,9 @@
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:future_hub/common/shared/palette.dart';
 import 'package:future_hub/common/shared/widgets/chevron_app_bar.dart';
@@ -15,6 +14,8 @@ import 'package:future_hub/company/employees/cubit/employees_cubit.dart';
 import 'package:future_hub/company/employees/cubit/employees_state.dart';
 import 'package:future_hub/company/employees/services/employees_service.dart';
 import 'package:open_file/open_file.dart';
+
+import '../../../l10n/app_localizations.dart';
 
 class AddGroupEmployees extends StatefulWidget {
   const AddGroupEmployees({super.key});
@@ -33,15 +34,21 @@ class _AddGroupEmployeesState extends State<AddGroupEmployees> {
 
   Future<void> _pickEmployeesFile() async {
     try {
-      final pickedFile = await FilePicker.platform.pickFiles();
-      if (pickedFile == null || pickedFile.files.single.path == null) {
+      // Using file_selector instead of file_picker
+      final XFile? pickedFile = await openFile(
+        acceptedTypeGroups: [
+          XTypeGroup(label: 'Excel', extensions: ['xlsx', 'xls', 'csv']),
+        ],
+      );
+
+      if (pickedFile == null) {
         showToast(text: "No file selected", state: ToastStates.error);
         return;
       }
-      _employeesFile = File(pickedFile.files.single.path!);
 
+      _employeesFile = File(pickedFile.path);
       setState(() {
-        text = pickedFile.files.single.name; // Display file name
+        text = pickedFile.name; // Display file name
       });
     } catch (e) {
       debugPrint("File pick error: $e");
