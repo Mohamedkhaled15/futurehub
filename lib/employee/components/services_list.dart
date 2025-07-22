@@ -77,41 +77,43 @@ class _ServicesListWidgetState extends State<ServicesListWidget> {
               final itemCount = snapshot.data!.categories.length;
               final rowCount = (itemCount / 2).ceil();
 
-              return Wrap(
-                spacing: 20,
-                children:
-                    List.generate(snapshot.data!.categories.length, (rowIndex) {
-                  // final firstItemIndex = rowIndex * 2;
-                  // final secondItemIndex = firstItemIndex + 1;
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: Expanded(
-                      child: GestureDetector(
-                        onTap: () async {
-                          context
-                              .read<ServicesPunchersCubit>()
-                              .resetPunchersState(0);
-                          context
-                              .read<ServicesPunchersCubit>()
-                              .loadServicesPunchers(
-                                id: snapshot.data!.categories[rowIndex].id,
-                                refresh: true,
-                              );
-                          context.push(
-                            '/employees/services-branches',
-                            extra: snapshot.data!.categories[rowIndex],
+              return GridView.builder(
+                shrinkWrap: true,
+                padding: const EdgeInsets.all(0),
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 16,
+                  crossAxisSpacing: 16,
+                  childAspectRatio: 2,
+                ),
+                itemCount: itemCount,
+                itemBuilder: (context, index) {
+                  final service = snapshot.data!.categories[index];
+                  return GestureDetector(
+                    onTap: () async {
+                      context
+                          .read<ServicesPunchersCubit>()
+                          .resetPunchersState(0);
+                      context
+                          .read<ServicesPunchersCubit>()
+                          .loadServicesPunchers(
+                            id: snapshot.data!.categories[index].id,
+                            refresh: true,
                           );
-                        },
-                        child: _ServiceItem(
-                          title: CacheManager.locale! == const Locale("en")
-                              ? snapshot.data!.categories[rowIndex].title.en
-                              : snapshot.data!.categories[rowIndex].title.ar,
-                          imageUrl: snapshot.data!.categories[rowIndex].image,
-                        ),
-                      ),
+                      context.push(
+                        '/employees/services-branches',
+                        extra: snapshot.data!.categories[index],
+                      );
+                    },
+                    child: _ServiceItem(
+                      title: CacheManager.locale! == const Locale("en")
+                          ? snapshot.data!.categories[index].title.en
+                          : snapshot.data!.categories[index].title.ar,
+                      imageUrl: snapshot.data!.categories[index].image,
                     ),
                   );
-                }),
+                },
               );
             },
           ),

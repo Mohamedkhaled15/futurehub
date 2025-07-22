@@ -1,16 +1,21 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:future_hub/common/auth/cubit/auth_cubit.dart';
 import 'package:future_hub/common/auth/cubit/auth_state.dart';
+import 'package:future_hub/common/auth/models/user.dart';
+import 'package:future_hub/common/shared/services/map_services.dart';
 import 'package:future_hub/common/shared/utils/cache_manager.dart';
+import 'package:future_hub/common/shared/utils/pusher_config.dart';
 import 'package:future_hub/common/shared/widgets/drawer_screen.dart';
 import 'package:future_hub/common/shared/widgets/new_driver_app_bar.dart';
 import 'package:future_hub/employee/components/bottom_nav_bar.dart';
 import 'package:future_hub/employee/components/carousel_slider.dart';
 import 'package:future_hub/employee/components/fuel_silder.dart';
 import 'package:future_hub/employee/components/services_list.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 
 class EmployeeHomeScreen extends StatefulWidget {
@@ -30,6 +35,9 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
   bool showHint = false;
   bool showFirstImage = true;
   Timer? _imageTimer;
+  bool _locationEnabled = false;
+  late AuthSignedIn authState; // Declare here
+  late User user; // Declare here
   final ScrollController _scrollController = ScrollController();
   showHintFunc() async {
     if (await CacheManager.getData('home-hint') == null) {
@@ -47,16 +55,62 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
     await context.read<AuthCubit>().init();
   }
 
+  final pusherConfig = PusherConfig();
   @override
   void initState() {
+    _checkLocationService();
+    authState = context.read<AuthCubit>().state as AuthSignedIn;
+    user = authState.user;
+    log("============================================== pusher event came ======================================================");
+    log("Initializing Pusher for user ${user.id}");
     // MediaQuery.of(context).size.height * 0.6;
     super.initState();
+    pusherConfig.initPusher((event) {
+      if (event.eventName == "user-selected") {
+        log("send data of update location ");
+      }
+    }, channelName: 'tracking.${user.id}', userId: user.id, context: context);
     _startImageTimer();
     // Timer.periodic(const Duration(seconds: 3), (timer) {
     //   setState(() {
     //     showFirstImage = !showFirstImage; // Toggle between the two images
     //   });
     // });
+  }
+
+  Future<void> _checkLocationService() async {
+    final enabled = await MapServices.ensureLocationEnabled();
+
+    if (!enabled && mounted) {
+      // Show alert dialog to guide user
+      _showLocationAlert();
+    } else {
+      setState(() => _locationEnabled = true);
+    }
+  }
+
+  void _showLocationAlert() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Location Required"),
+        content: const Text("Please enable location services for this app"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              await Geolocator.openLocationSettings(); // Open device settings
+              _checkLocationService(); // Re-check after returning
+            },
+            child: const Text("Enable"),
+          ),
+        ],
+      ),
+    );
   }
 
   void _startImageTimer() {

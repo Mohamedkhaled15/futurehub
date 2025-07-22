@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../../l10n/app_localizations.dart';
 import 'package:future_hub/common/shared/utils/fetch_exception.dart';
 import 'package:future_hub/common/shared/widgets/flutter_toast.dart';
+
+import '../../../l10n/app_localizations.dart';
 
 typedef OnValidation = void Function(Map<String, String> validation);
 
@@ -19,7 +20,7 @@ Future<T?> runFetch<T>({
     if (exception is FetchException) {
       // Handle FetchException
       if (exception.isValidation && onValidation != null) {
-        onValidation(exception.validation!);
+        onValidation(exception.validation);
       } else {
         showToast(text: exception.message, state: ToastStates.error);
         return Future.error(exception.message); // Propagate error
@@ -40,4 +41,5 @@ Future<T?> runFetch<T>({
   } finally {
     after?.call();
   }
+  return null;
 }

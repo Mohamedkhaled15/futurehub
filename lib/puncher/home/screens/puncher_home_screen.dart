@@ -1,14 +1,19 @@
 // import 'package:future_hub/common/shared/palette.dart';
 import 'dart:async';
+import 'dart:developer';
 
 // import 'package:future_hub/puncher/orders/screens/puncher_orders_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 // import '../../../l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:future_hub/common/auth/cubit/auth_cubit.dart';
+import 'package:future_hub/common/auth/cubit/auth_state.dart';
+import 'package:future_hub/common/auth/models/user.dart';
 import 'package:future_hub/common/shared/cubits/drawer_cubit/cubit.dart';
 import 'package:future_hub/common/shared/cubits/drawer_cubit/states.dart';
 import 'package:future_hub/common/shared/utils/cache_manager.dart';
+import 'package:future_hub/common/shared/utils/pusher_config.dart';
 import 'package:future_hub/common/shared/widgets/drawer_screen.dart';
 import 'package:future_hub/common/shared/widgets/home_app_bar.dart';
 import 'package:future_hub/common/shared/widgets/home_hint.dart';
@@ -30,6 +35,9 @@ class _PuncherHomeScreenState extends State<PuncherHomeScreen>
   bool showHint = false;
   bool showFirstImage = true;
   Timer? _imageTimer;
+  late AuthSignedIn authState; // Declare here
+  late User user; // Declare here
+
   showHintFunc() async {
     if (await CacheManager.getData('home-hint') == null) {
       setState(() {
@@ -42,10 +50,20 @@ class _PuncherHomeScreenState extends State<PuncherHomeScreen>
     }
   }
 
+  final pusherConfig = PusherConfig();
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this); // Add the observer
+    authState = context.read<AuthCubit>().state as AuthSignedIn;
+    user = authState.user;
+    log("mmmmmmmmmmmmmmmmmrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrmo");
+    log("Initializing Pusher for user ${user.id}");
+    super.initState();
+    pusherConfig.initPusher((event) {
+      if (event.eventName == "user-selected") {}
+    }, channelName: 'tracking.${user.id}');
     showHintFunc();
     _startImageTimer();
     // Timer.periodic(const Duration(seconds: 3), (timer) {

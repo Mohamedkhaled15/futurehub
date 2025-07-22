@@ -13,10 +13,10 @@ class User extends Equatable {
   final int? active;
   final int? companyId;
   final int? puncherId;
-  final String? balance;
-  final String? balanceFuel;
-  final String? balanceProduct;
-  final String? balanceService;
+  final dynamic balance;
+  final dynamic balanceFuel;
+  final dynamic balanceProduct;
+  final dynamic balanceService;
   final String? fuelPullLimit;
   final String? productPullLimit;
   final String? servicePullLimit;

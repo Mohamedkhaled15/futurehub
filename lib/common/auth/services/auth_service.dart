@@ -497,6 +497,7 @@ class AuthService {
         if (responseData['success'] == true) {
           final userData = responseData['data']['user'];
           final user = User.fromJson(userData);
+          await CacheManager.saveUserId(user.id??0);
           return user;
           //   User(
           //   id: userData['id'],

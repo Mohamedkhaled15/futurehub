@@ -29,6 +29,12 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 android {
+
+     packagingOptions {
+        pickFirst '**/libflutter.so'
+        pickFirst '**/libapp.so'
+    }
+
     namespace = "com.futurehu.app"
     compileSdk = 35
     ndkVersion = "27.0.12077973"
@@ -97,4 +103,6 @@ dependencies {
     implementation 'com.google.mlkit:text-recognition-devanagari:16.0.0'
     implementation 'com.google.mlkit:text-recognition-japanese:16.0.0'
     implementation 'com.google.mlkit:text-recognition-korean:16.0.0'
+    implementation "androidx.work:work-runtime-ktx:2.8.1" // Add this line
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3" // Add this
 }
