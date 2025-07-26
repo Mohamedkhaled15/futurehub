@@ -1,44 +1,70 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'dart:ui' as ui;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import '../../../l10n/app_localizations.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:future_hub/common/auth/cubit/auth_cubit.dart';
+import 'package:future_hub/common/auth/cubit/auth_state.dart';
 import 'package:future_hub/common/shared/palette.dart';
 import 'package:future_hub/common/shared/services/map_services.dart';
 import 'package:future_hub/common/shared/widgets/chevron_app_bar.dart';
 import 'package:future_hub/common/shared/widgets/flutter_toast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+
+import '../../../l10n/app_localizations.dart';
 
 class CarNumberScreen extends StatefulWidget {
   final String referenceNumber;
   final String type;
-  const CarNumberScreen(
-      {super.key, required this.referenceNumber, required this.type});
+  final String vehiclePlateNumbers;
+  final String plateLetters;
+
+  const CarNumberScreen({
+    super.key,
+    required this.referenceNumber,
+    required this.type,
+    required this.vehiclePlateNumbers,
+    required this.plateLetters,
+  });
 
   @override
-  State<CarNumberScreen> createState() => _CarNumberBottomSheetState();
+  State<CarNumberScreen> createState() => _CarNumberScreenState();
 }
 
-class _CarNumberBottomSheetState extends State<CarNumberScreen> {
-  // final TextEditingController odometerController = TextEditingController();
+class _CarNumberScreenState extends State<CarNumberScreen> {
   XFile? editedImage;
-  bool isLoading = false; // Loading state
+  bool isLoading = false;
+  bool plateMatches = false;
   static Position? position;
-  // void _otpBottomSheet() {
-  //   showModalBottomSheet(
-  //     isScrollControlled: true,
-  //     context: context,
-  //     builder: (context) => VerifyOtpBottomSheet(
-  //       referenceNumber: widget.referenceNumber,
-  //       editedImage: editedImage,
-  //       type: widget.type,
-  //     ),
-  //   );
-  // }
+  late bool scanWithAi;
+  final _ocrCorrections = {'L': '4'};
+
+  late final TextRecognizer _recognizer;
+
+  @override
+  void initState() {
+    final authState = context.read<AuthCubit>().state;
+    if (authState is AuthSignedIn) {
+      scanWithAi = authState.user.scanPlateByAi == 1;
+    } else {
+      scanWithAi = false;
+    }
+
+    _recognizer = TextRecognizer(script: TextRecognitionScript.latin);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _recognizer.close();
+    super.dispose();
+  }
+
   void _otpBottomSheet() {
     context.pushReplacementNamed(
       'otp-screen',
@@ -53,7 +79,10 @@ class _CarNumberBottomSheetState extends State<CarNumberScreen> {
   }
 
   Future<void> pickImageFromCamera() async {
-    setState(() => isLoading = true);
+    setState(() {
+      isLoading = true;
+      plateMatches = false;
+    });
 
     try {
       final picker = ImagePicker();
@@ -70,27 +99,129 @@ class _CarNumberBottomSheetState extends State<CarNumberScreen> {
       }
 
       position = await MapServices.getCurrentLocation();
-
       final locationText =
-          "Lat: ${position?.latitude?.toStringAsFixed(6)}, Lng: ${position?.longitude?.toStringAsFixed(6)}";
+          "Lat: ${position?.latitude.toStringAsFixed(6)}, Lng: ${position?.longitude.toStringAsFixed(6)}";
 
-      final Uint8List newImageBytes = await _drawTextOnImage(
-        pickedImage.path,
-        locationText,
-      );
-
+      final Uint8List newImageBytes =
+          await _drawTextOnImage(pickedImage.path, locationText);
       final directory = await getApplicationDocumentsDirectory();
-      final editedImagePath = '${directory.path}/edited_odometer.jpg';
+      final editedImagePath = '${directory.path}/edited_plate.png';
       await File(editedImagePath).writeAsBytes(newImageBytes);
 
-      setState(() {
+      if (scanWithAi) {
+        final recognized = await _recognizePlateNumber(editedImagePath);
+        // final formattedPlateLetters = widget.plateLetters
+        //     .replaceAll(RegExp(r'[^a-zA-Z]'), '')
+        //     .toUpperCase();
+        final expectedPlate =
+            '${widget.vehiclePlateNumbers}${widget.plateLetters.toUpperCase().replaceAll(RegExp(r'[^A-Z]'), '')}';
+
+        final similarity = _calculateSimilarity(recognized, expectedPlate);
+
+        if (similarity >= 0.8) {
+          plateMatches = true;
+          editedImage = XFile(editedImagePath);
+          showToast(
+            text: 'تم التحقق من رقم اللوحة بنجاح',
+            state: ToastStates.success,
+          );
+        } else {
+          plateMatches = false;
+          showToast(
+            text:
+                'رقم اللوحة غير مطابق. المتوقع: $expectedPlate, تم التعرف على: $recognized',
+            state: ToastStates.error,
+          );
+        }
+      } else {
+        // لو AI مش شغال، نعتبر الصورة صالحة على طول
+        plateMatches = true;
         editedImage = XFile(editedImagePath);
-        isLoading = false;
-      });
+        showToast(
+          text: 'تم التقاط الصورة بنجاح (بدون تحليل AI)',
+          state: ToastStates.success,
+        );
+      }
     } catch (e) {
       debugPrint('Error: $e');
+      showToast(
+        text: 'حدث خطأ أثناء معالجة الصورة',
+        state: ToastStates.error,
+      );
+    } finally {
       setState(() => isLoading = false);
     }
+  }
+
+  Future<String> _recognizePlateNumber(String imagePath) async {
+    final inputImage = InputImage.fromFilePath(imagePath);
+    final result = await _recognizer.processImage(inputImage);
+
+    String bestCandidate = '';
+    double maxConfidence = 0.0;
+
+    for (final block in result.blocks) {
+      for (final line in block.lines) {
+        String text =
+            line.text.toUpperCase().replaceAll(RegExp(r'[^A-Z0-9]'), '');
+        text = _correctMisrecognizedCharacters(text);
+        final confidence = line.confidence ?? 0;
+
+        if (text.length >= 5 &&
+            text.length <= 8 &&
+            confidence > maxConfidence) {
+          bestCandidate = text;
+          maxConfidence = confidence;
+        }
+      }
+    }
+
+    return bestCandidate.isNotEmpty
+        ? bestCandidate
+        : _correctMisrecognizedCharacters(
+            result.text.toUpperCase().replaceAll(RegExp(r'[^A-Z0-9]'), ''));
+  }
+
+  String _correctMisrecognizedCharacters(String input) {
+    // نحاول نفصل بين الأرقام والحروف
+    final digitsMatch = RegExp(r'\d+').firstMatch(input);
+    final lettersMatch = RegExp(r'[A-Z]+').firstMatch(input);
+
+    String digits = digitsMatch?.group(0) ?? '';
+    String letters = lettersMatch?.group(0) ?? '';
+
+    // نطبق التصحيح على الأرقام فقط
+    final correctedDigits = digits.split('').map((char) {
+      return _ocrCorrections[char] ?? char;
+    }).join();
+
+    return '$correctedDigits$letters';
+  }
+
+  double _calculateSimilarity(String a, String b) {
+    if (a.isEmpty && b.isEmpty) return 1.0;
+    final maxLength = a.length > b.length ? a.length : b.length;
+    final distance = _levenshteinDistance(a, b);
+    return 1.0 - (distance / maxLength);
+  }
+
+  int _levenshteinDistance(String a, String b) {
+    final matrix =
+        List.generate(a.length + 1, (i) => List.filled(b.length + 1, 0));
+    for (var i = 0; i <= a.length; i++) matrix[i][0] = i;
+    for (var j = 0; j <= b.length; j++) matrix[0][j] = j;
+
+    for (var i = 1; i <= a.length; i++) {
+      for (var j = 1; j <= b.length; j++) {
+        final cost = a[i - 1] == b[j - 1] ? 0 : 1;
+        matrix[i][j] = [
+          matrix[i - 1][j] + 1,
+          matrix[i][j - 1] + 1,
+          matrix[i - 1][j - 1] + cost
+        ].reduce((a, b) => a < b ? a : b);
+      }
+    }
+    return matrix[a.length][b.length];
   }
 
   Future<Uint8List> _drawTextOnImage(String imagePath, String text) async {
@@ -98,11 +229,11 @@ class _CarNumberBottomSheetState extends State<CarNumberScreen> {
     final ui.Codec codec = await ui.instantiateImageCodec(imageBytes);
     final ui.FrameInfo frameInfo = await codec.getNextFrame();
     final ui.Image originalImage = frameInfo.image;
-    final ui.PictureRecorder recorder = ui.PictureRecorder();
-    final Canvas canvas = Canvas(recorder);
-    // Draw original image
+
+    final recorder = ui.PictureRecorder();
+    final canvas = Canvas(recorder);
     canvas.drawImage(originalImage, Offset.zero, Paint());
-    // Prepare text painter
+
     final textPainter = TextPainter(
       text: TextSpan(
         text: text,
@@ -120,18 +251,13 @@ class _CarNumberBottomSheetState extends State<CarNumberScreen> {
       ),
       textDirection: TextDirection.ltr,
     );
-    textPainter.layout(
-      minWidth: 0,
-      maxWidth: originalImage.width.toDouble(),
-    );
-    // Draw text on top
+    textPainter.layout(maxWidth: originalImage.width.toDouble());
     textPainter.paint(canvas, const Offset(10, 10));
-    final ui.Image newImage = await recorder
+
+    final newImage = await recorder
         .endRecording()
         .toImage(originalImage.width, originalImage.height);
-
-    final ByteData? byteData =
-        await newImage.toByteData(format: ui.ImageByteFormat.png);
+    final byteData = await newImage.toByteData(format: ui.ImageByteFormat.png);
     return byteData!.buffer.asUint8List();
   }
 
@@ -139,19 +265,18 @@ class _CarNumberBottomSheetState extends State<CarNumberScreen> {
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    final TextStyle labelStyle = theme.textTheme.titleLarge!.copyWith(
-      fontWeight: FontWeight.bold,
-      fontSize: 16,
-    );
+    final labelStyle = theme.textTheme.titleLarge!
+        .copyWith(fontWeight: FontWeight.bold, fontSize: 16);
 
     return Scaffold(
       appBar: FutureHubAppBar(
         title: Text(
           t.vicheleId,
           style: const TextStyle(
-              color: Palette.blackColor,
-              fontSize: 22,
-              fontWeight: FontWeight.bold),
+            color: Palette.blackColor,
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         context: context,
       ),
@@ -168,7 +293,6 @@ class _CarNumberBottomSheetState extends State<CarNumberScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // Title
                       Center(
                         child: Text(
                           t.carNumber,
@@ -176,16 +300,13 @@ class _CarNumberBottomSheetState extends State<CarNumberScreen> {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      // Illustration Image
                       Center(
                         child: Image.asset(
-                          'assets/images/car.png', // Replace with your asset image path
+                          'assets/images/car.png',
                           height: 150,
                         ),
                       ),
                       const SizedBox(height: 10),
-
-                      // Instruction Text
                       Center(
                         child: Text(
                           t.carNumberRequest,
@@ -194,80 +315,43 @@ class _CarNumberBottomSheetState extends State<CarNumberScreen> {
                         ),
                       ),
                       const SizedBox(height: 20),
-
-                      // Odometer Number Input
-                      // TextField(
-                      //   controller: odometerController,
-                      //   decoration: InputDecoration(
-                      //     hintText: "اكتب هنا رقم العداد",
-                      //     hintStyle: TextStyle(color: Colors.grey.shade400),
-                      //     filled: true,
-                      //     fillColor: Colors.grey.shade100,
-                      //     border: OutlineInputBorder(
-                      //       borderRadius: BorderRadius.circular(10),
-                      //       borderSide: BorderSide.none,
-                      //     ),
-                      //     contentPadding:
-                      //         const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                      //   ),
-                      //   keyboardType: TextInputType.number,
-                      // ),
-                      const SizedBox(height: 15),
-
-                      // Image Picker Container
                       GestureDetector(
-                        onTap: pickImageFromCamera,
+                        onTap: isLoading ? null : pickImageFromCamera,
                         child: Container(
                           height: editedImage != null ? null : 350,
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           decoration: BoxDecoration(
                             color: Colors.grey.shade100,
                             borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                                color: Colors.grey.shade300,
-                                style: BorderStyle.none),
                           ),
-                          child:
-                              isLoading // Show loading indicator while processing
-                                  ? const Center(
-                                      child: CircularProgressIndicator())
-                                  : editedImage != null
-                                      ? Image.file(File(editedImage!.path),
-                                          fit: BoxFit.cover)
-                                      : Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Image.asset(
-                                                'assets/images/meter.png'),
-                                            const SizedBox(width: 10),
-                                            Text(t.carNumberRequestImage,
-                                                style: TextStyle(
-                                                    color:
-                                                        Colors.grey.shade400)),
-                                          ],
+                          child: isLoading
+                              ? const Center(child: CircularProgressIndicator())
+                              : editedImage != null
+                                  ? Image.file(File(editedImage!.path),
+                                      fit: BoxFit.cover)
+                                  : Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Image.asset('assets/images/meter.png'),
+                                        const SizedBox(width: 10),
+                                        Text(
+                                          t.carNumberRequestImage,
+                                          style: TextStyle(
+                                              color: Colors.grey.shade400),
                                         ),
+                                      ],
+                                    ),
                         ),
                       ),
                       const Spacer(),
-                      // Confirm Button
                       ElevatedButton(
-                        onPressed: editedImage == null
-                            ? null
-                            : () {
-                                // Handle the confirmation process here
-                                if (editedImage != null) {
-                                  // Confirm process
-                                  Navigator.pop(
-                                      context); // Close the bottom sheet
-                                  _otpBottomSheet();
-                                } else {
-                                  // Show error message or prompt to complete fields
-                                  showToast(
-                                      text: t.this_field_is_required,
-                                      state: ToastStates.error);
-                                }
-                              },
+                        onPressed: plateMatches
+                            ? () {
+                                Navigator.pop(context);
+                                _otpBottomSheet();
+                              }
+                            : null,
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size(double.infinity, 50),
                           backgroundColor: const Color(0xff55217F),

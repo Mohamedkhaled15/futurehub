@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:future_hub/common/auth/models/app_version_model.dart';
@@ -249,22 +250,53 @@ class AuthService {
   }
 
   Future<LoginResult> login(String phone, String password) async {
-    const String loginEndpoint = '/login'; // Adjust the endpoint as needed
+    const String loginEndpoint = '/login';
+    String? fcmToken;
+
+    // Helper function to get FCM token with retry logic
+    Future<String?> getFCMTokenWithRetry() async {
+      const maxRetries = 3;
+      const retryDelay = Duration(seconds: 2);
+
+      for (int attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+          return await FirebaseMessaging.instance.getToken();
+        } catch (e) {
+          if (e is FirebaseException &&
+              e.code == 'unknown' &&
+              e.message!.contains('SERVICE_NOT_AVAILABLE')) {
+            debugPrint(
+                'FCM token attempt $attempt/$maxRetries failed: SERVICE_NOT_AVAILABLE');
+
+            if (attempt < maxRetries) {
+              await Future.delayed(retryDelay);
+            } else {
+              debugPrint('Failed to get FCM token after $maxRetries attempts');
+              return null;
+            }
+          } else {
+            rethrow; // Re-throw other exceptions
+          }
+        }
+      }
+      return null;
+    }
 
     try {
-      // Sending POST request using DioHelper
+      // Get FCM token with retry logic
+      fcmToken = await getFCMTokenWithRetry();
+
       final response = await _dioHelper.postData(
         url: loginEndpoint,
         data: {
           'mobile': phone,
           'password': password,
+          'fcm_token': fcmToken ?? '', // Send empty string if token is null
         },
       );
 
       final responseData = response.data;
-      debugPrint(response.runtimeType.toString());
 
-      // Check for success in the response
       if (!responseData['success']) {
         throw Exception(responseData['message']);
       }
@@ -273,29 +305,40 @@ class AuthService {
       final user = User.fromJson(userData);
       final token = userData['api_token'];
 
-      // Optional: Update FCM Token if necessary
-      NotificationsService().updateFCMToken(
-        userToken: token,
-        token: await FirebaseMessaging.instance.getToken(),
-        userType: userData['type'],
-      );
-
-      debugPrint(responseData['message']);
+      // Update FCM token in background if not obtained during login
+      if (fcmToken == null) {
+        Future.microtask(() async {
+          try {
+            final newToken = await getFCMTokenWithRetry();
+            if (newToken != null) {
+              await NotificationsService().updateFCMToken(
+                userToken: token,
+                token: newToken,
+                userType: userData['type'],
+              );
+            }
+          } catch (e) {
+            debugPrint('Background FCM update failed: $e');
+          }
+        });
+      } else {
+        await NotificationsService().updateFCMToken(
+          userToken: token,
+          token: fcmToken,
+          userType: userData['type'],
+        );
+      }
 
       return LoginResult(
         token: token,
         user: user,
       );
     } on DioException catch (e) {
-      // Handle Dio-specific errors
-      if (e.response != null) {
-        throw Exception(e.response?.data['message'] ?? 'Something went wrong');
-      } else {
-        throw Exception('Network error: ${e.message}');
-      }
+      final errorMessage =
+          e.response?.data['message'] ?? 'Network error: ${e.message}';
+      throw Exception(errorMessage);
     } catch (e) {
-      // Handle general exceptions
-      throw Exception('Error: $e');
+      throw Exception('Login failed: ${e.toString()}');
     }
   }
 
@@ -442,9 +485,11 @@ class AuthService {
     try {
       final token = await CacheManager.getToken(); // Retrieve token
       final response = await _dioHelper.postData(
-        url: ApiConstants.userInfo, // Replace with the appropriate endpoint
-        token: token,
-      );
+          url: ApiConstants.userInfo, // Replace with the appropriate endpoint
+          token: token,
+          data: {
+            'fcm_token': await FirebaseMessaging.instance.getToken(),
+          });
       if (response.statusCode == 200) {
         final responseData = response.data;
 
@@ -452,6 +497,7 @@ class AuthService {
         if (responseData['success'] == true) {
           final userData = responseData['data']['user'];
           final user = User.fromJson(userData);
+          await CacheManager.saveUserId(user.id??0);
           return user;
           //   User(
           //   id: userData['id'],

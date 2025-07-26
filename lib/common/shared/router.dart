@@ -431,14 +431,20 @@ final router = GoRouter(
       builder: (context, state) => const ReportsScreen(),
     ),
     GoRoute(
-      path: '/car-number/:referenceNumber/:type',
+      path:
+          '/car-number/:referenceNumber/:type/:vehicle_plate_numbers/:plate_letters',
       name: 'carNumber',
       builder: (context, state) {
         final referenceNumber = state.pathParameters['referenceNumber']!;
         final type = state.pathParameters['type']!;
+        final vehiclePlateNumbers =
+            state.pathParameters['vehicle_plate_numbers']!;
+        final plateLetters = state.pathParameters['plate_letters']!;
         return CarNumberScreen(
           referenceNumber: referenceNumber,
           type: type,
+          vehiclePlateNumbers: vehiclePlateNumbers,
+          plateLetters: plateLetters,
         );
       },
     ),

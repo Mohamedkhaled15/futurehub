@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../l10n/app_localizations.dart';
 import 'package:future_hub/common/auth/models/user.dart';
 import 'package:future_hub/common/shared/models/order_model.dart';
 import 'package:future_hub/common/shared/palette.dart';
@@ -15,6 +14,7 @@ import 'package:future_hub/employee/orders/cubit/order_cubit.dart';
 import 'package:future_hub/employee/orders/models/puncher_branch.dart';
 import 'package:future_hub/employee/orders/services/order_service.dart';
 
+import '../../../l10n/app_localizations.dart';
 import 'employee_car_meter_screen.dart';
 import 'employee_qr_order_screen.dart';
 
@@ -40,19 +40,14 @@ class _FuelCreateOrderScreenState extends State<FuelCreateOrderScreen> {
   @override
   void initState() {
     super.initState();
-    _selectedVehicle = widget.order.vehicles?[0][0] ??
-        Vehicle(
-          id: 0,
-          plateLetters: PlateLetters(ar: 'س ش ب', en: 'a r s'),
-          plateNumbers: '5533',
-          carType: '',
-          carBrand: '',
-          carModel: '',
-          manufactureYear: '',
-          fuelType: 'Petrol', // default
-          internalId: '',
-          other1: '',
-        );
+    if (widget.order.vehicles?.isNotEmpty == true &&
+        widget.order.vehicles != null &&
+        widget.order.vehicles != [[]]) {
+      _selectedVehicle = widget.order.vehicles?.first;
+    } else {
+      _selectedVehicle = null;
+    }
+
     // Set default fuel type to 91 if Petrol
     if (_selectedVehicle?.fuelType == "Petrol") {
       selectedFuelType = 91;
@@ -352,15 +347,16 @@ class _FuelCreateOrderScreenState extends State<FuelCreateOrderScreen> {
               child: ListView.separated(
                 shrinkWrap: true,
                 physics: const ClampingScrollPhysics(),
-                itemCount: widget.order.vehicles!.expand((e) => e).length,
+                itemCount: widget.order.vehicles?.length??0,
+
                 separatorBuilder: (context, index) => const Divider(
                   height: 1,
                   thickness: 1,
                   color: Color(0xFFEEEEEE),
                 ),
                 itemBuilder: (context, index) {
-                  final vehicle =
-                      widget.order.vehicles!.expand((e) => e).toList()[index];
+                final vehicle = widget.order.vehicles![index];
+
                   return InkWell(
                     onTap: () {
                       setState(() {
@@ -856,7 +852,8 @@ class _FuelCreateOrderScreenState extends State<FuelCreateOrderScreen> {
     // Check both fields
     final litersValid = isValidInput(litersController.text);
     final priceValid = isValidInput(priceController.text);
-    final isButtonEnabled = litersValid && priceValid;
+    final isButtonEnabled =
+        litersValid && priceValid && widget.order.vehicles?.isNotEmpty == true;
     return ElevatedButton(
       onPressed: !isButtonEnabled ? null : _createOrder,
       style: ElevatedButton.styleFrom(

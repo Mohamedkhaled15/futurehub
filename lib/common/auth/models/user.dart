@@ -13,10 +13,10 @@ class User extends Equatable {
   final int? active;
   final int? companyId;
   final int? puncherId;
-  final String? balance;
-  final String? balanceFuel;
-  final String? balanceProduct;
-  final String? balanceService;
+  final dynamic balance;
+  final dynamic balanceFuel;
+  final dynamic balanceProduct;
+  final dynamic balanceService;
   final String? fuelPullLimit;
   final String? productPullLimit;
   final String? servicePullLimit;
@@ -30,8 +30,11 @@ class User extends Equatable {
   final String? apiToken;
   final Company? company;
   final List<String>? puncherTypes;
-  final List<List<Vehicle>>? vehicles;
+  final List<Vehicle>? vehicles;
+
   final String? email;
+  final int? secondsPerRequest;
+  final int? scanPlateByAi;
 
   const User({
     this.id,
@@ -63,6 +66,8 @@ class User extends Equatable {
     this.vehicles,
     this.puncherTypes,
     this.company,
+    this.secondsPerRequest,
+    this.scanPlateByAi,
   });
 
   /// Parsing JSON into the `User` object
@@ -107,80 +112,86 @@ class User extends Equatable {
         puncherTypes: json["puncher_types"] == null
             ? []
             : List<String>.from(json["puncher_types"]!.map((x) => x)),
-        vehicles: json["vehicles"] !=
-                null // Check if vehicles exists in the JSON
-            ? List<List<Vehicle>>.from(json["vehicles"].map(
-                (x) => List<Vehicle>.from(x.map((x) => Vehicle.fromJson(x)))))
-            : null, // If null, set vehicles to null
+        vehicles: json["vehicles"] != null
+            ? List<Vehicle>.from(
+                json["vehicles"].map((x) => Vehicle.fromJson(x)))
+            : null,
+
+        // If null, set vehicles to null
         company: json["company_user"] != null
             ? Company.fromJson(json["company_user"])
             : null,
+        secondsPerRequest: json["seconds_per_request"],
+        scanPlateByAi: json["scan_plate_by_ai"],
       );
 
   /// Copy constructor for immutability
-  User copyWith({
-    final int? id,
-    final String? type,
-    final String? name,
-    final String? username,
-    final String? mobile,
-    final int? firstLogin,
-    final DateTime? firstLoginAt,
-    final int? active,
-    final int? companyId,
-    final int? puncherId,
-    String? balance,
-    String? balanceFuel,
-    String? balanceProduct,
-    String? balanceService,
-    String? fuelPullLimit,
-    String? productPullLimit,
-    String? servicePullLimit,
-    final int? deposit,
-    final int? withdrawal,
-    final int? points,
-    final String? email,
-    final String? image,
-    final dynamic lang,
-    final int? isMeterNumberRequired,
-    final int? isMeterImageRequired,
-    final List<String>? puncherTypes,
-    List<List<Vehicle>>? vehicles,
-    final String? apiToken,
-    Company? company,
-  }) {
+  User copyWith(
+      {final int? id,
+      final String? type,
+      final String? name,
+      final String? username,
+      final String? mobile,
+      final int? firstLogin,
+      final DateTime? firstLoginAt,
+      final int? active,
+      final int? companyId,
+      final int? puncherId,
+      String? balance,
+      String? balanceFuel,
+      String? balanceProduct,
+      String? balanceService,
+      String? fuelPullLimit,
+      String? productPullLimit,
+      String? servicePullLimit,
+      final int? deposit,
+      final int? withdrawal,
+      final int? points,
+      final String? email,
+      final String? image,
+      final dynamic lang,
+      final int? isMeterNumberRequired,
+      final int? isMeterImageRequired,
+      final List<String>? puncherTypes,
+      List<Vehicle>? vehicles,
+      final String? apiToken,
+      Company? company,
+      final int? secondsPerRequest,
+      final int? scanPlateByAi}) {
     return User(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      mobile: mobile ?? this.mobile,
-      image: image ?? this.image,
-      type: type ?? this.type,
-      email: email ?? this.email,
-      username: username ?? this.username,
-      active: active ?? this.active,
-      balance: balance ?? this.balance,
-      balanceFuel: balanceFuel ?? this.balanceFuel,
-      balanceProduct: balanceProduct ?? this.balanceProduct,
-      balanceService: balanceService ?? this.balanceService,
-      fuelPullLimit: fuelPullLimit ?? this.fuelPullLimit,
-      productPullLimit: productPullLimit ?? this.productPullLimit,
-      servicePullLimit: servicePullLimit ?? this.servicePullLimit,
-      points: points ?? this.points,
-      company: company ?? this.company,
-      firstLoginAt: firstLoginAt ?? this.firstLoginAt,
-      apiToken: apiToken ?? this.apiToken,
-      companyId: companyId ?? this.companyId,
-      deposit: deposit ?? this.deposit,
-      firstLogin: firstLogin ?? this.firstLogin,
-      lang: lang ?? this.lang,
-      puncherTypes: puncherTypes ?? this.puncherTypes,
-      puncherId: puncherId ?? this.puncherId,
-      isMeterImageRequired: isMeterImageRequired ?? this.isMeterNumberRequired,
-      isMeterNumberRequired:
-          isMeterNumberRequired ?? this.isMeterNumberRequired,
-      vehicles: vehicles ?? this.vehicles,
-      withdrawal: withdrawal ?? this.withdrawal,
-    );
+        id: id ?? this.id,
+        name: name ?? this.name,
+        mobile: mobile ?? this.mobile,
+        image: image ?? this.image,
+        type: type ?? this.type,
+        email: email ?? this.email,
+        username: username ?? this.username,
+        active: active ?? this.active,
+        balance: balance ?? this.balance,
+        balanceFuel: balanceFuel ?? this.balanceFuel,
+        balanceProduct: balanceProduct ?? this.balanceProduct,
+        balanceService: balanceService ?? this.balanceService,
+        fuelPullLimit: fuelPullLimit ?? this.fuelPullLimit,
+        productPullLimit: productPullLimit ?? this.productPullLimit,
+        servicePullLimit: servicePullLimit ?? this.servicePullLimit,
+        points: points ?? this.points,
+        company: company ?? this.company,
+        firstLoginAt: firstLoginAt ?? this.firstLoginAt,
+        apiToken: apiToken ?? this.apiToken,
+        companyId: companyId ?? this.companyId,
+        deposit: deposit ?? this.deposit,
+        firstLogin: firstLogin ?? this.firstLogin,
+        lang: lang ?? this.lang,
+        puncherTypes: puncherTypes ?? this.puncherTypes,
+        puncherId: puncherId ?? this.puncherId,
+        isMeterImageRequired:
+            isMeterImageRequired ?? this.isMeterNumberRequired,
+        isMeterNumberRequired:
+            isMeterNumberRequired ?? this.isMeterNumberRequired,
+        vehicles: vehicles ?? this.vehicles,
+        withdrawal: withdrawal ?? this.withdrawal,
+        secondsPerRequest: secondsPerRequest ?? this.secondsPerRequest,
+        scanPlateByAi: scanPlateByAi ?? this.scanPlateByAi);
   }
 
   @override
@@ -202,6 +213,18 @@ class User extends Equatable {
         lang,
         puncherId,
         withdrawal,
+        isMeterImageRequired,
+        isMeterNumberRequired,
+        vehicles,
+        balance,
+        balanceFuel,
+        balanceProduct,
+        balanceService,
+        fuelPullLimit,
+        productPullLimit,
+        servicePullLimit,
+        secondsPerRequest,
+        scanPlateByAi
       ];
 }
 

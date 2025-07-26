@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../l10n/app_localizations.dart';
 // import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:future_hub/common/auth/cubit/auth_state.dart';
 import 'package:future_hub/common/auth/models/user.dart';
@@ -13,6 +12,8 @@ import 'package:future_hub/common/shared/router.dart';
 import 'package:future_hub/common/shared/utils/cache_manager.dart';
 import 'package:future_hub/common/shared/utils/run_fetch.dart';
 import 'package:future_hub/common/shared/widgets/flutter_toast.dart';
+
+import '../../../l10n/app_localizations.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   final _authService = AuthService();
@@ -179,7 +180,10 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   // 0560498238
-  Future<void> login(User user, String token) async {
+  Future<void> login(
+    User user,
+    String token,
+  ) async {
     await CacheManager.setToken(token);
     // Client.authenticate(token);
     emit(

@@ -1,6 +1,6 @@
-import 'package:future_hub/common/shared/palette.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:future_hub/common/shared/palette.dart';
 import 'package:go_router/go_router.dart';
 
 class PuncherBottomNavBar extends StatelessWidget {
@@ -29,21 +29,23 @@ class PuncherBottomNavBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SizedBox(
-                width: MediaQuery.of(context).size.width * 0.3,
+                width: MediaQuery.of(context).size.width * 0.32,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(5.0), // Adjust padding as needed
+                      padding:
+                          const EdgeInsets.all(5.0), // Adjust padding as needed
                       child: SvgPicture.asset(
                         'assets/icons/home-b.svg',
-                        height: MediaQuery.of(context).size.width * 0.13,
+                        width: MediaQuery.of(context).size.width * 0.2,
                       ),
                     ),
                     InkWell(
                       onTap: () => context.push('/puncher-orders-screen'),
                       child: Padding(
-                        padding: const EdgeInsets.all(1.0), // Adjust padding as needed
+                        padding: const EdgeInsets.all(
+                            1.0), // Adjust padding as needed
                         child: SvgPicture.asset(
                           'assets/icons/cart-b.svg',
                           height: 25,
@@ -61,7 +63,8 @@ class PuncherBottomNavBar extends StatelessWidget {
                     InkWell(
                       onTap: () => context.push('/points'),
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0), // Adjust padding as needed
+                        padding: const EdgeInsets.all(
+                            8.0), // Adjust padding as needed
                         child: SvgPicture.asset(
                           'assets/icons/gift-b.svg',
                           height: 25,
@@ -71,7 +74,8 @@ class PuncherBottomNavBar extends StatelessWidget {
                     InkWell(
                       onTap: () => context.push('/settings_screen'),
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0), // Adjust padding as needed
+                        padding: const EdgeInsets.all(
+                            8.0), // Adjust padding as needed
                         child: SvgPicture.asset(
                           'assets/icons/setting-b.svg',
                           height: 27,

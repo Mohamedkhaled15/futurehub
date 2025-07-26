@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:future_hub/common/shared/palette.dart';
 import 'package:future_hub/common/shared/utils/run_fetch.dart';
@@ -12,6 +11,8 @@ import 'package:future_hub/puncher/orders/model/vehicle_qr.dart';
 import 'package:future_hub/puncher/orders/services/puncher_order_services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../../../l10n/app_localizations.dart';
 
 class RecieveOrderScreen extends StatefulWidget {
   const RecieveOrderScreen({super.key});
@@ -80,6 +81,7 @@ class _RecieveOrderScreenState extends State<RecieveOrderScreen>
     return DefaultTabController(
       length: 2,
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
         appBar: FutureHubAppBar(
           title: Text(
             showEnterCode ? t.user_code : t.scan_the_order_code,
@@ -90,161 +92,163 @@ class _RecieveOrderScreenState extends State<RecieveOrderScreen>
           ),
           context: context,
         ),
-        body: Column(
-          children: <Widget>[
-            SizedBox(
-              height: size.height * 0.7,
-              child: TabBarView(
-                controller: _tabController,
-                children: <Widget>[
-                  Column(
-                    children: [
-                      SizedBox(
-                        height: size.height * 0.07,
-                      ),
-                      const Center(
-                        child: ScanningLine(
-                          imageUrl: 'assets/images/qr_code.png',
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              SizedBox(
+                height: size.height * 0.7,
+                child: TabBarView(
+                  controller: _tabController,
+                  children: <Widget>[
+                    Column(
+                      children: [
+                        SizedBox(
+                          height: size.height * 0.07,
                         ),
-                      ),
-                      SizedBox(
-                        height: size.height * 0.02,
-                      ),
-                      Text(
-                        t.scan_qr_announcement,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Palette.dangerColor,
-                          fontWeight: FontWeight.w600,
+                        const Center(
+                          child: ScanningLine(
+                            imageUrl: 'assets/images/qr_code.png',
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        height: size.height * 0.07,
-                      ),
-                      GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => QrCodeScanner(
-                              onScan: _openOrder,
-                              title: t.scan_the_order_code,
-                              description: t
-                                  .direct_the_camera_to_the_clients_phone_to_read_the_order_code,
+                        SizedBox(
+                          height: size.height * 0.02,
+                        ),
+                        Text(
+                          t.scan_qr_announcement,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Palette.dangerColor,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        SizedBox(
+                          height: size.height * 0.07,
+                        ),
+                        GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => QrCodeScanner(
+                                onScan: _openOrder,
+                                title: t.scan_the_order_code,
+                                description: t
+                                    .direct_the_camera_to_the_clients_phone_to_read_the_order_code,
+                              ),
+                            ),
+                          ),
+                          child: Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 16, horizontal: 32),
+                            margin: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/icons/qr-icon.svg',
+                                  height: 28,
+                                ),
+                                const SizedBox(width: 12),
+                                Text(
+                                  t.start_scanning,
+                                  style: const TextStyle(
+                                    fontSize: 22,
+                                    color: Palette.primaryColor,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                        child: Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 16, horizontal: 32),
-                          margin: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SvgPicture.asset(
-                                'assets/icons/qr-icon.svg',
-                                height: 28,
-                              ),
-                              const SizedBox(width: 12),
-                              Text(
-                                t.start_scanning,
-                                style: const TextStyle(
-                                  fontSize: 22,
-                                  color: Palette.primaryColor,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const EnterUserCodeView(),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: PreferredSize(
-                preferredSize: const Size(200, 200),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(50),
-                  child: Theme(
-                    data: ThemeData(
-                      textTheme: GoogleFonts.almaraiTextTheme(),
-                      dividerColor: Colors.transparent,
-                      splashColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
+                      ],
                     ),
-                    child: Material(
-                      color: Palette.tabBarColor,
-                      child: TabBar(
-                        controller: _tabController,
-                        indicatorPadding: const EdgeInsets.symmetric(
-                            horizontal: 5, vertical: 3),
-                        overlayColor: WidgetStateProperty.all<Color>(
-                          Colors.transparent,
-                        ),
-                        unselectedLabelStyle:
-                            theme.textTheme.displaySmall!.copyWith(
-                          fontSize: 20,
-                          fontWeight: FontWeight.normal,
-                        ),
+                    const EnterUserCodeView(),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: PreferredSize(
+                  preferredSize: const Size(200, 200),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(50),
+                    child: Theme(
+                      data: ThemeData(
+                        textTheme: GoogleFonts.almaraiTextTheme(),
                         dividerColor: Colors.transparent,
-                        unselectedLabelColor:
-                            Palette.textGreyColor.withOpacity(0.5),
-                        indicatorSize: TabBarIndicatorSize.tab,
-                        labelColor: Colors.white,
-                        indicatorColor: Colors.black,
-                        labelPadding: EdgeInsets.symmetric(
-                            vertical:
-                                MediaQuery.of(context).size.height * 0.007),
-                        indicator: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          color: Palette.primaryColor,
-                        ),
-                        tabs: [
-                          Tab(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                              child: Align(
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    t.barcode,
-                                    style: const TextStyle(
-                                      fontSize: 21,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  )),
-                            ),
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                      ),
+                      child: Material(
+                        color: Palette.tabBarColor,
+                        child: TabBar(
+                          controller: _tabController,
+                          indicatorPadding: const EdgeInsets.symmetric(
+                              horizontal: 5, vertical: 3),
+                          overlayColor: WidgetStateProperty.all<Color>(
+                            Colors.transparent,
                           ),
-                          Tab(
-                            child: Align(
-                              child: Text(
-                                t.user_code,
-                                style: const TextStyle(
-                                  fontSize: 21,
-                                  fontWeight: FontWeight.bold,
+                          unselectedLabelStyle:
+                              theme.textTheme.displaySmall!.copyWith(
+                            fontSize: 20,
+                            fontWeight: FontWeight.normal,
+                          ),
+                          dividerColor: Colors.transparent,
+                          unselectedLabelColor:
+                              Palette.textGreyColor.withOpacity(0.5),
+                          indicatorSize: TabBarIndicatorSize.tab,
+                          labelColor: Colors.white,
+                          indicatorColor: Colors.black,
+                          labelPadding: EdgeInsets.symmetric(
+                              vertical:
+                                  MediaQuery.of(context).size.height * 0.007),
+                          indicator: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50),
+                            color: Palette.primaryColor,
+                          ),
+                          tabs: [
+                            Tab(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                child: Align(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      t.barcode,
+                                      style: const TextStyle(
+                                        fontSize: 21,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    )),
+                              ),
+                            ),
+                            Tab(
+                              child: Align(
+                                child: Text(
+                                  t.user_code,
+                                  style: const TextStyle(
+                                    fontSize: 21,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

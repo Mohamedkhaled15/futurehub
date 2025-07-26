@@ -42,6 +42,7 @@ class SplashCubit extends Cubit<SplashState> {
       } else {
         if (AuthCubit().state is AuthSignedIn) {
           final user = (AuthCubit().state as AuthSignedIn).user;
+          CacheManager.saveUserId(user.id ?? 0);
           switch (user.type) {
             case 'company':
               return router.go('/company');

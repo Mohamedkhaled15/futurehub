@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../l10n/app_localizations.dart';
 import 'package:future_hub/common/auth/models/user.dart';
 import 'package:future_hub/common/shared/models/products.dart';
 import 'package:future_hub/common/shared/palette.dart';
@@ -10,6 +9,7 @@ import 'package:future_hub/common/shared/widgets/chevron_app_bar.dart';
 import 'package:future_hub/employee/orders/cubit/order_cubit.dart';
 import 'package:future_hub/employee/orders/services/order_service.dart';
 
+import '../../../l10n/app_localizations.dart';
 import 'employee_qr_order_screen.dart';
 
 class SerivcesCreateOrderScreen extends StatefulWidget {
@@ -27,25 +27,20 @@ class SerivcesCreateOrderScreen extends StatefulWidget {
 }
 
 class _SerivcesCreateOrderScreenState extends State<SerivcesCreateOrderScreen> {
-  late Vehicle _selectedVehicle;
+  Vehicle? _selectedVehicle;
 
   final _ordersService = OrderService();
   @override
   void initState() {
     super.initState();
-    _selectedVehicle = widget.user.vehicles?[0][0] ??
-        Vehicle(
-          id: 0,
-          plateLetters: PlateLetters(ar: '', en: ''),
-          plateNumbers: '',
-          carType: '',
-          carBrand: '',
-          carModel: '',
-          manufactureYear: '',
-          fuelType: 'Petrol', // default
-          internalId: '',
-          other1: '',
-        );
+    if (widget.user.vehicles != null) {
+      if (widget.user.vehicles!.isNotEmpty) {
+        _selectedVehicle = widget.user.vehicles?.first;
+      }
+    } else {
+      _selectedVehicle = null;
+    }
+
     // Set default fuel type to 91 if Petrol
   }
 
@@ -211,7 +206,7 @@ class _SerivcesCreateOrderScreenState extends State<SerivcesCreateOrderScreen> {
                 ),
                 const SizedBox(height: 15),
                 Text(
-                  "${_selectedVehicle.plateLetters.ar} - ${_selectedVehicle.plateNumbers}",
+                  "${_selectedVehicle?.plateLetters.ar} - ${_selectedVehicle?.plateNumbers}",
                   style: const TextStyle(
                       fontSize: 18,
                       color: Colors.black,
@@ -278,7 +273,7 @@ class _SerivcesCreateOrderScreenState extends State<SerivcesCreateOrderScreen> {
               child: ListView.separated(
                 shrinkWrap: true,
                 physics: const ClampingScrollPhysics(),
-                itemCount: widget.user.vehicles!.expand((e) => e).length,
+                itemCount: widget.user.vehicles!.length,
                 separatorBuilder: (context, index) => const Divider(
                   height: 1,
                   thickness: 1,
@@ -286,12 +281,12 @@ class _SerivcesCreateOrderScreenState extends State<SerivcesCreateOrderScreen> {
                 ),
                 itemBuilder: (context, index) {
                   final vehicle =
-                      widget.user.vehicles!.expand((e) => e).toList()[index];
+                      widget.user.vehicles![index];
                   return InkWell(
                     onTap: () {
                       setState(() {
                         _selectedVehicle = vehicle;
-                        print(_selectedVehicle.id);
+                        print(_selectedVehicle?.id);
                       });
                       Navigator.pop(context);
                     },
@@ -400,7 +395,7 @@ class _SerivcesCreateOrderScreenState extends State<SerivcesCreateOrderScreen> {
         setState(() => _loading = true);
         final order = await _ordersService.createServicesOrder(
           totalPrice: num.tryParse(widget.product.price) ?? 0.0,
-          vehicleId: _selectedVehicle.id ?? 0,
+          vehicleId: _selectedVehicle?.id ?? 0,
           servicesId: widget.product.id,
           puncher: widget.selectedPunchers.data.serviceProviderId ?? 0,
           branch: widget.selectedPunchers.data.id ?? 0,
@@ -427,9 +422,10 @@ class _SerivcesCreateOrderScreenState extends State<SerivcesCreateOrderScreen> {
   Widget _buildOrderButton() {
     final t = AppLocalizations.of(context)!;
     return ElevatedButton(
-      onPressed: _createOrder,
+      onPressed: _selectedVehicle == null ? null : _createOrder,
       style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xff55217F),
+        backgroundColor:
+            _selectedVehicle?.id == 0 ? Colors.grey : const Color(0xff55217F),
         minimumSize: const Size(double.infinity, 50),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(100), // Circular radius of 100

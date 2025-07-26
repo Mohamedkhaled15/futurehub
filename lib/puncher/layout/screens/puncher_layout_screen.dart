@@ -1,16 +1,25 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:future_hub/common/notifications/screens/notifications_screen.dart';
+import 'package:future_hub/common/profile/screens/profile_screen.dart';
+import 'package:future_hub/common/shared/utils/cache_manager.dart';
+import 'package:future_hub/common/shared/utils/pusher_config.dart';
 import 'package:future_hub/common/shared/widgets/chevron_profile_tab_bar_item.dart';
 import 'package:future_hub/common/shared/widgets/chevron_tab_navigator.dart';
-import 'package:future_hub/puncher/orders/screens/puncher_orders_screen.dart';
-import 'package:future_hub/common/profile/screens/profile_screen.dart';
-import 'package:flutter/material.dart';
-import 'package:future_hub/common/notifications/screens/notifications_screen.dart';
 import 'package:future_hub/puncher/home/screens/puncher_home_screen.dart';
-import '../../../l10n/app_localizations.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:future_hub/puncher/orders/screens/puncher_orders_screen.dart';
 
-class PuncherLayoutScreen extends StatelessWidget {
+import '../../../l10n/app_localizations.dart';
+
+class PuncherLayoutScreen extends StatefulWidget {
   const PuncherLayoutScreen({super.key});
 
+  @override
+  State<PuncherLayoutScreen> createState() => _PuncherLayoutScreenState();
+}
+
+class _PuncherLayoutScreenState extends State<PuncherLayoutScreen> {
+  
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
