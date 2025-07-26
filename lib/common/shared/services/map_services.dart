@@ -5,12 +5,14 @@ import 'dart:developer';
 import 'package:battery_plus/battery_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:future_hub/common/shared/constants.dart';
 import 'package:future_hub/common/shared/services/battery_optimizaton_service.dart';
 import 'package:future_hub/common/shared/services/battery_service.dart';
 import 'package:future_hub/common/shared/services/remote/end_points.dart';
 import 'package:future_hub/common/shared/utils/cache_manager.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
+import 'package:pusher_channels_flutter/pusher_channels_flutter.dart';
 import 'package:workmanager/workmanager.dart';
 
 @pragma('vm:entry-point')
@@ -21,8 +23,31 @@ class MapServices {
   static bool _isTracking = false;
   static Timer? _backgroundTimer;
   static final Battery _battery = Battery();
+  static final PusherChannelsFlutter pusher =
+      PusherChannelsFlutter.getInstance();
 
-  //======================= Location Permission =======================
+  static Future<void> initPusherAndTracking() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await pusher.init(
+      apiKey: apiKEY,
+      cluster: apiCLUSTER,
+      onEvent: (PusherEvent event) async {
+        print('Pusher Event: ${event.eventName}');
+        if (event.eventName == 'user-selected') {
+          await CacheManager.setTrackingActive(true);
+          await initBackgroundService();
+          startBackgroundTracking();
+        } else if (event.eventName == 'user-deselected') {
+          await CacheManager.setTrackingActive(false);
+          FlutterBackgroundService().invoke('stopService');
+        }
+      },
+    );
+
+    await pusher.subscribe(channelName: 'user-tracking-channel');
+    await pusher.connect();
+  }
+
   static Future<bool> ensureLocationEnabled() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) return false;
@@ -49,7 +74,6 @@ class MapServices {
     );
   }
 
-  //======================= Tracker Management =======================
   static void addTracker(
       int trackerId, Function(Position) callback, BuildContext context) {
     _activeTrackers[trackerId] = callback;
@@ -63,7 +87,6 @@ class MapServices {
     }
   }
 
-  //======================= Tracking =======================
   static void _startTracking(BuildContext context) async {
     if (_isTracking) return;
 
@@ -135,10 +158,9 @@ class MapServices {
 
   static Future<int> _getOptimalDistance() async {
     final accuracy = await _getOptimalAccuracy();
-    return accuracy == LocationAccuracy.high ? 10 : 30;
+    return accuracy == LocationAccuracy.high ? 50 : 100;
   }
 
-  //======================= Background Service =======================
   static Future<void> initBackgroundService() async {
     final service = FlutterBackgroundService();
 
@@ -185,7 +207,7 @@ class MapServices {
     FlutterBackgroundService().startService();
   }
 
-  static void stopBackgroundTracking() {
+  static void stopBackgroundTracking() async {
     FlutterBackgroundService().invoke('stopService');
   }
 
@@ -197,7 +219,7 @@ class MapServices {
 
     _backgroundTimer?.cancel();
     _backgroundTimer =
-        Timer.periodic(const Duration(seconds: 10), (timer) async {
+        Timer.periodic(const Duration(seconds: 25), (timer) async {
       if (await CacheManager.isTrackingActive()) {
         final driverId = await CacheManager.getCurrentDriverId();
         if (driverId != null) {
@@ -245,7 +267,6 @@ class MapServices {
     }
   }
 
-  //======================= WorkManager for Background Task =======================
   static void initializeBackgroundService() {
     Workmanager().initialize(_backgroundCallback, isInDebugMode: false);
   }

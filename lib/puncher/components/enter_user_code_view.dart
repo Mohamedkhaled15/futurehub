@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../../l10n/app_localizations.dart';
 import 'package:future_hub/common/shared/palette.dart';
 import 'package:future_hub/common/shared/utils/run_fetch.dart';
 import 'package:future_hub/common/shared/utils/validator.dart';
@@ -11,6 +10,8 @@ import 'package:future_hub/puncher/orders/model/service_provider_order_model_con
 import 'package:future_hub/puncher/orders/model/vehicle_qr.dart';
 import 'package:future_hub/puncher/orders/services/puncher_order_services.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../l10n/app_localizations.dart';
 
 class EnterUserCodeView extends StatefulWidget {
   const EnterUserCodeView({super.key});
@@ -30,7 +31,7 @@ class _EnterUserCodeViewState extends State<EnterUserCodeView> {
     final theme = Theme.of(context);
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
-    Future<void> _openOrder() async {
+    Future<void> openOrder() async {
       setState(() => _isLoading = true); // Start loading
       try {
         await runFetch(
@@ -55,8 +56,7 @@ class _EnterUserCodeViewState extends State<EnterUserCodeView> {
       }
     }
 
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+    return SingleChildScrollView(
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: width * 0.05),
         child: Column(
@@ -106,7 +106,7 @@ class _EnterUserCodeViewState extends State<EnterUserCodeView> {
               child: ChevronButton(
                 loading: _isLoading,
                 onPressed: () {
-                  _openOrder();
+                  openOrder();
                 },
                 child: Text(
                   t.next,

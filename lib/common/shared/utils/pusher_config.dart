@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:future_hub/common/shared/constants.dart';
 import 'package:future_hub/common/shared/services/battery_optimizaton_service.dart';
 import 'package:future_hub/common/shared/services/map_services.dart';
 import 'package:future_hub/common/shared/services/remote/end_points.dart';
@@ -46,10 +47,6 @@ void _startMinimalLocationTracking() async {
 class PusherConfig {
   late PusherChannelsFlutter _pusher;
 
-  final String appId = "2023230";
-  final String apiKEY = "ca837a281ba2292cbcb0";
-  final String secret = "6055452ad441e267b85a";
-  final String apiCLUSTER = "eu";
   final Map<int, void Function(Position)> _trackerCallbacks = {};
 
   Future<void> initPusher(void Function(PusherEvent event) onEvent,
@@ -95,10 +92,27 @@ class PusherConfig {
       if (socketId == null) return;
 
       if (channelName != null && channelName.startsWith('private-')) {
-        await _pusher.subscribe(channelName: channelName, onEvent: onEvent);
+        await _pusher.subscribe(
+          channelName: channelName ?? '',
+          onEvent: (dynamic event) {
+            if (event is PusherEvent) {
+              onEvent(event);
+            } else {
+              log("Received non-PusherEvent: $event");
+            }
+          },
+        );
       } else {
         await _pusher.subscribe(
-            channelName: channelName ?? '', onEvent: onEvent);
+          channelName: channelName ?? '',
+          onEvent: (dynamic event) {
+            if (event is PusherEvent) {
+              onEvent(event);
+            } else {
+              log("Received non-PusherEvent: $event");
+            }
+          },
+        );
       }
     } catch (e) {
       log("Subscription error: $e");

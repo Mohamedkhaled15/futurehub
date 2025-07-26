@@ -54,7 +54,6 @@ void main() async {
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
-    name: 'Future-hub',
   );
 
   await NotificationsService().initializeNotifications();
@@ -65,7 +64,11 @@ void main() async {
   }
 
   await MapServices.ensureLocationEnabled();
-  MapServices.initializeBackgroundService();
+  try {
+    await MapServices.initPusherAndTracking();
+  } catch (e, s) {
+    print('Pusher init error: $e\n$s');
+  }
 
   final service = FlutterBackgroundService();
   if (await CacheManager.isTrackingActive()) {

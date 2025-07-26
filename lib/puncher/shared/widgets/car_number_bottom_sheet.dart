@@ -1,8 +1,11 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'dart:ui' as ui;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:future_hub/common/auth/cubit/auth_cubit.dart';
+import 'package:future_hub/common/auth/cubit/auth_state.dart';
 import 'package:future_hub/common/shared/palette.dart';
 import 'package:future_hub/common/shared/services/map_services.dart';
 import 'package:future_hub/common/shared/widgets/chevron_app_bar.dart';
@@ -38,6 +41,29 @@ class _CarNumberScreenState extends State<CarNumberScreen> {
   bool isLoading = false;
   bool plateMatches = false;
   static Position? position;
+  late bool scanWithAi;
+  final _ocrCorrections = {'L': '4'};
+
+  late final TextRecognizer _recognizer;
+
+  @override
+  void initState() {
+    final authState = context.read<AuthCubit>().state;
+    if (authState is AuthSignedIn) {
+      scanWithAi = authState.user.scanPlateByAi == 1;
+    } else {
+      scanWithAi = false;
+    }
+
+    _recognizer = TextRecognizer(script: TextRecognitionScript.latin);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _recognizer.close();
+    super.dispose();
+  }
 
   void _otpBottomSheet() {
     context.pushReplacementNamed(
@@ -76,43 +102,44 @@ class _CarNumberScreenState extends State<CarNumberScreen> {
       final locationText =
           "Lat: ${position?.latitude.toStringAsFixed(6)}, Lng: ${position?.longitude.toStringAsFixed(6)}";
 
-      final Uint8List newImageBytes = await _drawTextOnImage(
-        pickedImage.path,
-        locationText,
-      );
-
+      final Uint8List newImageBytes =
+          await _drawTextOnImage(pickedImage.path, locationText);
       final directory = await getApplicationDocumentsDirectory();
       final editedImagePath = '${directory.path}/edited_plate.png';
       await File(editedImagePath).writeAsBytes(newImageBytes);
 
-      // Recognize plate number from edited image
-      final recognized = await _recognizePlateNumber(editedImagePath);
+      if (scanWithAi) {
+        final recognized = await _recognizePlateNumber(editedImagePath);
+        // final formattedPlateLetters = widget.plateLetters
+        //     .replaceAll(RegExp(r'[^a-zA-Z]'), '')
+        //     .toUpperCase();
+        final expectedPlate =
+            '${widget.vehiclePlateNumbers}${widget.plateLetters.toUpperCase().replaceAll(RegExp(r'[^A-Z]'), '')}';
 
-      // Handle case conversion and formatting
-      final formattedPlateLetters = widget.plateLetters
-          .replaceAll(RegExp(r'[^a-zA-Z]'), '') // Remove non-letters
-          .toUpperCase(); // Convert to uppercase
+        final similarity = _calculateSimilarity(recognized, expectedPlate);
 
-      final expectedPlate =
-          '${widget.vehiclePlateNumbers}$formattedPlateLetters'.toUpperCase();
-
-      // Use Levenshtein distance for fuzzy matching
-      final similarity = _calculateSimilarity(recognized, expectedPlate);
-
-      if (similarity >= 0.8) {
-        // 80% match threshold
+        if (similarity >= 0.8) {
+          plateMatches = true;
+          editedImage = XFile(editedImagePath);
+          showToast(
+            text: 'تم التحقق من رقم اللوحة بنجاح',
+            state: ToastStates.success,
+          );
+        } else {
+          plateMatches = false;
+          showToast(
+            text:
+                'رقم اللوحة غير مطابق. المتوقع: $expectedPlate, تم التعرف على: $recognized',
+            state: ToastStates.error,
+          );
+        }
+      } else {
+        // لو AI مش شغال، نعتبر الصورة صالحة على طول
         plateMatches = true;
         editedImage = XFile(editedImagePath);
         showToast(
-          text: 'تم التحقق من رقم اللوحة بنجاح',
+          text: 'تم التقاط الصورة بنجاح (بدون تحليل AI)',
           state: ToastStates.success,
-        );
-      } else {
-        plateMatches = false;
-        showToast(
-          text:
-              'رقم اللوحة غير مطابق. المتوقع: $expectedPlate, تم التعرف على: $recognized',
-          state: ToastStates.error,
         );
       }
     } catch (e) {
@@ -126,54 +153,10 @@ class _CarNumberScreenState extends State<CarNumberScreen> {
     }
   }
 
-// Calculate similarity between two strings (0.0 to 1.0)
-  double _calculateSimilarity(String a, String b) {
-    if (a.isEmpty && b.isEmpty) return 1.0;
-
-    final maxLength = a.length > b.length ? a.length : b.length;
-    final distance = _levenshteinDistance(a, b);
-    return 1.0 - (distance / maxLength);
-  }
-
-// Calculate Levenshtein distance
-  int _levenshteinDistance(String a, String b) {
-    final matrix =
-        List.generate(a.length + 1, (i) => List.filled(b.length + 1, 0));
-
-    for (var i = 0; i <= a.length; i++) {
-      matrix[i][0] = i;
-    }
-
-    for (var j = 0; j <= b.length; j++) {
-      matrix[0][j] = j;
-    }
-
-    for (var i = 1; i <= a.length; i++) {
-      for (var j = 1; j <= b.length; j++) {
-        final cost = a[i - 1] == b[j - 1] ? 0 : 1;
-        matrix[i][j] = [
-          matrix[i - 1][j] + 1,
-          matrix[i][j - 1] + 1,
-          matrix[i - 1][j - 1] + cost
-        ].reduce((value, element) => value < element ? value : element);
-      }
-    }
-
-    return matrix[a.length][b.length];
-  }
-
-// Add this character correction map at the top of your file
-  final _ocrCorrections = {
-    'L': '4', // Common misrecognition of 4 as L
-  };
-
   Future<String> _recognizePlateNumber(String imagePath) async {
     final inputImage = InputImage.fromFilePath(imagePath);
-    final recognizer = TextRecognizer(script: TextRecognitionScript.latin);
-    final result = await recognizer.processImage(inputImage);
-    await recognizer.close();
+    final result = await _recognizer.processImage(inputImage);
 
-    // Extract the most likely plate candidate
     String bestCandidate = '';
     double maxConfidence = 0.0;
 
@@ -181,16 +164,12 @@ class _CarNumberScreenState extends State<CarNumberScreen> {
       for (final line in block.lines) {
         String text =
             line.text.toUpperCase().replaceAll(RegExp(r'[^A-Z0-9]'), '');
-
-        // Apply character corrections
         text = _correctMisrecognizedCharacters(text);
+        final confidence = line.confidence ?? 0;
 
-        final confidence = line.confidence;
-
-        // Prioritize text that looks like a plate number
         if (text.length >= 5 &&
             text.length <= 8 &&
-            confidence! > maxConfidence) {
+            confidence > maxConfidence) {
           bestCandidate = text;
           maxConfidence = confidence;
         }
@@ -204,15 +183,45 @@ class _CarNumberScreenState extends State<CarNumberScreen> {
   }
 
   String _correctMisrecognizedCharacters(String input) {
-    final corrected = StringBuffer();
+    // نحاول نفصل بين الأرقام والحروف
+    final digitsMatch = RegExp(r'\d+').firstMatch(input);
+    final lettersMatch = RegExp(r'[A-Z]+').firstMatch(input);
 
-    for (int i = 0; i < input.length; i++) {
-      final char = input[i];
-      // Apply correction if character is in our correction map
-      corrected.write(_ocrCorrections[char] ?? char);
+    String digits = digitsMatch?.group(0) ?? '';
+    String letters = lettersMatch?.group(0) ?? '';
+
+    // نطبق التصحيح على الأرقام فقط
+    final correctedDigits = digits.split('').map((char) {
+      return _ocrCorrections[char] ?? char;
+    }).join();
+
+    return '$correctedDigits$letters';
+  }
+
+  double _calculateSimilarity(String a, String b) {
+    if (a.isEmpty && b.isEmpty) return 1.0;
+    final maxLength = a.length > b.length ? a.length : b.length;
+    final distance = _levenshteinDistance(a, b);
+    return 1.0 - (distance / maxLength);
+  }
+
+  int _levenshteinDistance(String a, String b) {
+    final matrix =
+        List.generate(a.length + 1, (i) => List.filled(b.length + 1, 0));
+    for (var i = 0; i <= a.length; i++) matrix[i][0] = i;
+    for (var j = 0; j <= b.length; j++) matrix[0][j] = j;
+
+    for (var i = 1; i <= a.length; i++) {
+      for (var j = 1; j <= b.length; j++) {
+        final cost = a[i - 1] == b[j - 1] ? 0 : 1;
+        matrix[i][j] = [
+          matrix[i - 1][j] + 1,
+          matrix[i][j - 1] + 1,
+          matrix[i - 1][j - 1] + cost
+        ].reduce((a, b) => a < b ? a : b);
+      }
     }
-
-    return corrected.toString();
+    return matrix[a.length][b.length];
   }
 
   Future<Uint8List> _drawTextOnImage(String imagePath, String text) async {
@@ -220,8 +229,9 @@ class _CarNumberScreenState extends State<CarNumberScreen> {
     final ui.Codec codec = await ui.instantiateImageCodec(imageBytes);
     final ui.FrameInfo frameInfo = await codec.getNextFrame();
     final ui.Image originalImage = frameInfo.image;
-    final ui.PictureRecorder recorder = ui.PictureRecorder();
-    final Canvas canvas = Canvas(recorder);
+
+    final recorder = ui.PictureRecorder();
+    final canvas = Canvas(recorder);
     canvas.drawImage(originalImage, Offset.zero, Paint());
 
     final textPainter = TextPainter(
@@ -241,17 +251,13 @@ class _CarNumberScreenState extends State<CarNumberScreen> {
       ),
       textDirection: TextDirection.ltr,
     );
-    textPainter.layout(
-      minWidth: 0,
-      maxWidth: originalImage.width.toDouble(),
-    );
+    textPainter.layout(maxWidth: originalImage.width.toDouble());
     textPainter.paint(canvas, const Offset(10, 10));
 
-    final ui.Image newImage = await recorder
+    final newImage = await recorder
         .endRecording()
         .toImage(originalImage.width, originalImage.height);
-    final ByteData? byteData =
-        await newImage.toByteData(format: ui.ImageByteFormat.png);
+    final byteData = await newImage.toByteData(format: ui.ImageByteFormat.png);
     return byteData!.buffer.asUint8List();
   }
 
@@ -309,7 +315,6 @@ class _CarNumberScreenState extends State<CarNumberScreen> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      const SizedBox(height: 15),
                       GestureDetector(
                         onTap: isLoading ? null : pickImageFromCamera,
                         child: Container(
