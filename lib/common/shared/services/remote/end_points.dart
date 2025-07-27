@@ -10,6 +10,7 @@ class ApiConstants {
   static const String setPassword = '/set-password-first-login';
   static const String verifyOtp = '/verify-otp';
   static const String forgetPassword = '/forget-password';
+  
   static const String resetPassword = '/reset-password';
   static const String updateProfile = '/users/update-profile';
   static const String changeLang = '/users/change-language';
