@@ -19,11 +19,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>$(FLUTTER_BUILD_NAME)</string>
+	<string>1.2.8</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<string>15</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSDocumentsFolderUsageDescription</key>
@@ -31,35 +31,29 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app needs access to location when open.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-    <string>Future hub would like to access to the photo library to upload your profile image you select it  </string>
+	<string>Future hub would like to access to the photo library to upload your profile image you select it  </string>
 	<key>NSCameraUsageDescription</key>
-    <string>Future hub would like to access to camera access to take a capture of photos to your car meters to can confirm your order.</string>
-    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>Future hub requires GPS to track location to show you distance between stations</string>
-    <key>LSApplicationQueriesSchemes</key>
-    <array>
-      <string>sms</string>
-      <string>tel</string>
-    </array>
-    <key>BGTaskSchedulerPermittedIdentifiers</key>
-    <array>
-        <string>com.futurehub.app.refresh</string>
-        <string>com.futurehub.app.processData</string>
-    </array>
-    <key>UIBackgroundModes</key>
-    <array>
-        <string>remote-notification</string>
-        <string>processing</string>
-        <string>fetch</string>
-    </array>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
+	<string>Future hub would like to access to camera access to take a capture of photos to your car meters to can confirm your order.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Future hub requires GPS to track location to show you distance between stations</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>sms</string>
+		<string>tel</string>
+	</array>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.futurehub.app.refresh</string>
+		<string>com.futurehub.app.processData</string>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
 		<string>processing</string>
 		<string>fetch</string>
 	</array>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
