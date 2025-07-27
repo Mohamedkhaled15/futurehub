@@ -1116,4 +1116,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addToCartSuccess => 'Add to Cart Success';
+
+  @override
+  String get locationRequired => 'locationRequired';
+
+  @override
+  String get pleaseEnableLocationServicesForThisApp => 'pleaseEnableLocationServicesForThisApp';
+
+  @override
+  String get enable => 'enable';
+
+  @override
+  String get cancel => 'cancel';
 }

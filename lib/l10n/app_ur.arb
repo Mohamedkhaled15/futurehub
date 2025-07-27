@@ -371,5 +371,9 @@
   "otp":"او ٹی پی",
   "branches":"شاخیں",
   "branches_near":"آپ کے قریب شاخیں",
-  "addToCartSuccess": "کارٹ کامیابی میں شامل کریں۔"
+  "addToCartSuccess": "کارٹ کامیابی میں شامل کریں۔",
+  "locationRequired":"موقعیت مطلوب",
+  "pleaseEnableLocationServicesForThisApp":"براہ کرم ایپ کے لیے موقعیت خدمات میں تفعیل کریں۔",
+  "enable":"تفعیل",
+  "cancel":"کنسل"
 }

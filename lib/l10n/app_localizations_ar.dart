@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -36,7 +37,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get login => 'تسجيل الدخول';
 
   @override
-  String get enter_the_code_sent_to_the_phone_number => 'لقد ارسلنا كود التحقق الي جوالك';
+  String get enter_the_code_sent_to_the_phone_number =>
+      'لقد ارسلنا كود التحقق الي جوالك';
 
   @override
   String get activate => 'تفعيل';
@@ -123,7 +125,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get scan_the_order_code => 'قراءة شفرة الطلب';
 
   @override
-  String get direct_the_camera_to_the_clients_phone_to_read_the_order_code => 'قم بتثبيت الكاميرا على هاتف العميل لقراءة شفرة الطلب';
+  String get direct_the_camera_to_the_clients_phone_to_read_the_order_code =>
+      'قم بتثبيت الكاميرا على هاتف العميل لقراءة شفرة الطلب';
 
   @override
   String get switch_the_language => 'تغيير اللغة';
@@ -512,10 +515,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get this_field_is_required => 'هذا الحقل مطلوب';
 
   @override
-  String get phone_number_must_contain_only_digits => 'رقم الجوال لابد أن يحتوي أرقامًا فقط';
+  String get phone_number_must_contain_only_digits =>
+      'رقم الجوال لابد أن يحتوي أرقامًا فقط';
 
   @override
-  String get phone_number_must_start_with_05 => 'رقم الجوال لابد من أن يبدأ بـ05';
+  String get phone_number_must_start_with_05 =>
+      'رقم الجوال لابد من أن يبدأ بـ05';
 
   @override
   String get otp_must_contain_only_digits => 'الكود لابد أن يحتوي أرقامًا فقط';
@@ -526,22 +531,27 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get password_must_have_8_characters_or_more => 'كلمة المرور لابد أن تكون 8 حروف أو أكثر';
+  String get password_must_have_8_characters_or_more =>
+      'كلمة المرور لابد أن تكون 8 حروف أو أكثر';
 
   @override
-  String get password_confirmation_doesnt_match_password => 'تأكيد كلمة المرور لا يطابق كلمة المرور';
+  String get password_confirmation_doesnt_match_password =>
+      'تأكيد كلمة المرور لا يطابق كلمة المرور';
 
   @override
   String get name_must_contain_only_letters => 'الاسم لابد أن يحتوي حروفًا فقط';
 
   @override
-  String get please_enter_a_valid_email => 'رجاءًا أدخل بريدًا إلكترونيًا صحيحًا';
+  String get please_enter_a_valid_email =>
+      'رجاءًا أدخل بريدًا إلكترونيًا صحيحًا';
 
   @override
-  String get id_number_must_contain_only_digits => 'رقم الهوية لابد أن يحتوي أرقامًا فقط';
+  String get id_number_must_contain_only_digits =>
+      'رقم الهوية لابد أن يحتوي أرقامًا فقط';
 
   @override
-  String get limit_must_be_a_valid_number => 'الحد الأقصى لابد أن يكون رقمًا صالحًا';
+  String get limit_must_be_a_valid_number =>
+      'الحد الأقصى لابد أن يكون رقمًا صالحًا';
 
   @override
   String get price => 'السعر';
@@ -550,7 +560,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get enter_phone_number_05XXXXXXXX => 'أدخل رقم الهاتف (05XXXXXXXX)';
 
   @override
-  String get phone_number_must_be_10_digits => 'رقم الهاتف لابد أن يحتوي 10 أرقام';
+  String get phone_number_must_be_10_digits =>
+      'رقم الهاتف لابد أن يحتوي 10 أرقام';
 
   @override
   String get id_number_must_be_10_digits => 'رقم الهوية لابد أن يحتوي 10 أرقام';
@@ -580,7 +591,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get enter_number_of_points => 'ادخل عدد النقاط';
 
   @override
-  String get minimum_number_points_redeemed_is_25_points => 'الحد الأدنى للنقاط المستبدلة 25 ريال';
+  String get minimum_number_points_redeemed_is_25_points =>
+      'الحد الأدنى للنقاط المستبدلة 25 ريال';
 
   @override
   String get redeem => 'استبدال';
@@ -607,7 +619,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get privacy_policy => 'سياسة الخصوصية';
 
   @override
-  String get the_qr_code_is_broken_please_try_again => 'هذا الكود به مشكلة. حاول مرة أخرى';
+  String get the_qr_code_is_broken_please_try_again =>
+      'هذا الكود به مشكلة. حاول مرة أخرى';
 
   @override
   String get do_you_want_to_delete_this_employee => 'هل تريد حذف الموظف؟';
@@ -658,7 +671,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get transfer_image => 'صورة التحويل';
 
   @override
-  String get enter_the_code_sent_to_employee_number => 'أدخل الرمز الذي تم إرساله إلي رقم الموظف';
+  String get enter_the_code_sent_to_employee_number =>
+      'أدخل الرمز الذي تم إرساله إلي رقم الموظف';
 
   @override
   String get confirm_order => 'تأكيد الطلب';
@@ -688,7 +702,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get scan_the_point_code => 'قراءة شفرة النقاط';
 
   @override
-  String get direct_the_camera_to_the_products_code_to_read_it => 'وجه الكاميرا نحو كود المنتج لقراءته';
+  String get direct_the_camera_to_the_products_code_to_read_it =>
+      'وجه الكاميرا نحو كود المنتج لقراءته';
 
   @override
   String count_points(num count) {
@@ -753,10 +768,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get coupon_code => 'الكود';
 
   @override
-  String get click_this_button_when_order_is_completed => 'اضغط على الزر حال الإنتهاء من الطلب';
+  String get click_this_button_when_order_is_completed =>
+      'اضغط على الزر حال الإنتهاء من الطلب';
 
   @override
-  String get couldnt_find_the_data_filling_file_try_again_later => 'لم نتمكن من العثور على ملف تعبئة البيانات. حاول مرة أخرى لاحقًا';
+  String get couldnt_find_the_data_filling_file_try_again_later =>
+      'لم نتمكن من العثور على ملف تعبئة البيانات. حاول مرة أخرى لاحقًا';
 
   @override
   String get there_are_no_substitutions => 'لا يوجد استبدالات';
@@ -816,7 +833,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get user_code => 'كود المستخدم';
 
   @override
-  String get scan_qr_announcement => '*توجيه : في حالة عدم قراء الباركود ابحث بكود المستخدم';
+  String get scan_qr_announcement =>
+      '*توجيه : في حالة عدم قراء الباركود ابحث بكود المستخدم';
 
   @override
   String get start_scanning => 'ابدء المسح';
@@ -855,10 +873,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get the_place_here_is_empty => 'المكان هنا خالي !';
 
   @override
-  String get you_can_find_your_orders_here => 'بإمكانك العثور هنا على الطلبات الخاصة بك';
+  String get you_can_find_your_orders_here =>
+      'بإمكانك العثور هنا على الطلبات الخاصة بك';
 
   @override
-  String get you_can_find_your_notifications_here => 'بإمكانك العثور هنا على التنبيهات الخاصة بك';
+  String get you_can_find_your_notifications_here =>
+      'بإمكانك العثور هنا على التنبيهات الخاصة بك';
 
   @override
   String get know_more => 'اعرف أكثر';
@@ -882,7 +902,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get social_media => 'وسائل التواصل الإجتماعي';
 
   @override
-  String get we_are_happy_to_contact_you => 'سعداء بالتواصل معكم والرد على جميع رسائلكم\n\nيومياً على مدار الـ 24 ساعة';
+  String get we_are_happy_to_contact_you =>
+      'سعداء بالتواصل معكم والرد على جميع رسائلكم\n\nيومياً على مدار الـ 24 ساعة';
 
   @override
   String get app_language => 'لغة التطبيق';
@@ -933,7 +954,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get meterNumber => 'كتابة رقم عداد المركبة';
 
   @override
-  String get meterNumberRequest => 'برجاء كتابة رقم عداد المسافة للمركبة و إرفاق صورة العداد';
+  String get meterNumberRequest =>
+      'برجاء كتابة رقم عداد المسافة للمركبة و إرفاق صورة العداد';
 
   @override
   String get carNumberRequestImage => '  إرفاق صورة المركبه';
@@ -948,13 +970,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get futureHubWallet => 'رصيد فيوتشرهب';
 
   @override
-  String get e_Payment => 'يمكنك تصفح أقرب فرع لك أو لقائدي مركباتك بكل سهولة من خلال خريطة رقمية تتيح لك كافة الإختيارات';
+  String get e_Payment =>
+      'يمكنك تصفح أقرب فرع لك أو لقائدي مركباتك بكل سهولة من خلال خريطة رقمية تتيح لك كافة الإختيارات';
 
   @override
   String get security => 'السهولة والأمان';
 
   @override
-  String get securityDetails => 'التطبيق الأول في المملكة العربية السعودية لبيع الزيوت الخاصة بفيوتشرهب بأمان وسهولة';
+  String get securityDetails =>
+      'التطبيق الأول في المملكة العربية السعودية لبيع الزيوت الخاصة بفيوتشرهب بأمان وسهولة';
 
   @override
   String get product => 'العديد من المنتجات';
@@ -1122,8 +1146,20 @@ class AppLocalizationsAr extends AppLocalizations {
   String get branches_near => 'فروع قريبه منك';
 
   @override
-  String get futureHub => 'يعمل فريق عمل فيوتشر هب بكل جهده لإضافة الخدمات لك في اقرب وقت 👋';
+  String get futureHub =>
+      'يعمل فريق عمل فيوتشر هب بكل جهده لإضافة الخدمات لك في اقرب وقت 👋';
 
   @override
   String get addToCartSuccess => 'تم الاضافه إلى العربة بنجاح';
+  @override
+  String get locationRequired => 'يرجي تفعيل الموقع';
+  @override
+  String get pleaseEnableLocationServicesForThisApp =>
+      'يرجي تفعيل خدمات الموقع للتطبيق';
+
+  @override
+  String get cancel => 'الغاء';
+
+  @override
+  String get enable => 'تفعيل';
 }

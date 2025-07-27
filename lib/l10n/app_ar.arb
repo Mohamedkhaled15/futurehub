@@ -383,6 +383,10 @@
   "otp":"الرمز المتغير",
   "branches":"كل الفروع",
   "branches_near":"فروع قريبه منك",
-  "addToCartSuccess": "تم الاضافه إلى العربة بنجاح"
+  "addToCartSuccess": "تم الاضافه إلى العربة بنجاح",
+  "locationRequired":"يرجي تفعيل الموقع",
+  "pleaseEnableLocationServicesForThisApp":"يرجي تفعيل خدمات الموقع للتطبيق",
+  "enable":"تفعيل",
+  "cancel":"الغاء"
 
 }

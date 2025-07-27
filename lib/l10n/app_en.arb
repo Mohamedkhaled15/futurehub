@@ -359,5 +359,9 @@
   "branches":"branches",
   "branches_near":"branches near for you",
   "futureHub": "Future  team is working hard to add services to you as soon as possible \uD83D\uDC4B",
-  "addToCartSuccess": "Add to Cart Success"
+  "addToCartSuccess": "Add to Cart Success",
+  "locationRequired":"locationRequired",
+  "pleaseEnableLocationServicesForThisApp":"pleaseEnableLocationServicesForThisApp",
+  "enable":"enable",
+  "cancel":"cancel"
 }

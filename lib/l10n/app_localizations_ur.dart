@@ -1116,4 +1116,16 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get addToCartSuccess => 'کارٹ کامیابی میں شامل کریں۔';
+
+  @override
+  String get locationRequired => 'موقعیت مطلوب ہے';
+
+  @override
+  String get pleaseEnableLocationServicesForThisApp => 'لطفاً اس اپ کے لیے موقعیت خدمات تفعیل کریں۔';
+
+  @override
+  String get enable => 'تفعیل کریں';
+
+  @override
+  String get cancel => 'کنسل کریں';
 }

@@ -15,6 +15,7 @@ import 'package:future_hub/employee/components/bottom_nav_bar.dart';
 import 'package:future_hub/employee/components/carousel_slider.dart';
 import 'package:future_hub/employee/components/fuel_silder.dart';
 import 'package:future_hub/employee/components/services_list.dart';
+import 'package:future_hub/l10n/app_localizations.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 
@@ -90,15 +91,16 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
   }
 
   void _showLocationAlert() {
+    final t = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("Location Required"),
-        content: const Text("Please enable location services for this app"),
+        title: Text(t.locationRequired),
+        content: Text(t.pleaseEnableLocationServicesForThisApp),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text("Cancel"),
+            child: Text(t.cancel),
           ),
           TextButton(
             onPressed: () async {
@@ -106,7 +108,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
               await Geolocator.openLocationSettings(); // Open device settings
               _checkLocationService(); // Re-check after returning
             },
-            child: const Text("Enable"),
+            child: Text(t.enable),
           ),
         ],
       ),
