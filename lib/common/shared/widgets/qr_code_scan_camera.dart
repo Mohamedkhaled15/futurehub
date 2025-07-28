@@ -171,8 +171,8 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
                         });
 
                         await controller.setZoomScale(zoomLevel);
-                        debugPrint(
-                            "current zoom is ${controller.autoZoom.toString()}");
+                        // debugPrint(
+                        //     "current zoom is ${controller.autoZoom.toString()}");
                       },
                     ),
                   ),

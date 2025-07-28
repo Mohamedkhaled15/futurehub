@@ -52,9 +52,14 @@ void main() async {
   await CacheManager.init();
   await DioHelper.init();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  // Initialize Firebase only if not already initialized
+  try{
+  if (Firebase.apps.isEmpty) {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }}catch(e) {
+    print('Firebase initialization error: $e');}
 
   await NotificationsService().initializeNotifications();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -127,10 +132,15 @@ Future<void> setupFCM() async {
 }
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-    name: 'Future-hub',
-  );
+  try {
+    if (Firebase.apps.isEmpty) {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+        name: 'Future-hub',
+      );
+    }
+  }catch(e) {
+    print('Firebase initialization error: $e');}
   NotificationsService().showNotification(message);
 }
 

@@ -15,11 +15,11 @@ class ChevronDashedBorder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DottedBorder(
-      options: RectDottedBorderOptions(
+      // options: RectDottedBorderOptions(
         color: color,
         dashPattern: const [3, 3],
         padding: const EdgeInsets.all(0.0),
-      ),
+      // ),
       child: child,
     );
   }
