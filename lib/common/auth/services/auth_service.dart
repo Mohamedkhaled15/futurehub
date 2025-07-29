@@ -497,7 +497,7 @@ class AuthService {
         if (responseData['success'] == true) {
           final userData = responseData['data']['user'];
           final user = User.fromJson(userData);
-          await CacheManager.saveUserId(user.id??0);
+          await CacheManager.saveUserId(user.id ?? 0);
           return user;
           //   User(
           //   id: userData['id'],
@@ -552,10 +552,10 @@ class AuthService {
   }
 
   Future<AppVersion> checkAppVersion() async {
+    String version = await NotificationsService().getAppVersion();
     try {
       final response = await _dioHelper.getData(
-        url: ApiConstants.getAppVersion,
-      );
+          url: ApiConstants.getAppVersion, query: {'app_version': version});
       if (response.statusCode == 200) {
         final responseData = response.data;
 
