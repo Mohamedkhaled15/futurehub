@@ -15,7 +15,7 @@ class DioHelper {
     dio = customDio ??
         Dio(
           BaseOptions(
-            baseUrl: ApiConstants.baseTestURL,
+            baseUrl: ApiConstants.baseLiveURL,
             receiveDataWhenStatusError: true,
           ),
         );

@@ -247,7 +247,7 @@ class MapServices {
     final token = await CacheManager.getToken();
     try {
       await http.post(
-        Uri.parse("${ApiConstants.baseTestURL}/update-location"),
+        Uri.parse("${ApiConstants.baseLiveURL}/update-location"),
         body: jsonEncode({
           'user_id': driverId,
           'latitude': position.latitude,

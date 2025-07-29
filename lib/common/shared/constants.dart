@@ -1,5 +1,5 @@
 const baseURL = 'https://futurehub.sa/';
- const String appId = "2023230";
-  const String apiKEY = "ca837a281ba2292cbcb0";
-  const String secret = "6055452ad441e267b85a";
+ const String appId = "2029131";
+  const String apiKEY = "fbfddf247835191be99d";
+  const String secret = "8dfd787cb2eef5a454ff";
   const String apiCLUSTER = "eu";
