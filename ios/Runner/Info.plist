@@ -23,58 +23,45 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>18</string>
+	<string>19</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	
 	<key>NSDocumentsFolderUsageDescription</key>
 	<string>Allow access to document files</string>
-	
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We use your location to show your real-time position while using the app for delivery or pickup purposes.</string>
-	
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Your location is used to track your movement in real-time during order delivery, even in background, for dispatch and admin monitoring.</string>
-	
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Futurehub needs access to your photo library to allow uploading your profile image.</string>
-	
 	<key>NSCameraUsageDescription</key>
 	<string>Futurehub needs camera access to capture images of your car meters to confirm your order.</string>
-	
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>sms</string>
 		<string>tel</string>
 	</array>
-	
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
 		<string>com.futurehub.app.refresh</string>
 		<string>com.futurehub.app.processData</string>
 	</array>
-	
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>
 	</array>
-
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
-	
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
-	
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
-	
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
