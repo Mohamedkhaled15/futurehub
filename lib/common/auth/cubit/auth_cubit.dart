@@ -175,8 +175,7 @@ class AuthCubit extends Cubit<AuthState> {
         ),
       );
     }
-    throw Exception(
-        "Can't sign in an employee when AuthState isn't AuthSignedOut");
+    throw Exception("Can't sign in an employee when AuthState isn't AuthSignedOut");
   }
 
   // 0560498238

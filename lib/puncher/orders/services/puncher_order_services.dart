@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:future_hub/common/shared/models/order_model.dart';
@@ -103,6 +105,49 @@ class PuncherOrderServices {
     }
   }
 
+//*======================== ocr plate ====================================
+  Future<bool> ocrPlate(XFile image, String vehicleId) async {
+    try {
+      final token = await CacheManager.getToken();
+      final file = File(image.path);
+      final int sizeInBytes = await file.length();
+      final double sizeInKB = sizeInBytes / 1024;
+      final double sizeInMB = sizeInKB / 1024;
+
+      print("Image size: $sizeInBytes bytes");
+      print("Image size: ${sizeInKB.toStringAsFixed(2)} KB");
+      print("Image size: ${sizeInMB.toStringAsFixed(2)} MB");
+
+      final formData = FormData.fromMap({
+        'image': await MultipartFile.fromFile(
+          image.path,
+          filename: image.path.split('/').last,
+        ),
+        'vehicle_id': vehicleId,
+      });
+
+      final response = await _dioHelper.postData(
+        url: ApiConstants.readPlate,
+        data: formData,
+        // token: token,
+        contentType: 'multipart/form-data',
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final responseData = response.data;
+        return responseData['plate_match'] == true;
+      } else {
+        throw Exception("${response.data['message']}");
+      }
+    } on DioException catch (e) {
+      print('Error fetching orders: ${e.response?.data ?? e.message}');
+      rethrow;
+    } catch (e) {
+      print('Unexpected error: $e');
+      rethrow;
+    }
+  }
+
   Future<Order> createServiceProviderOrder({
     required int driverId,
     required int vehicleId,
@@ -125,8 +170,7 @@ class PuncherOrderServices {
       print(data);
       // Make the POST request
       final response = await _dioHelper.postData(
-          url: ApiConstants
-              .createServiceProviderOrder, // Adjust the endpoint path if necessary
+          url: ApiConstants.createServiceProviderOrder, // Adjust the endpoint path if necessary
           data: data,
           token: token);
 
@@ -146,8 +190,7 @@ class PuncherOrderServices {
     }
   }
 
-  Future<ServiceProviderOrderConfirmCancelModel> cancelOrder(
-      String referenceNumber) async {
+  Future<ServiceProviderOrderConfirmCancelModel> cancelOrder(String referenceNumber) async {
     try {
       final token = await CacheManager.getToken();
       final response = await _dioHelper.postData(
@@ -159,8 +202,7 @@ class PuncherOrderServices {
       );
       // Parse the response into the model
       final responseData = response.data;
-      final model =
-          ServiceProviderOrderConfirmCancelModel.fromJson(responseData);
+      final model = ServiceProviderOrderConfirmCancelModel.fromJson(responseData);
 
       return model;
     } on DioException catch (e) {
@@ -216,8 +258,8 @@ class PuncherOrderServices {
     }
   }
 
-  Future<void> confirmOrder(String code, String referenceNumber,
-      XFile attachment, String type) async {
+  Future<void> confirmOrder(String code, String referenceNumber, XFile attachment, String type,
+      XFile? odometerImage) async {
     try {
       FormData formData = FormData.fromMap({
         "otp": code,
@@ -226,6 +268,11 @@ class PuncherOrderServices {
           attachment.path,
           filename: attachment.name, // Optional: Use the original file name
         ),
+        if (odometerImage != null)
+          "odometer_image": await MultipartFile.fromFile(
+            odometerImage.path,
+            filename: odometerImage.name, // Optional: Use the original file name
+          ),
       });
       final token = await CacheManager.getToken();
       final response = await _dioHelper.postData(

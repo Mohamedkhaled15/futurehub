@@ -1,20 +1,24 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../../l10n/app_localizations.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:future_hub/common/auth/cubit/auth_cubit.dart';
+import 'package:future_hub/common/auth/cubit/auth_state.dart';
 import 'package:future_hub/common/shared/widgets/flutter_toast.dart';
 import 'package:future_hub/common/shared/widgets/number_format.dart';
 import 'package:future_hub/puncher/orders/model/vehicle_qr.dart';
 import 'package:future_hub/puncher/orders/services/puncher_order_services.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../common/shared/palette.dart';
 import '../../common/shared/widgets/chevron_app_bar.dart';
 
 class FuelOrderScreen extends StatefulWidget {
   final VehicleQr order;
   final Driver selectedDriver;
-  const FuelOrderScreen(
-      {super.key, required this.order, required this.selectedDriver});
+  const FuelOrderScreen({super.key, required this.order, required this.selectedDriver});
   @override
   _FuelOrderScreenState createState() => _FuelOrderScreenState();
 }
@@ -27,10 +31,18 @@ class _FuelOrderScreenState extends State<FuelOrderScreen> {
   late TextEditingController litersController;
   late TextEditingController priceController;
   final _ordersService = PuncherOrderServices();
+  late bool scanOdometer;
   @override
   void initState() {
     super.initState();
     // Set default fuel type to 91 if Petrol
+    final authState = context.read<AuthCubit>().state;
+    if (authState is AuthSignedIn) {
+      scanOdometer = authState.user.readOdometerOCR == 1;
+      log("$scanOdometer ${authState.user.readOdometerOCR}");
+    } else {
+      scanOdometer = false;
+    }
     if (widget.order.data.fuelType == "Petrol") {
       selectedFuelType = 91;
     }
@@ -43,8 +55,7 @@ class _FuelOrderScreenState extends State<FuelOrderScreen> {
 
   void _updateButtonState() {
     setState(() {
-      isButtonEnabled =
-          litersController.text.isNotEmpty || priceController.text.isNotEmpty;
+      isButtonEnabled = litersController.text.isNotEmpty || priceController.text.isNotEmpty;
     });
   }
 
@@ -115,13 +126,19 @@ class _FuelOrderScreenState extends State<FuelOrderScreen> {
   }
 
   void navigateToCarNumberScreen(BuildContext context, String referenceNumber) {
-    context.pushNamed(
-      'carNumber',
-      pathParameters: {
+    if (scanOdometer == true) {
+      context.pushNamed('OdometerScreen', pathParameters: {
         'referenceNumber': referenceNumber,
         'type': "fuel_order",
-      },
-    );
+        'vehicle_id': widget.order.data.id.toString(),
+      });
+    } else {
+      context.pushNamed('carNumber', pathParameters: {
+        'referenceNumber': referenceNumber,
+        'type': "fuel_order",
+        'vehicle_id': widget.order.data.id.toString(),
+      });
+    }
   }
   // void showOdometerBottomSheet(BuildContext context, String referenceNumber) {
   //   showModalBottomSheet(
@@ -187,10 +204,8 @@ class _FuelOrderScreenState extends State<FuelOrderScreen> {
       appBar: FutureHubAppBar(
         title: Text(
           t.vicheleInfo,
-          style: const TextStyle(
-              color: Palette.blackColor,
-              fontSize: 22,
-              fontWeight: FontWeight.bold),
+          style:
+              const TextStyle(color: Palette.blackColor, fontSize: 22, fontWeight: FontWeight.bold),
         ),
         context: context,
       ),
@@ -259,8 +274,7 @@ class _FuelOrderScreenState extends State<FuelOrderScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           CircleAvatar(
-            backgroundImage: NetworkImage(
-                widget.selectedDriver.image), // Replace with actual image
+            backgroundImage: NetworkImage(widget.selectedDriver.image), // Replace with actual image
             radius: 24,
           ),
           Row(
@@ -271,12 +285,10 @@ class _FuelOrderScreenState extends State<FuelOrderScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(t.fuel_Balance,
-                      style: const TextStyle(color: Colors.white)),
+                  Text(t.fuel_Balance, style: const TextStyle(color: Colors.white)),
                   const SizedBox(height: 5),
                   Text("${widget.selectedDriver.walletAmount} ${t.sar} ",
-                      style:
-                          const TextStyle(color: Colors.white, fontSize: 18)),
+                      style: const TextStyle(color: Colors.white, fontSize: 18)),
                   const SizedBox(height: 8),
                 ],
               ),
@@ -285,12 +297,10 @@ class _FuelOrderScreenState extends State<FuelOrderScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(t.walletAmount,
-                      style: const TextStyle(color: Colors.white)),
+                  Text(t.walletAmount, style: const TextStyle(color: Colors.white)),
                   const SizedBox(height: 5),
                   Text("${widget.selectedDriver.pullLimit} ${t.sar} ",
-                      style:
-                          const TextStyle(color: Colors.white, fontSize: 18)),
+                      style: const TextStyle(color: Colors.white, fontSize: 18)),
                   const SizedBox(height: 8),
                 ],
               )
@@ -325,8 +335,7 @@ class _FuelOrderScreenState extends State<FuelOrderScreen> {
           ),
           Text(
             "${widget.order.data.plateLetters.ar} - ${widget.order.data.plateNumbers}",
-            style: const TextStyle(
-                fontSize: 18, color: Colors.black, fontWeight: FontWeight.w700),
+            style: const TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.w700),
             overflow: TextOverflow.ellipsis,
           ),
         ],
@@ -341,8 +350,7 @@ class _FuelOrderScreenState extends State<FuelOrderScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(t.literCount,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        Text(t.literCount, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         const SizedBox(height: 15),
         if (isDiesel) _buildDieselSection() else _buildPetrolSection(),
         const SizedBox(height: 8),
@@ -362,16 +370,13 @@ class _FuelOrderScreenState extends State<FuelOrderScreen> {
         const SizedBox(width: 8),
         Column(
           children: [
-            Text(widget.order.data.fuelType,
-                style: const TextStyle(fontSize: 20)),
+            Text(widget.order.data.fuelType, style: const TextStyle(fontSize: 20)),
             const SizedBox(
               height: 5,
             ),
             Text(t.literPrice,
                 style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w400,
-                    color: Color(0xff55217F))),
+                    fontSize: 20, fontWeight: FontWeight.w400, color: Color(0xff55217F))),
             const SizedBox(
               height: 5,
             ),
@@ -403,9 +408,7 @@ class _FuelOrderScreenState extends State<FuelOrderScreen> {
             ),
             Text(t.literPrice,
                 style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w400,
-                    color: Color(0xff55217F))),
+                    fontSize: 20, fontWeight: FontWeight.w400, color: Color(0xff55217F))),
             const SizedBox(
               height: 5,
             ),
@@ -433,9 +436,7 @@ class _FuelOrderScreenState extends State<FuelOrderScreen> {
                   child: Text(
                     "91",
                     style: TextStyle(
-                      color: selectedFuelType == 91
-                          ? Colors.white
-                          : const Color(0xff54217E),
+                      color: selectedFuelType == 91 ? Colors.white : const Color(0xff54217E),
                       fontSize: 14,
                     ),
                   ),
@@ -446,9 +447,7 @@ class _FuelOrderScreenState extends State<FuelOrderScreen> {
                   child: Text(
                     "95",
                     style: TextStyle(
-                      color: selectedFuelType == 95
-                          ? Colors.white
-                          : const Color(0xff54217E),
+                      color: selectedFuelType == 95 ? Colors.white : const Color(0xff54217E),
                       fontSize: 14,
                     ),
                   ),
@@ -456,8 +455,7 @@ class _FuelOrderScreenState extends State<FuelOrderScreen> {
                 // Animated toggle button
                 AnimatedPositioned(
                   duration: const Duration(milliseconds: 300),
-                  top:
-                      selectedFuelType == 91 ? 4 : 38, // Toggle button position
+                  top: selectedFuelType == 91 ? 4 : 38, // Toggle button position
                   left: 4,
                   right: 4,
                   child: Container(
@@ -509,18 +507,15 @@ class _FuelOrderScreenState extends State<FuelOrderScreen> {
                     children: [
                       TextFormField(
                         controller: litersController,
-                        keyboardType: const TextInputType.numberWithOptions(
-                            signed: false),
+                        keyboardType: const TextInputType.numberWithOptions(signed: false),
                         inputFormatters: [
                           EnglishDigitsOnlyFormatter(),
-                          FilteringTextInputFormatter.deny(
-                              RegExp(r'[\-|,]')), // Extra protection
+                          FilteringTextInputFormatter.deny(RegExp(r'[\-|,]')), // Extra protection
                         ],
                         decoration: InputDecoration(
                           labelText: t.liter,
                           border: OutlineInputBorder(
-                            borderSide:
-                                const BorderSide(style: BorderStyle.none),
+                            borderSide: const BorderSide(style: BorderStyle.none),
                             borderRadius: BorderRadius.circular(16),
                           ),
                         ),
@@ -531,8 +526,8 @@ class _FuelOrderScreenState extends State<FuelOrderScreen> {
                       const SizedBox(height: 8.0),
                       Text(
                         t.liter,
-                        style: theme.textTheme.bodyLarge!.copyWith(
-                            fontSize: 20, fontWeight: FontWeight.w900),
+                        style: theme.textTheme.bodyLarge!
+                            .copyWith(fontSize: 20, fontWeight: FontWeight.w900),
                       ),
                     ],
                   ),
@@ -556,12 +551,10 @@ class _FuelOrderScreenState extends State<FuelOrderScreen> {
                     children: [
                       TextFormField(
                         controller: priceController,
-                        keyboardType: const TextInputType.numberWithOptions(
-                            signed: false),
+                        keyboardType: const TextInputType.numberWithOptions(signed: false),
                         inputFormatters: [
                           EnglishDigitsOnlyFormatter(),
-                          FilteringTextInputFormatter.deny(
-                              RegExp(r'[\-|,]')), // Extra protection
+                          FilteringTextInputFormatter.deny(RegExp(r'[\-|,]')), // Extra protection
                         ],
                         decoration: InputDecoration(
                           labelText: t.price,
@@ -574,8 +567,8 @@ class _FuelOrderScreenState extends State<FuelOrderScreen> {
                       const SizedBox(height: 8.0),
                       Text(
                         t.price,
-                        style: theme.textTheme.bodyLarge!.copyWith(
-                            fontSize: 20, fontWeight: FontWeight.w900),
+                        style: theme.textTheme.bodyLarge!
+                            .copyWith(fontSize: 20, fontWeight: FontWeight.w900),
                       ),
                     ],
                   ),
@@ -589,7 +582,6 @@ class _FuelOrderScreenState extends State<FuelOrderScreen> {
         ),
       ),
     );
-    ;
   }
 
   bool _isLoading = false; // Add this variable to track loading state
@@ -665,10 +657,8 @@ class _FuelOrderScreenState extends State<FuelOrderScreen> {
             )
           : Text(
               t.activeOrdersNow,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 20),
+              style:
+                  const TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 20),
             ),
     );
   }

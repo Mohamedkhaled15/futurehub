@@ -1,7 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../l10n/app_localizations.dart';
 import 'package:future_hub/common/shared/palette.dart';
 import 'package:future_hub/common/shared/widgets/chevron_app_bar.dart';
 import 'package:future_hub/common/shared/widgets/chevron_bottom_sheet.dart';
@@ -11,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:vibration/vibration.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../orders/order_cubit/service_provider_orders_cubit.dart';
 
 class OtpBottomSheetScreen extends StatefulWidget {
@@ -18,10 +18,12 @@ class OtpBottomSheetScreen extends StatefulWidget {
       {required this.referenceNumber,
       required this.editedImage,
       required this.type,
+      this.odometerImage,
       super.key});
   final String referenceNumber;
   final String? editedImage;
   final String type;
+  final XFile? odometerImage;
 
   @override
   State<OtpBottomSheetScreen> createState() => VerifyOtpBottomSheetState();
@@ -33,8 +35,7 @@ class VerifyOtpBottomSheetState extends State<OtpBottomSheetScreen> {
     await _ordersService.sendOtp(widget.referenceNumber, widget.type);
   }
 
-  XFile? get editedImage =>
-      widget.editedImage != null ? XFile(widget.editedImage!) : null;
+  XFile? get editedImage => widget.editedImage != null ? XFile(widget.editedImage!) : null;
   bool _loading = false;
   Future<String?> _onActivate(String otp) async {
     String? error;
@@ -42,11 +43,7 @@ class VerifyOtpBottomSheetState extends State<OtpBottomSheetScreen> {
       setState(() => _loading = true);
 
       await _ordersService.confirmOrder(
-        otp,
-        widget.referenceNumber,
-        editedImage ?? XFile(""),
-        widget.type,
-      );
+          otp, widget.referenceNumber, editedImage ?? XFile(""), widget.type, widget.odometerImage);
 
       await _refreshOrders();
       await _playSuccessEffects();
@@ -85,9 +82,7 @@ class VerifyOtpBottomSheetState extends State<OtpBottomSheetScreen> {
 
   Future<void> _refreshOrders() async {
     final cubit = context.read<ServiceProviderOrdersCubit>();
-    widget.type == "fuel_order"
-        ? cubit.updatOrders()
-        : cubit.updateServicesOrders();
+    widget.type == "fuel_order" ? cubit.updatOrders() : cubit.updateServicesOrders();
   }
 
   Future<void> _showResultDialog({
@@ -131,10 +126,8 @@ class VerifyOtpBottomSheetState extends State<OtpBottomSheetScreen> {
       appBar: FutureHubAppBar(
         title: Text(
           t.otp,
-          style: const TextStyle(
-              color: Palette.blackColor,
-              fontSize: 22,
-              fontWeight: FontWeight.bold),
+          style:
+              const TextStyle(color: Palette.blackColor, fontSize: 22, fontWeight: FontWeight.bold),
         ),
         context: context,
       ),
@@ -142,8 +135,7 @@ class VerifyOtpBottomSheetState extends State<OtpBottomSheetScreen> {
         reverse: true,
         physics: const BouncingScrollPhysics(),
         child: Padding(
-          padding:
-              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: ChevronBottomSheet(
             child: SizedBox(
               height: 400,

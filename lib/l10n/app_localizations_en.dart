@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -123,7 +124,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scan_the_order_code => 'Scan the Order Code';
 
   @override
-  String get direct_the_camera_to_the_clients_phone_to_read_the_order_code => 'Direct the camera to the clients phone to read the order code';
+  String get direct_the_camera_to_the_clients_phone_to_read_the_order_code =>
+      'Direct the camera to the clients phone to read the order code';
 
   @override
   String get switch_the_language => 'Switch the Language';
@@ -521,7 +523,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get password_must_have_8_characters_or_more => 'Password must have 8 characters or more';
 
   @override
-  String get password_confirmation_doesnt_match_password => 'Password confirmation doesn\'t match password';
+  String get password_confirmation_doesnt_match_password =>
+      'Password confirmation doesn\'t match password';
 
   @override
   String get name_must_contain_only_letters => 'Name must contain only letters';
@@ -572,7 +575,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enter_number_of_points => 'Enter the number of points';
 
   @override
-  String get minimum_number_points_redeemed_is_25_points => 'The minimum number of points redeemed is 25 SAR';
+  String get minimum_number_points_redeemed_is_25_points =>
+      'The minimum number of points redeemed is 25 SAR';
 
   @override
   String get redeem => 'Redeem';
@@ -680,7 +684,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scan_the_point_code => 'Scan the Points Code';
 
   @override
-  String get direct_the_camera_to_the_products_code_to_read_it => 'Direct the camera to the product\'s code to read it';
+  String get direct_the_camera_to_the_products_code_to_read_it =>
+      'Direct the camera to the product\'s code to read it';
 
   @override
   String count_points(num count) {
@@ -743,10 +748,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get coupon_code => 'Coupon code';
 
   @override
-  String get click_this_button_when_order_is_completed => 'Click on the button below once order is completed';
+  String get click_this_button_when_order_is_completed =>
+      'Click on the button below once order is completed';
 
   @override
-  String get couldnt_find_the_data_filling_file_try_again_later => 'Couldn\'t find the data filling file. Try again later';
+  String get couldnt_find_the_data_filling_file_try_again_later =>
+      'Couldn\'t find the data filling file. Try again later';
 
   @override
   String get there_are_no_substitutions => 'There are no transactions';
@@ -872,7 +879,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get social_media => 'Social media';
 
   @override
-  String get we_are_happy_to_contact_you => 'We are happy to communicate with you and respond to all your messages\nS\nEvery day, 24 hours a day';
+  String get we_are_happy_to_contact_you =>
+      'We are happy to communicate with you and respond to all your messages\nS\nEvery day, 24 hours a day';
 
   @override
   String get app_language => 'App Language';
@@ -938,13 +946,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get futureHubWallet => 'futureHubWallet';
 
   @override
-  String get e_Payment => 'You can browse the nearest branch to you or your drivers with ease through a digital map that provides you with all the options.';
+  String get e_Payment =>
+      'You can browse the nearest branch to you or your drivers with ease through a digital map that provides you with all the options.';
 
   @override
   String get security => 'Ease and security';
 
   @override
-  String get securityDetails => 'The first application in the Kingdom of Saudi Arabia to sell Futurehub oils safely and easily';
+  String get securityDetails =>
+      'The first application in the Kingdom of Saudi Arabia to sell Futurehub oils safely and easily';
 
   @override
   String get product => 'Many products';
@@ -1112,7 +1122,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get branches_near => 'branches near for you';
 
   @override
-  String get futureHub => 'Future  team is working hard to add services to you as soon as possible 👋';
+  String get futureHub =>
+      'Future  team is working hard to add services to you as soon as possible 👋';
 
   @override
   String get addToCartSuccess => 'Add to Cart Success';
@@ -1128,4 +1139,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cancel => 'cancel';
+
+  @override
+  String get plateMatched => 'Plate Matched';
+
+  @override
+  String get plateNotMatched => 'Plate Not Matched';
 }

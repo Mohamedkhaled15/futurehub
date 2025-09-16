@@ -9,6 +9,7 @@ import 'package:future_hub/puncher/components/scanning_image_animation.dart';
 import 'package:future_hub/puncher/orders/model/service_provider_order_model_confirm_canel.dart';
 import 'package:future_hub/puncher/orders/model/vehicle_qr.dart';
 import 'package:future_hub/puncher/orders/services/puncher_order_services.dart';
+import 'package:future_hub/puncher/qr_vichle/fuel_order.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -35,8 +36,18 @@ class _RecieveOrderScreenState extends State<RecieveOrderScreen>
         final order = await _ordersService.orderById(referenceNumber);
         if (!mounted) return;
         if (order is VehicleQr) {
+          if (order.data.drivers.length == 1) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    FuelOrderScreen(order:order, selectedDriver: order.data.drivers.first),
+              ),
+            );
+          } else {
+            context.pushReplacement('/puncher/vehicle-details', extra: order);
+          }
           // Navigate to the vehicle details screen
-          context.pushReplacement('/puncher/vehicle-details', extra: order);
         } else if (order is ServiceProviderOrderConfirmCancelModel) {
           // Navigate to the order details screen
           context.pushReplacement('/puncher/order-details', extra: order);
@@ -86,9 +97,7 @@ class _RecieveOrderScreenState extends State<RecieveOrderScreen>
           title: Text(
             showEnterCode ? t.user_code : t.scan_the_order_code,
             style: const TextStyle(
-                color: Palette.blackColor,
-                fontSize: 22,
-                fontWeight: FontWeight.bold),
+                color: Palette.blackColor, fontSize: 22, fontWeight: FontWeight.bold),
           ),
           context: context,
         ),
@@ -132,15 +141,14 @@ class _RecieveOrderScreenState extends State<RecieveOrderScreen>
                               builder: (context) => QrCodeScanner(
                                 onScan: _openOrder,
                                 title: t.scan_the_order_code,
-                                description: t
-                                    .direct_the_camera_to_the_clients_phone_to_read_the_order_code,
+                                description:
+                                    t.direct_the_camera_to_the_clients_phone_to_read_the_order_code,
                               ),
                             ),
                           ),
                           child: Container(
                             width: double.infinity,
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 16, horizontal: 32),
+                            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
                             margin: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
@@ -189,25 +197,21 @@ class _RecieveOrderScreenState extends State<RecieveOrderScreen>
                         color: Palette.tabBarColor,
                         child: TabBar(
                           controller: _tabController,
-                          indicatorPadding: const EdgeInsets.symmetric(
-                              horizontal: 5, vertical: 3),
+                          indicatorPadding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
                           overlayColor: WidgetStateProperty.all<Color>(
                             Colors.transparent,
                           ),
-                          unselectedLabelStyle:
-                              theme.textTheme.displaySmall!.copyWith(
+                          unselectedLabelStyle: theme.textTheme.displaySmall!.copyWith(
                             fontSize: 20,
                             fontWeight: FontWeight.normal,
                           ),
                           dividerColor: Colors.transparent,
-                          unselectedLabelColor:
-                              Palette.textGreyColor.withOpacity(0.5),
+                          unselectedLabelColor: Palette.textGreyColor.withOpacity(0.5),
                           indicatorSize: TabBarIndicatorSize.tab,
                           labelColor: Colors.white,
                           indicatorColor: Colors.black,
                           labelPadding: EdgeInsets.symmetric(
-                              vertical:
-                                  MediaQuery.of(context).size.height * 0.007),
+                              vertical: MediaQuery.of(context).size.height * 0.007),
                           indicator: BoxDecoration(
                             borderRadius: BorderRadius.circular(50),
                             color: Palette.primaryColor,

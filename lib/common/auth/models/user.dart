@@ -35,6 +35,7 @@ class User extends Equatable {
   final String? email;
   final int? secondsPerRequest;
   final int? scanPlateByAi;
+  final int? readOdometerOCR;
 
   const User({
     this.id,
@@ -68,6 +69,7 @@ class User extends Equatable {
     this.company,
     this.secondsPerRequest,
     this.scanPlateByAi,
+    this.readOdometerOCR,
   });
 
   /// Parsing JSON into the `User` object
@@ -79,8 +81,7 @@ class User extends Equatable {
         username: json["username"],
         mobile: json["mobile"],
         firstLogin: json["first_login"],
-        firstLoginAt: (json["first_login_at"] != null &&
-                json["first_login_at"].isNotEmpty)
+        firstLoginAt: (json["first_login_at"] != null && json["first_login_at"].isNotEmpty)
             ? DateTime.tryParse(json["first_login_at"])
             : null,
         active: json["active"],
@@ -113,51 +114,51 @@ class User extends Equatable {
             ? []
             : List<String>.from(json["puncher_types"]!.map((x) => x)),
         vehicles: json["vehicles"] != null
-            ? List<Vehicle>.from(
-                json["vehicles"].map((x) => Vehicle.fromJson(x)))
+            ? List<Vehicle>.from(json["vehicles"].map((x) => Vehicle.fromJson(x)))
             : null,
 
         // If null, set vehicles to null
-        company: json["company_user"] != null
-            ? Company.fromJson(json["company_user"])
-            : null,
+        company: json["company_user"] != null ? Company.fromJson(json["company_user"]) : null,
         secondsPerRequest: json["seconds_per_request"],
         scanPlateByAi: json["scan_plate_by_ai"],
+        readOdometerOCR: json["read_odometer_OCR"],
       );
 
   /// Copy constructor for immutability
-  User copyWith(
-      {final int? id,
-      final String? type,
-      final String? name,
-      final String? username,
-      final String? mobile,
-      final int? firstLogin,
-      final DateTime? firstLoginAt,
-      final int? active,
-      final int? companyId,
-      final int? puncherId,
-      String? balance,
-      String? balanceFuel,
-      String? balanceProduct,
-      String? balanceService,
-      String? fuelPullLimit,
-      String? productPullLimit,
-      String? servicePullLimit,
-      final int? deposit,
-      final int? withdrawal,
-      final int? points,
-      final String? email,
-      final String? image,
-      final dynamic lang,
-      final int? isMeterNumberRequired,
-      final int? isMeterImageRequired,
-      final List<String>? puncherTypes,
-      List<Vehicle>? vehicles,
-      final String? apiToken,
-      Company? company,
-      final int? secondsPerRequest,
-      final int? scanPlateByAi}) {
+  User copyWith({
+    final int? id,
+    final String? type,
+    final String? name,
+    final String? username,
+    final String? mobile,
+    final int? firstLogin,
+    final DateTime? firstLoginAt,
+    final int? active,
+    final int? companyId,
+    final int? puncherId,
+    String? balance,
+    String? balanceFuel,
+    String? balanceProduct,
+    String? balanceService,
+    String? fuelPullLimit,
+    String? productPullLimit,
+    String? servicePullLimit,
+    final int? deposit,
+    final int? withdrawal,
+    final int? points,
+    final String? email,
+    final String? image,
+    final dynamic lang,
+    final int? isMeterNumberRequired,
+    final int? isMeterImageRequired,
+    final List<String>? puncherTypes,
+    List<Vehicle>? vehicles,
+    final String? apiToken,
+    Company? company,
+    final int? secondsPerRequest,
+    final int? scanPlateByAi,
+    final int? readOdometerOCR,
+  }) {
     return User(
         id: id ?? this.id,
         name: name ?? this.name,
@@ -184,14 +185,13 @@ class User extends Equatable {
         lang: lang ?? this.lang,
         puncherTypes: puncherTypes ?? this.puncherTypes,
         puncherId: puncherId ?? this.puncherId,
-        isMeterImageRequired:
-            isMeterImageRequired ?? this.isMeterNumberRequired,
-        isMeterNumberRequired:
-            isMeterNumberRequired ?? this.isMeterNumberRequired,
+        isMeterImageRequired: isMeterImageRequired ?? this.isMeterNumberRequired,
+        isMeterNumberRequired: isMeterNumberRequired ?? this.isMeterNumberRequired,
         vehicles: vehicles ?? this.vehicles,
         withdrawal: withdrawal ?? this.withdrawal,
         secondsPerRequest: secondsPerRequest ?? this.secondsPerRequest,
-        scanPlateByAi: scanPlateByAi ?? this.scanPlateByAi);
+        scanPlateByAi: scanPlateByAi ?? this.scanPlateByAi,
+        readOdometerOCR: readOdometerOCR ?? this.readOdometerOCR);
   }
 
   @override
@@ -224,7 +224,8 @@ class User extends Equatable {
         productPullLimit,
         servicePullLimit,
         secondsPerRequest,
-        scanPlateByAi
+        scanPlateByAi,
+        readOdometerOCR
       ];
 }
 

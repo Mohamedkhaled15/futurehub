@@ -73,8 +73,10 @@ import 'package:future_hub/puncher/orders/screens/recieve_order_screen.dart';
 import 'package:future_hub/puncher/qr_vichle/fail_order_screen.dart';
 import 'package:future_hub/puncher/qr_vichle/vichle_deatils.dart';
 import 'package:future_hub/puncher/shared/widgets/car_number_bottom_sheet.dart';
+import 'package:future_hub/puncher/shared/widgets/odometer_image_screen.dart';
 import 'package:future_hub/puncher/shared/widgets/otp_bottom_sheet.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../puncher/qr_vichle/sucess_order_screen.dart';
 import '../points/screens/points_partners_screen.dart';
@@ -83,8 +85,7 @@ import '../wallet/screens/bank_transfer_screen.dart';
 import 'models/order_model.dart';
 import 'models/products.dart';
 
-final RouteObserver<ModalRoute<void>> routeObserver =
-    RouteObserver<ModalRoute<void>>();
+final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
 final router = GoRouter(
   observers: [routeObserver], // <--- here, not in MaterialApp.router
   routes: [
@@ -181,8 +182,7 @@ final router = GoRouter(
         builder: (context, state) {
           final extra = state.extra as Map<String, dynamic>;
           final user = extra['user'] as User;
-          final selectedPunchers =
-              extra['selectedPunchers'] as ServicesBranchDeatils;
+          final selectedPunchers = extra['selectedPunchers'] as ServicesBranchDeatils;
           final product = extra['product'] as CompanyProduct;
           return ProductDetailsScreen(
             selectedPunchers: selectedPunchers,
@@ -197,8 +197,7 @@ final router = GoRouter(
       builder: (context, state) {
         final extra = state.extra as Map<String, dynamic>;
         final user = extra['user'] as User;
-        final selectedPunchers =
-            extra['selectedPunchers'] as ServicesBranchDeatils;
+        final selectedPunchers = extra['selectedPunchers'] as ServicesBranchDeatils;
         final product = extra['product'] as CompanyProduct;
         return SerivcesCreateOrderScreen(
           user: user,
@@ -221,8 +220,7 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/company/employee/:id',
-      builder: (context, state) =>
-          EmployeeDetailsScreen(state.pathParameters['id']!),
+      builder: (context, state) => EmployeeDetailsScreen(state.pathParameters['id']!),
     ),
     GoRoute(
       path: '/company/employees/add-single',
@@ -387,8 +385,7 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/edit-employee',
-      builder: (context, state) =>
-          EditEmployeeScreen(employee: state.extra as DriverData),
+      builder: (context, state) => EditEmployeeScreen(employee: state.extra as DriverData),
     ),
     GoRoute(
       path: '/company/employee/:id/employee-wallet',
@@ -431,32 +428,48 @@ final router = GoRouter(
       builder: (context, state) => const ReportsScreen(),
     ),
     GoRoute(
-      path:
-          '/car-number/:referenceNumber/:type/:vehicle_plate_numbers/:plate_letters',
+      path: '/car-number/:referenceNumber/:type/:vehicle_id',
       name: 'carNumber',
       builder: (context, state) {
         final referenceNumber = state.pathParameters['referenceNumber']!;
         final type = state.pathParameters['type']!;
-        final vehiclePlateNumbers =
-            state.pathParameters['vehicle_plate_numbers']!;
-        final plateLetters = state.pathParameters['plate_letters']!;
+        final vehicleId = state.pathParameters['vehicle_id']!;
+        final odometerImage = state.extra as XFile?;
+
         return CarNumberScreen(
           referenceNumber: referenceNumber,
           type: type,
-          vehiclePlateNumbers: vehiclePlateNumbers,
-          plateLetters: plateLetters,
+          vehicleId: vehicleId,
+          odometerImage: odometerImage,
+        );
+      },
+    ),
+    GoRoute(
+      path: '/odometer/:referenceNumber/:type/:vehicle_id',
+      name: 'OdometerScreen',
+      builder: (context, state) {
+        final referenceNumber = state.pathParameters['referenceNumber']!;
+        final type = state.pathParameters['type']!;
+        final vehicleId = state.pathParameters['vehicle_id']!;
+        return OdometerImageScreen(
+          referenceNumber: referenceNumber,
+          type: type,
+          vehicleId: vehicleId,
         );
       },
     ),
     GoRoute(
       path: '/otp-screen/:referenceNumber/:type',
       name: 'otp-screen',
-      builder: (context, state) => OtpBottomSheetScreen(
-        referenceNumber: state.pathParameters['referenceNumber']!,
-        editedImage: (state.extra as Map<String, dynamic>? ??
-            {})['editedImagePath'] as String?,
-        type: state.pathParameters['type']!,
-      ),
+      builder: (context, state) {
+        final extras = state.extra as Map<String, dynamic>? ?? {};
+        return OtpBottomSheetScreen(
+          referenceNumber: state.pathParameters['referenceNumber']!,
+          type: state.pathParameters['type']!,
+          editedImage: extras['editedImagePath'] as String?,
+          odometerImage: extras['odometerImage'] as XFile?,
+        );
+      },
     ),
     GoRoute(
       path: '/fail_order',

@@ -2247,6 +2247,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'cancel'**
   String get cancel;
+
+  /// No description provided for @plateNotMatched.
+  ///
+  /// In en, this message translates to:
+  /// **'Plate Not Matched'**
+  String get plateNotMatched;
+
+  /// No description provided for @plateMatched.
+  ///
+  /// In en, this message translates to:
+  /// **'Plate Matched'**
+  String get plateMatched;
 }
 
 class _AppLocalizationsDelegate

@@ -44,6 +44,7 @@ class Order extends Equatable {
   final num? totalQuantity;
   final String? fueType;
   final String? serviceName;
+  final int? checkPlate;
   String? serviceImage;
   final DateTime? updatedAt;
 
@@ -87,6 +88,7 @@ class Order extends Equatable {
       this.employeeName,
       this.fueType,
       this.serviceName,
+      this.checkPlate,
       this.serviceImage,
       this.products});
 
@@ -126,6 +128,7 @@ class Order extends Equatable {
         fueType: json["fuel_type"],
         serviceImage: json["service_image"],
         serviceName: json["service_name"],
+        checkPlate: json["check_plate"],
         id: json["id"],
       );
   @override
@@ -143,6 +146,7 @@ class Order extends Equatable {
         company,
         puncher,
         createdAt,
+        checkPlate,
         products
       ];
 

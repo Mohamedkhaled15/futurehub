@@ -1162,4 +1162,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get enable => 'تفعيل';
+  
+  @override
+ 
+  String get plateMatched => 'اللوحة متطابقة';
+  
+  @override
+ 
+  String get plateNotMatched => 'اللوحة غير  منطابقة، حاول تاني';
 }

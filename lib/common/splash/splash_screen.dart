@@ -9,8 +9,7 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
-    with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
   bool visibility = false;
 
   @override
@@ -43,8 +42,8 @@ class _SplashScreenState extends State<SplashScreen>
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25),
                 child: Image.asset(
-                  "assets/images/logo.png",filterQuality: FilterQuality.none,  // Disable mipmapping
-  isAntiAlias: false, 
+                  "assets/images/logo.png", filterQuality: FilterQuality.none, // Disable mipmapping
+                  isAntiAlias: false,
                 ),
               ),
             ),
@@ -71,8 +70,8 @@ class _SplashScreenState extends State<SplashScreen>
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25),
                 child: Image.asset(
-                  "assets/images/logo.png",filterQuality: FilterQuality.none,  // Disable mipmapping
-  isAntiAlias: false, 
+                  "assets/images/logo.png", filterQuality: FilterQuality.none, // Disable mipmapping
+                  isAntiAlias: false,
                 ),
               ),
             ),

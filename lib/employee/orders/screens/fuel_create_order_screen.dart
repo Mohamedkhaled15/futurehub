@@ -1,7 +1,11 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:future_hub/common/auth/cubit/auth_cubit.dart';
+import 'package:future_hub/common/auth/cubit/auth_state.dart';
 import 'package:future_hub/common/auth/models/user.dart';
 import 'package:future_hub/common/shared/models/order_model.dart';
 import 'package:future_hub/common/shared/palette.dart';
@@ -35,11 +39,19 @@ class _FuelCreateOrderScreenState extends State<FuelCreateOrderScreen> {
   late TextEditingController litersController;
   late TextEditingController priceController;
   late Vehicle? _selectedVehicle;
-
+  late bool scanOdometer;
   final _ordersService = OrderService();
   @override
   void initState() {
     super.initState();
+
+     final authState = context.read<AuthCubit>().state;
+    if (authState is AuthSignedIn) {
+      scanOdometer = authState.user.readOdometerOCR == 1;
+      log("$scanOdometer ${authState.user.readOdometerOCR}");
+    } else {
+      scanOdometer = false;
+    }
     if (widget.order.vehicles?.isNotEmpty == true &&
         widget.order.vehicles != null &&
         widget.order.vehicles != [[]]) {

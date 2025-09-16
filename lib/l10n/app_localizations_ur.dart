@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -123,7 +124,8 @@ class AppLocalizationsUr extends AppLocalizations {
   String get scan_the_order_code => 'آرڈر کوڈ اسکین کریں۔';
 
   @override
-  String get direct_the_camera_to_the_clients_phone_to_read_the_order_code => 'آرڈر کوڈ پڑھنے کے لیے کیمرہ کو کلائنٹس کے فون پر بھیجیں۔';
+  String get direct_the_camera_to_the_clients_phone_to_read_the_order_code =>
+      'آرڈر کوڈ پڑھنے کے لیے کیمرہ کو کلائنٹس کے فون پر بھیجیں۔';
 
   @override
   String get switch_the_language => 'زبان کو تبدیل کریں۔';
@@ -518,10 +520,12 @@ class AppLocalizationsUr extends AppLocalizations {
   }
 
   @override
-  String get password_must_have_8_characters_or_more => 'پاس ورڈ میں 8 حروف یا اس سے زیادہ ہونا ضروری ہے۔';
+  String get password_must_have_8_characters_or_more =>
+      'پاس ورڈ میں 8 حروف یا اس سے زیادہ ہونا ضروری ہے۔';
 
   @override
-  String get password_confirmation_doesnt_match_password => 'پاس ورڈ کی تصدیق پاس ورڈ سے مماثل نہیں ہے۔';
+  String get password_confirmation_doesnt_match_password =>
+      'پاس ورڈ کی تصدیق پاس ورڈ سے مماثل نہیں ہے۔';
 
   @override
   String get name_must_contain_only_letters => 'نام صرف حروف پر مشتمل ہونا چاہیے۔';
@@ -572,7 +576,8 @@ class AppLocalizationsUr extends AppLocalizations {
   String get enter_number_of_points => 'پوائنٹس کی تعداد درج کریں۔';
 
   @override
-  String get minimum_number_points_redeemed_is_25_points => 'چھڑائے گئے پوائنٹس کی کم از کم تعداد 25 SAR ہے۔';
+  String get minimum_number_points_redeemed_is_25_points =>
+      'چھڑائے گئے پوائنٹس کی کم از کم تعداد 25 SAR ہے۔';
 
   @override
   String get redeem => 'چھڑانا';
@@ -680,7 +685,8 @@ class AppLocalizationsUr extends AppLocalizations {
   String get scan_the_point_code => 'پوائنٹس کوڈ کو اسکین کریں۔';
 
   @override
-  String get direct_the_camera_to_the_products_code_to_read_it => 'اسے پڑھنے کے لیے کیمرہ کو پروڈکٹ کے کوڈ کی طرف لے جائیں۔';
+  String get direct_the_camera_to_the_products_code_to_read_it =>
+      'اسے پڑھنے کے لیے کیمرہ کو پروڈکٹ کے کوڈ کی طرف لے جائیں۔';
 
   @override
   String count_points(num count) {
@@ -743,10 +749,12 @@ class AppLocalizationsUr extends AppLocalizations {
   String get coupon_code => 'کوپن کوڈ';
 
   @override
-  String get click_this_button_when_order_is_completed => 'آرڈر مکمل ہونے کے بعد نیچے دیئے گئے بٹن پر کلک کریں۔';
+  String get click_this_button_when_order_is_completed =>
+      'آرڈر مکمل ہونے کے بعد نیچے دیئے گئے بٹن پر کلک کریں۔';
 
   @override
-  String get couldnt_find_the_data_filling_file_try_again_later => 'ڈیٹا بھرنے والی فائل نہیں مل سکی۔ ';
+  String get couldnt_find_the_data_filling_file_try_again_later =>
+      'ڈیٹا بھرنے والی فائل نہیں مل سکی۔ ';
 
   @override
   String get there_are_no_substitutions => 'کوئی لین دین نہیں ہے۔';
@@ -806,7 +814,8 @@ class AppLocalizationsUr extends AppLocalizations {
   String get user_code => 'صارف کوڈ';
 
   @override
-  String get scan_qr_announcement => '*معلومات: اگر QR استعمال نہیں کیا جاسکتا ہے تو صارف کوڈ استعمال کریں۔';
+  String get scan_qr_announcement =>
+      '*معلومات: اگر QR استعمال نہیں کیا جاسکتا ہے تو صارف کوڈ استعمال کریں۔';
 
   @override
   String get start_scanning => 'اسکیننگ شروع کریں۔';
@@ -872,7 +881,8 @@ class AppLocalizationsUr extends AppLocalizations {
   String get social_media => 'سوشل میڈیا';
 
   @override
-  String get we_are_happy_to_contact_you => 'ہم آپ کے ساتھ بات چیت کرنے اور آپ کے تمام پیغامات کا جواب دینے میں خوش ہیں۔\n';
+  String get we_are_happy_to_contact_you =>
+      'ہم آپ کے ساتھ بات چیت کرنے اور آپ کے تمام پیغامات کا جواب دینے میں خوش ہیں۔\n';
 
   @override
   String get app_language => 'ایپ کی زبان';
@@ -938,13 +948,15 @@ class AppLocalizationsUr extends AppLocalizations {
   String get futureHubWallet => 'futureHubWallet';
 
   @override
-  String get e_Payment => 'آپ ڈیجیٹل میپ کے ذریعے اپنے یا اپنے ڈرائیوروں کی قریب ترین برانچ کو آسانی سے براؤز کر سکتے ہیں جو آپ کو تمام اختیارات فراہم کرتا ہے۔';
+  String get e_Payment =>
+      'آپ ڈیجیٹل میپ کے ذریعے اپنے یا اپنے ڈرائیوروں کی قریب ترین برانچ کو آسانی سے براؤز کر سکتے ہیں جو آپ کو تمام اختیارات فراہم کرتا ہے۔';
 
   @override
   String get security => 'آسانی اور سلامتی';
 
   @override
-  String get securityDetails => 'فیوچر ہب تیل محفوظ طریقے سے اور آسانی سے فروخت کرنے کے لیے مملکت سعودی عرب میں پہلی درخواست';
+  String get securityDetails =>
+      'فیوچر ہب تیل محفوظ طریقے سے اور آسانی سے فروخت کرنے کے لیے مملکت سعودی عرب میں پہلی درخواست';
 
   @override
   String get product => 'بہت سی مصنوعات';
@@ -1112,7 +1124,8 @@ class AppLocalizationsUr extends AppLocalizations {
   String get branches_near => 'آپ کے قریب شاخیں';
 
   @override
-  String get futureHub => 'مستقبل کی ٹیم آپ کو جلد از جلد خدمات شامل کرنے کے لیے سخت محنت کر رہی ہے 👋';
+  String get futureHub =>
+      'مستقبل کی ٹیم آپ کو جلد از جلد خدمات شامل کرنے کے لیے سخت محنت کر رہی ہے 👋';
 
   @override
   String get addToCartSuccess => 'کارٹ کامیابی میں شامل کریں۔';
@@ -1121,11 +1134,18 @@ class AppLocalizationsUr extends AppLocalizations {
   String get locationRequired => 'موقعیت مطلوب ہے';
 
   @override
-  String get pleaseEnableLocationServicesForThisApp => 'لطفاً اس اپ کے لیے موقعیت خدمات تفعیل کریں۔';
+  String get pleaseEnableLocationServicesForThisApp =>
+      'لطفاً اس اپ کے لیے موقعیت خدمات تفعیل کریں۔';
 
   @override
   String get enable => 'تفعیل کریں';
 
   @override
   String get cancel => 'کنسل کریں';
+
+  @override
+  String get plateMatched => 'پلیٹ متطابق';
+
+  @override
+  String get plateNotMatched => 'پلیٹ غیر  منطابق، دوبارہ کوشش کریں۔';
 }

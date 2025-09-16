@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:future_hub/common/shared/utils/cache_manager.dart';
 import 'package:future_hub/common/shared/utils/run_fetch.dart';
@@ -16,8 +18,7 @@ class PuncherOrderDetailsScreen extends StatefulWidget {
   const PuncherOrderDetailsScreen({required this.order, super.key});
 
   @override
-  State<PuncherOrderDetailsScreen> createState() =>
-      _PuncherOrderDetailsScreenState();
+  State<PuncherOrderDetailsScreen> createState() => _PuncherOrderDetailsScreenState();
 }
 
 class _PuncherOrderDetailsScreenState extends State<PuncherOrderDetailsScreen> {
@@ -38,16 +39,15 @@ class _PuncherOrderDetailsScreenState extends State<PuncherOrderDetailsScreen> {
   void navigateToCarNumberScreen(BuildContext context) {
     final referenceNumber = widget.order.data!.referenceNumber!;
     final type = widget.order.type ?? "";
-    final vehiclePlateNumbers = widget.order.data!.vehiclePlateNumbers ?? "";
-    final platNumber = widget.order.data?.plateLetters?.en ?? "";
+    final vehicleId = widget.order.data!.vehicleId ?? "";
 
+    log("$referenceNumber $type $vehicleId");
     context.pushReplacementNamed(
       'carNumber',
       pathParameters: {
         'referenceNumber': referenceNumber,
         'type': type,
-        'vehicle_plate_numbers': vehiclePlateNumbers,
-        'plate_letters': platNumber
+        'vehicle_id': vehicleId.toString(),
       },
     );
   }
@@ -183,8 +183,7 @@ class _PuncherOrderDetailsScreenState extends State<PuncherOrderDetailsScreen> {
                     // height: 300,
                     decoration: BoxDecoration(
                       color: const Color(0xffF9F9F9),
-                      borderRadius:
-                          BorderRadius.circular(10), // Circular border radius
+                      borderRadius: BorderRadius.circular(10), // Circular border radius
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
@@ -218,8 +217,7 @@ class _PuncherOrderDetailsScreenState extends State<PuncherOrderDetailsScreen> {
                     ),
                   )
                 : Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                     decoration: BoxDecoration(
                       color: Colors.grey.shade100,
                       borderRadius: BorderRadius.circular(12),
@@ -248,8 +246,7 @@ class _PuncherOrderDetailsScreenState extends State<PuncherOrderDetailsScreen> {
                     ),
                   ),
             const Spacer(),
-            if (widget.order.data?.status !=
-                PuncherOrderDetailsScreen.orderDoneStatus)
+            if (widget.order.data?.status != PuncherOrderDetailsScreen.orderDoneStatus)
               SizedBox(
                 width: double.infinity,
                 child: ChevronButton(

@@ -55,8 +55,7 @@ class DioHelper {
     return await dio!.get(url, queryParameters: query);
   }
 
-  Future<Response> deleteData(
-      {required url, Map<String, dynamic>? query, String? token}) async {
+  Future<Response> deleteData({required url, Map<String, dynamic>? query, String? token}) async {
     dio!.options.headers = {
       'content-type': 'application/json',
       'Authorization': token != null ? "Bearer $token" : "",
@@ -95,7 +94,7 @@ class DioHelper {
     };
     dio!.options.headers = {
       'Content-Type': contentType ?? 'application/json',
-      'Authorization': token != null ? "Bearer $token" : "",
+      if (token != null) 'Authorization': "Bearer $token",
       'Accept': 'application/json',
       'Connection': 'keep-alive',
       'Accept-Language': CacheManager.locale!.languageCode,

@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:future_hub/puncher/orders/model/service_provider_order_model.dart';
 import 'package:future_hub/puncher/orders/services/puncher_order_services.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'order_states/service_provider_order_states.dart';
 
@@ -26,8 +29,7 @@ class ServiceProviderOrdersCubit extends Cubit<ServiceProviderOrderStates> {
       cubitOrders = [];
     }
 
-    emit(ServiceProviderOrdersLoadingState(cubitOrders,
-        isFirstFetch: page == 1));
+    emit(ServiceProviderOrdersLoadingState(cubitOrders, isFirstFetch: page == 1));
 
     try {
       final newOrders = await _ordersService.fetchOrders(page: page);
@@ -79,8 +81,7 @@ class ServiceProviderOrdersCubit extends Cubit<ServiceProviderOrderStates> {
       page = 1;
       cubitOrders = [];
     }
-    emit(ServiceProviderOrdersServicesLoadingState(cubitOrders,
-        isFirstFetch: page == 1));
+    emit(ServiceProviderOrdersServicesLoadingState(cubitOrders, isFirstFetch: page == 1));
     try {
       final newOrders = await _ordersService.fetchServicesOrders(page: page);
       canLoadMore = newOrders.meta?.currentPage != newOrders.meta?.lastPage;
@@ -108,10 +109,8 @@ class ServiceProviderOrdersCubit extends Cubit<ServiceProviderOrderStates> {
     if (currentState is ServiceProviderServicesOrdersLoadedState) {
       oldOrders = currentState.orders;
     }
-    emit(ServiceProviderOrdersServicesLoadingState(oldOrders,
-        isFirstFetch: false));
-    var newOrders =
-        await _ordersService.fetchServicesOrders(page: 1, cache: false);
+    emit(ServiceProviderOrdersServicesLoadingState(oldOrders, isFirstFetch: false));
+    var newOrders = await _ordersService.fetchServicesOrders(page: 1, cache: false);
 
     cubitOrders = newOrders.data!;
     emit(
@@ -119,5 +118,13 @@ class ServiceProviderOrdersCubit extends Cubit<ServiceProviderOrderStates> {
         cubitOrders,
       ),
     );
+  }
+
+  //=========================== ocr plate ==========================
+
+  Future<bool> ocrScanPlate({required XFile image, required String vehicleId}) async {
+    var newOrders = await _ordersService.ocrPlate(image, vehicleId);
+
+    return newOrders;
   }
 }
