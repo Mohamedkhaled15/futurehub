@@ -80,32 +80,31 @@ class _OdometerImageScreenState extends State<OdometerImageScreen> {
       final ui.Codec codec = await ui.instantiateImageCodec(imageBytes);
       final ui.FrameInfo frameInfo = await codec.getNextFrame();
       final ui.Image fullImage = frameInfo.image;
-
-      // أبعاد الصورة الحقيقية من الكاميرا
+// أبعاد الصورة الحقيقية من الكاميرا
+      // 🟢 أبعاد الصورة الحقيقية
       final imageWidth = fullImage.width;
       final imageHeight = fullImage.height;
 
-      // أبعاد الـ preview اللي بتظهر على الشاشة
-      final previewSize = _controller!.value.previewSize!;
-      final previewWidth = previewSize.height; // مقلوبة
-      final previewHeight = previewSize.width;
+      // مقدار المسافة اللي نزودها (ممكن تزود الرقم على حسب التجربة)
+      final extraTop = MediaQuery.of(context).size.height * 0.2; // بكسل زيادة فوق
+      final extraBottom = MediaQuery.of(context).size.height * 0.2; // بكسل زيادة تحت
 
-      // 🟢 ابعاد المربع بتاعك على الشاشة (زي اللي عامل Container)
-      final overlayWidth = MediaQuery.of(context).size.width * 0.7;
+// أبعاد overlay الأصلية
+      final overlayWidth = MediaQuery.of(context).size.width * 0.8;
       final overlayHeight = MediaQuery.of(context).size.height * 0.15;
       final overlayLeft = (MediaQuery.of(context).size.width - overlayWidth) / 2;
-      final overlayTop = (MediaQuery.of(context).size.height - overlayHeight) / 2.4;
+      final overlayTop = (MediaQuery.of(context).size.height - overlayHeight) / 2;
 
-      // 🟢 حساب نسب التحويل من الـ UI للصورة
-      final scaleX = imageWidth / previewWidth;
-      final scaleY = imageHeight / previewHeight;
+// scale من الشاشة → الصورة
+      final scaleX = imageWidth / MediaQuery.of(context).size.width;
+      final scaleY = imageHeight / MediaQuery.of(context).size.height;
 
-      // 🟢 تحديد المربع بعد التحويل
+// 🟢 مستطيل القص مع المسافة الزيادة
       final cropRect = Rect.fromLTWH(
         overlayLeft * scaleX,
-        overlayTop * scaleY,
+        (overlayTop - extraTop) * scaleY,
         overlayWidth * scaleX,
-        overlayHeight * scaleY,
+        (overlayHeight + extraTop + extraBottom) * scaleY,
       );
 
       // 🟢 قص الجزء المطلوب
@@ -129,7 +128,7 @@ class _OdometerImageScreenState extends State<OdometerImageScreen> {
 
       // 🟢 حفظ الصورة في ملف
       final directory = await getApplicationDocumentsDirectory();
-      final croppedPath = '${directory.path}/cropped_odometer.png';
+      final croppedPath = '${directory.path}/odometer.png';
       await File(croppedPath).writeAsBytes(croppedBytes);
 
       setState(() {

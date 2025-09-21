@@ -388,5 +388,8 @@
   "enable": "تفعيل",
   "cancel": "الغاء",
   "plateMatched": "اللوحة متطابقة",
-  "plateNotMatched": "يرجى تصوير اللوحه عن قرب او تاكد من رقم اللوحه"
+  "plateNotMatched": "يرجى تصوير اللوحه عن قرب او تاكد من رقم اللوحه",
+  "confirmImage": "تأكيد الصورة",
+  "reTakeImage": "إعادة التصوير",
+  "confirm": "تأكيد"
 }

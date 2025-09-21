@@ -56,27 +56,39 @@ class _CarMeterScreenState extends State<CarMeterScreen> {
     final bytes = await File(file.path).readAsBytes();
     final decoded = img.decodeImage(bytes)!;
 
-    // أبعاد المستطيل البنفسجي (نفس اللي في build)
-    final containerWidth = MediaQuery.of(context).size.width * 0.7;
-    final containerHeight = MediaQuery.of(context).size.height * 0.15;
+    // 🟢 أبعاد الصورة الحقيقية
+    final imageWidth = decoded.width;
+    final imageHeight = decoded.height;
 
-    // احسب نسبة العرض/الارتفاع
-    final targetAspect = containerWidth / containerHeight;
+    // 🟢 أبعاد overlay (زي اللي في build)
+    final overlayWidth = MediaQuery.of(context).size.width * 0.7;
+    final overlayHeight = MediaQuery.of(context).size.height * 0.15;
+    final overlayLeft = (MediaQuery.of(context).size.width - overlayWidth) / 2;
+    final overlayTop = (MediaQuery.of(context).size.height - overlayHeight) / 2;
 
-    // بناءً على عرض الصورة الأصلية
-    final targetWidth = decoded.width;
-    final targetHeight = (decoded.width / targetAspect).toInt();
+    // 🟢 تزود مسافة فوق وتحت (تقدر تزود القيم دي للتجربة)
+    final extraTop = MediaQuery.of(context).size.height * 0.1;
+    final extraBottom = MediaQuery.of(context).size.height * 0.1;
 
-    // قص من النص
-    final offsetX = (decoded.width - targetWidth) ~/ 2;
-    final offsetY = (decoded.height - targetHeight) ~/ 2;
+    // 🟢 scale من الشاشة → الصورة
+    final scaleX = imageWidth / MediaQuery.of(context).size.width;
+    final scaleY = imageHeight / MediaQuery.of(context).size.height;
 
+    // 🟢 مستطيل الكروب
+    final cropRect = Rect.fromLTWH(
+      overlayLeft * scaleX,
+      (overlayTop - extraTop) * scaleY,
+      overlayWidth * scaleX,
+      (overlayHeight + extraTop + extraBottom) * scaleY,
+    );
+
+    // 🟢 قص الجزء المطلوب
     final cropped = img.copyCrop(
       decoded,
-      x: offsetX,
-      y: offsetY,
-      width: targetWidth,
-      height: targetHeight,
+      x: cropRect.left.toInt().clamp(0, imageWidth),
+      y: cropRect.top.toInt().clamp(0, imageHeight),
+      width: cropRect.width.toInt().clamp(0, imageWidth),
+      height: cropRect.height.toInt().clamp(0, imageHeight),
     );
 
     final directory = await getApplicationDocumentsDirectory();

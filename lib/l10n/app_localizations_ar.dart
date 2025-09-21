@@ -1170,4 +1170,21 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
  
   String get plateNotMatched => 'اللوحة غير  منطابقة، حاول تاني';
+  
+  @override
+ 
+  String get confirm => 'تاكيد';
+  
+  @override
+ 
+  String get reTakeImage => 'إعادة التصوير';
+  
+  @override
+ 
+  String get confirmImage => 'تاكيد الصورة';
+  
+ 
+  
+ 
+
 }

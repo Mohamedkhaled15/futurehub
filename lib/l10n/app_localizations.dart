@@ -2259,6 +2259,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Plate Matched'**
   String get plateMatched;
+
+  /// No description provided for @confirmImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Image'**
+  String get confirmImage;
+
+  /// No description provided for @reTakeImage.
+  ///
+  /// In en, this message translates to:
+  /// **'reTake Image'**
+  String get reTakeImage;
+
+  /// No description provided for @confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
 }
 
 class _AppLocalizationsDelegate

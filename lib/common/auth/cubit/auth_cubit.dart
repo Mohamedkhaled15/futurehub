@@ -57,6 +57,7 @@ class AuthCubit extends Cubit<AuthState> {
       // Client.authenticate(token);
       final user = await _authService.me();
       await login(user, token);
+      
     } catch (error) {
       debugPrint("Error is ${error.toString()}");
       // Client.authenticate(null);

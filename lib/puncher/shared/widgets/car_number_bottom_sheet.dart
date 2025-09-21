@@ -12,7 +12,6 @@ import 'package:future_hub/common/shared/palette.dart';
 import 'package:future_hub/common/shared/widgets/chevron_app_bar.dart';
 import 'package:future_hub/common/shared/widgets/flutter_toast.dart';
 import 'package:future_hub/puncher/orders/order_cubit/service_provider_orders_cubit.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -39,7 +38,7 @@ class CarNumberScreen extends StatefulWidget {
 class _CarNumberScreenState extends State<CarNumberScreen> {
   XFile? editedImage;
   bool isLoading = false;
-  static Position? position;
+
   late bool scanWithAi;
   CameraController? _controller;
 
@@ -68,33 +67,6 @@ class _CarNumberScreenState extends State<CarNumberScreen> {
     if (mounted) setState(() {});
   }
 
-  /// ✂️ دالة لقص الصورة داخل مستطيل
-  Future<Uint8List> _cropImage(String imagePath, Rect cropRect) async {
-    final Uint8List imageBytes = await File(imagePath).readAsBytes();
-    final ui.Codec codec = await ui.instantiateImageCodec(imageBytes);
-    final ui.FrameInfo frameInfo = await codec.getNextFrame();
-    final ui.Image fullImage = frameInfo.image;
-
-    final recorder = ui.PictureRecorder();
-    final canvas = Canvas(recorder);
-
-    // قص الجزء المطلوب
-    canvas.drawImageRect(
-      fullImage,
-      cropRect, // الجزء اللي هيتقص
-      Rect.fromLTWH(0, 0, cropRect.width, cropRect.height), // الحجم الجديد
-      Paint(),
-    );
-
-    final ui.Image cropped = await recorder.endRecording().toImage(
-          cropRect.width.toInt(),
-          cropRect.height.toInt(),
-        );
-
-    final byteData = await cropped.toByteData(format: ui.ImageByteFormat.png);
-    return byteData!.buffer.asUint8List();
-  }
-
   Future<void> _captureAndValidate() async {
     if (_controller == null || !_controller!.value.isInitialized) return;
 
@@ -107,30 +79,30 @@ class _CarNumberScreenState extends State<CarNumberScreen> {
       final ui.Image fullImage = frameInfo.image;
 
       // أبعاد الصورة الحقيقية من الكاميرا
+      // 🟢 أبعاد الصورة الحقيقية
       final imageWidth = fullImage.width;
       final imageHeight = fullImage.height;
 
-      // أبعاد الـ preview اللي بتظهر على الشاشة
-      final previewSize = _controller!.value.previewSize!;
-      final previewWidth = previewSize.height; // مقلوبة
-      final previewHeight = previewSize.width;
+      // مقدار المسافة اللي نزودها (ممكن تزود الرقم على حسب التجربة)
+      final extraTop = MediaQuery.of(context).size.height * 0.2; // بكسل زيادة فوق
+      final extraBottom = MediaQuery.of(context).size.height * 0.2; // بكسل زيادة تحت
 
-      // 🟢 ابعاد المربع بتاعك على الشاشة (زي اللي عامل Container)
-      final overlayWidth = MediaQuery.of(context).size.width * 0.7;
+// أبعاد overlay الأصلية
+      final overlayWidth = MediaQuery.of(context).size.width * 0.8;
       final overlayHeight = MediaQuery.of(context).size.height * 0.15;
       final overlayLeft = (MediaQuery.of(context).size.width - overlayWidth) / 2;
-      final overlayTop = (MediaQuery.of(context).size.height - overlayHeight) / 2.4;
+      final overlayTop = (MediaQuery.of(context).size.height - overlayHeight) / 2;
 
-      // 🟢 حساب نسب التحويل من الـ UI للصورة
-      final scaleX = imageWidth / previewWidth;
-      final scaleY = imageHeight / previewHeight;
+// scale من الشاشة → الصورة
+      final scaleX = imageWidth / MediaQuery.of(context).size.width;
+      final scaleY = imageHeight / MediaQuery.of(context).size.height;
 
-      // 🟢 تحديد المربع بعد التحويل
+// 🟢 مستطيل القص مع المسافة الزيادة
       final cropRect = Rect.fromLTWH(
         overlayLeft * scaleX,
-        overlayTop * scaleY,
+        (overlayTop - extraTop) * scaleY,
         overlayWidth * scaleX,
-        overlayHeight * scaleY,
+        (overlayHeight + extraTop + extraBottom) * scaleY,
       );
 
       // 🟢 قص الجزء المطلوب
@@ -152,9 +124,16 @@ class _CarNumberScreenState extends State<CarNumberScreen> {
       final byteData = await cropped.toByteData(format: ui.ImageByteFormat.png);
       final croppedBytes = byteData!.buffer.asUint8List();
 
+      // 🟢 عرض Dialog للتأكيد
+      final confirmed = await _showConfirmDialog(croppedBytes);
+      if (!confirmed) {
+        setState(() => isLoading = false);
+        return;
+      }
+
       // 🟢 حفظ الصورة في ملف
       final directory = await getApplicationDocumentsDirectory();
-      final croppedPath = '${directory.path}/cropped_odometer.png';
+      final croppedPath = '${directory.path}/plate.png';
       await File(croppedPath).writeAsBytes(croppedBytes);
 
       setState(() {
@@ -172,10 +151,6 @@ class _CarNumberScreenState extends State<CarNumberScreen> {
       } else {
         if (scanWithAi == false) {
           _otpBottomSheet();
-          // showToast(
-          //   text: AppLocalizations.of(context)!.plateNotMatched,
-          //   state: ToastStates.error,
-          // );
         } else {
           showToast(
             text: AppLocalizations.of(context)!.plateNotMatched,
@@ -188,6 +163,30 @@ class _CarNumberScreenState extends State<CarNumberScreen> {
     } finally {
       setState(() => isLoading = false);
     }
+  }
+
+  Future<bool> _showConfirmDialog(Uint8List croppedBytes) async {
+    final t = AppLocalizations.of(context)!;
+    return await showDialog<bool>(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text(t.confirmImage),
+              content: Image.memory(croppedBytes),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: Text(t.reTakeImage),
+                ),
+                ElevatedButton(
+                  onPressed: () => Navigator.pop(context, true),
+                  child: Text(t.confirm),
+                ),
+              ],
+            );
+          },
+        ) ??
+        false;
   }
 
   Future<bool> uploadImageAndValidate(XFile image) async {
@@ -236,7 +235,7 @@ class _CarNumberScreenState extends State<CarNumberScreen> {
           ? const Center(child: CircularProgressIndicator())
           : Stack(
               children: [
-                CameraPreview(_controller!),
+                Center(child: CameraPreview(_controller!)),
                 const CameraOverlay(),
                 Positioned(
                   left: 20,
@@ -244,7 +243,7 @@ class _CarNumberScreenState extends State<CarNumberScreen> {
                   child: Image.asset(
                     "assets/images/plateImage.png",
                     height: MediaQuery.of(context).size.height * 0.2,
-                    filterQuality: FilterQuality.none, // Disable mipmapping
+                    filterQuality: FilterQuality.none,
                     isAntiAlias: false,
                   ),
                 )

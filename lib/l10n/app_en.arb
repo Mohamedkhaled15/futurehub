@@ -358,5 +358,8 @@
   "enable": "enable",
   "cancel": "cancel",
   "plateNotMatched": "Please take a picture of the plate or check the plate number",
-  "plateMatched": "Plate Matched"
+  "plateMatched": "Plate Matched",
+  "confirmImage": "Confirm Image",
+  "reTakeImage": "reTake Image",
+  "confirm": "Confirm"
 }

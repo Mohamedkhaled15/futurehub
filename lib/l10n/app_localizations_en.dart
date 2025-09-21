@@ -1145,4 +1145,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get plateNotMatched => 'Plate Not Matched';
+
+  @override
+  String get confirm => 'confirm';
+
+  @override
+  String get reTakeImage => 'reTake Image';
+
+  @override
+  String get confirmImage => 'Confirm Image';
 }

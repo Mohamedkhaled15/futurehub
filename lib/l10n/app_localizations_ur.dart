@@ -1148,4 +1148,12 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get plateNotMatched => 'پلیٹ غیر  منطابق، دوبارہ کوشش کریں۔';
+  @override
+  String get confirm => 'تصدیق';
+
+  @override
+  String get reTakeImage => 'پلیٹ کی تصویر دیں';
+
+  @override
+  String get confirmImage => 'تصویر کی تصدیق';
 }

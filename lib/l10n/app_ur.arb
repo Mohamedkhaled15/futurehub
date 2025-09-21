@@ -373,5 +373,8 @@
   "enable": "تفعیل",
   "cancel": "کنسل",
   "plateMatched": "پلیٹ متطابق",
-  "plateNotMatched": "براہ کرم پلیٹ کی تصویر دیں او لوڈ کریں"
+  "plateNotMatched": "براہ کرم پلیٹ کی تصویر دیں او لوڈ کریں",
+  "confirmImage": "تصویر کی تصدیق",
+  "reTakeImage": "پلیٹ کی تصویر دیں",
+  "confirm": "تصدیق"
 }

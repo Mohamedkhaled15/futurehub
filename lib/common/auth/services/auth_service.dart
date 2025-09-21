@@ -9,6 +9,7 @@ import 'package:future_hub/common/auth/models/app_version_model.dart';
 import 'package:future_hub/common/auth/models/check_user.dart';
 import 'package:future_hub/common/auth/models/user.dart';
 import 'package:future_hub/common/notifications/services/notifications_service.dart';
+import 'package:future_hub/common/shared/router.dart';
 import 'package:future_hub/common/shared/services/remote/dio_manager.dart';
 import 'package:future_hub/common/shared/services/remote/end_points.dart';
 import 'package:future_hub/common/shared/utils/cache_manager.dart';
@@ -27,8 +28,7 @@ class AuthService {
         data: {'mobile': phone},
       );
       debugPrint(response.runtimeType.toString());
-      final responseData =
-          response.data is String ? jsonDecode(response.data) : response.data;
+      final responseData = response.data is String ? jsonDecode(response.data) : response.data;
       // Parse the response into the CheckUser model
       checkUser = CheckUser.fromJson(responseData);
 
@@ -152,8 +152,7 @@ class AuthService {
     required String confirmPassword,
     required int id,
   }) async {
-    const String resetPasswordEndpoint =
-        ApiConstants.setPassword; // Adjust the endpoint as needed
+    const String resetPasswordEndpoint = ApiConstants.setPassword; // Adjust the endpoint as needed
 
     try {
       final response = await _dioHelper.postData(
@@ -265,8 +264,7 @@ class AuthService {
           if (e is FirebaseException &&
               e.code == 'unknown' &&
               e.message!.contains('SERVICE_NOT_AVAILABLE')) {
-            debugPrint(
-                'FCM token attempt $attempt/$maxRetries failed: SERVICE_NOT_AVAILABLE');
+            debugPrint('FCM token attempt $attempt/$maxRetries failed: SERVICE_NOT_AVAILABLE');
 
             if (attempt < maxRetries) {
               await Future.delayed(retryDelay);
@@ -334,8 +332,7 @@ class AuthService {
         user: user,
       );
     } on DioException catch (e) {
-      final errorMessage =
-          e.response?.data['message'] ?? 'Network error: ${e.message}';
+      final errorMessage = e.response?.data['message'] ?? 'Network error: ${e.message}';
       throw Exception(errorMessage);
     } catch (e) {
       throw Exception('Login failed: ${e.toString()}');
@@ -538,12 +535,11 @@ class AuthService {
           //       : null,
           // );
         } else {
-          throw FetchException(
-              responseData['message'] ?? 'Failed to fetch user');
+          throw FetchException(responseData['message'] ?? 'Failed to fetch user');
         }
       } else {
-        throw FetchException(
-            'Failed to fetch user with status code ${response.statusCode}');
+        router.go('/login');
+        throw FetchException('Failed to fetch user with status code ${response.statusCode}');
       }
     } catch (e) {
       debugPrint("Error fetching user data: $e");
@@ -554,8 +550,8 @@ class AuthService {
   Future<AppVersion> checkAppVersion() async {
     String version = await NotificationsService().getAppVersion();
     try {
-      final response = await _dioHelper.getData(
-          url: ApiConstants.getAppVersion, query: {'app_version': version});
+      final response = await _dioHelper
+          .getData(url: ApiConstants.getAppVersion, query: {'app_version': version});
       if (response.statusCode == 200) {
         final responseData = response.data;
 
@@ -603,12 +599,10 @@ class AuthService {
           //       : null,
           // );
         } else {
-          throw FetchException(
-              responseData['message'] ?? 'Failed to fetch user');
+          throw FetchException(responseData['message'] ?? 'Failed to fetch user');
         }
       } else {
-        throw FetchException(
-            'Failed to fetch user with status code ${response.statusCode}');
+        throw FetchException('Failed to fetch user with status code ${response.statusCode}');
       }
     } catch (e) {
       debugPrint("Error fetching user data: $e");
