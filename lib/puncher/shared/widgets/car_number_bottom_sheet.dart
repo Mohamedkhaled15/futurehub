@@ -88,7 +88,7 @@ class _CarNumberScreenState extends State<CarNumberScreen> {
 
       // المقاسات حسب شاشة الموبايل
       final overlayWidth = MediaQuery.of(context).size.width * 0.9;
-      final overlayHeight = MediaQuery.of(context).size.height * 0.6;
+      final overlayHeight = MediaQuery.of(context).size.height * 0.7;
       final overlayLeft = (MediaQuery.of(context).size.width - overlayWidth) / 2;
       final overlayTop = (MediaQuery.of(context).size.height - overlayHeight) / 2;
 
@@ -207,29 +207,6 @@ class _CarNumberScreenState extends State<CarNumberScreen> {
     return byteData!.buffer.asUint8List();
   }
 
-  // Future<bool> _showConfirmDialog(Uint8List croppedBytes) async {
-  //   final t = AppLocalizations.of(context)!;
-  //   return await showDialog<bool>(
-  //         context: context,
-  //         builder: (context) {
-  //           return AlertDialog(
-  //             title: Text(t.confirmImage),
-  //             content: Image.memory(croppedBytes),
-  //             actions: [
-  //               TextButton(
-  //                 onPressed: () => Navigator.pop(context, false),
-  //                 child: Text(t.reTakeImage),
-  //               ),
-  //               ElevatedButton(
-  //                 onPressed: () => Navigator.pop(context, true),
-  //                 child: Text(t.confirm),
-  //               ),
-  //             ],
-  //           );
-  //         },
-  //       ) ??
-  //       false;
-  // }
 
   Future<bool> uploadImageAndValidate(XFile image) async {
     try {
