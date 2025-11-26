@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart' hide Notification;
-import '../../../l10n/app_localizations.dart';
 import 'package:future_hub/common/notifications/models/notification_model.dart';
 import 'package:future_hub/common/shared/palette.dart';
 import 'package:future_hub/common/shared/utils/cache_manager.dart';
 import 'package:timeago/timeago.dart' as timeago;
+
+import '../../../l10n/app_localizations.dart';
 
 class NotificationItem extends StatelessWidget {
   final NotifactionData notification;
@@ -17,12 +18,10 @@ class NotificationItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    final time = notification.createdAt != null
-        ? timeago.format(
-            DateTime.parse(notification.createdAt),
-            locale: t.localeName,
-          )
-        : null;
+    final time = timeago.format(
+      DateTime.parse(notification.createdAt),
+      locale: t.localeName,
+    );
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -30,9 +29,7 @@ class NotificationItem extends StatelessWidget {
         vertical: 16.0,
       ),
       decoration: BoxDecoration(
-        color: notification.seen == 1
-            ? Palette.whiteColor
-            : Palette.primaryColor.withOpacity(0.1),
+        color: notification.seen == 1 ? Palette.whiteColor : Palette.primaryColor.withOpacity(0.1),
         border: notification.seen == 0
             ? null
             : Border(
@@ -78,8 +75,7 @@ class NotificationItem extends StatelessWidget {
                   if (time != null)
                     Text(
                       time,
-                      style: theme.textTheme.bodySmall!
-                          .copyWith(color: Palette.blackColor),
+                      style: theme.textTheme.bodySmall!.copyWith(color: Palette.blackColor),
                     )
                 ],
               ),

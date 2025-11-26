@@ -147,6 +147,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 class FutureHubApp extends StatelessWidget {
   const FutureHubApp({super.key});
 
+
   @override
   Widget build(BuildContext context) {
     genContext = context;

@@ -119,6 +119,7 @@ class _EmployeeHomeCarouselState extends State<EmployeeHomeCarousel> {
       ];
       isLoading = false;
     });
+  
   }
 
   @override

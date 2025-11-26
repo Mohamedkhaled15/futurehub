@@ -72,7 +72,7 @@ class _FuelOrderScreenState extends State<FuelOrderScreen> {
   void _updateFuelPrice() {
     if (widget.order.data.fuelType == "Diesel") {
       // Diesel case: litrePrice is a String
-      fuelPrice = double.parse(widget.order.data.litrePrice as String);
+      fuelPrice = double.tryParse(widget.order.data.litrePrice ?? "0.0") ?? 0.0;
       selectedFuelId = widget.order.data.productId;
     } else {
       // Petrol case: litrePrice is a LitrePrice object

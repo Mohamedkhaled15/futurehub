@@ -80,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final state = context.read<AuthCubit>().state;
       if (state is ForceUpdateRequired) {
-        _showForceUpdateSheet();
+       // _showForceUpdateSheet();
       }
     });
   }

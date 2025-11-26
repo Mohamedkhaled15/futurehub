@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../l10n/app_localizations.dart';
 import 'package:future_hub/common/shared/palette.dart';
 import 'package:future_hub/common/shared/utils/cache_manager.dart';
 import 'package:future_hub/common/shared/widgets/chevron_app_bar.dart';
@@ -8,6 +7,7 @@ import 'package:future_hub/company/companyOrders/model/order_company_model.dart'
 import 'package:future_hub/employee/orders/cubit/order_cubit.dart';
 import 'package:future_hub/employee/orders/cubit/order_state.dart';
 
+import '../../../l10n/app_localizations.dart';
 import 'order_card.dart';
 
 class CompanyOrderDetailsScreen extends StatefulWidget {
@@ -20,12 +20,10 @@ class CompanyOrderDetailsScreen extends StatefulWidget {
   final bool showActivate;
 
   @override
-  State<CompanyOrderDetailsScreen> createState() =>
-      _CompanyOrdersDetailsScreenState();
+  State<CompanyOrderDetailsScreen> createState() => _CompanyOrdersDetailsScreenState();
 }
 
-class _CompanyOrdersDetailsScreenState
-    extends State<CompanyOrderDetailsScreen> {
+class _CompanyOrdersDetailsScreenState extends State<CompanyOrderDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
@@ -73,7 +71,7 @@ class _CompanyOrdersDetailsScreenState
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.order!.driverName ?? '',
+                          widget.order.driverName ?? '',
                           style: theme.textTheme.bodyMedium!.copyWith(
                             fontSize: 23,
                           ),
@@ -81,30 +79,21 @@ class _CompanyOrdersDetailsScreenState
                         SizedBox(
                           height: size.height * 0.01,
                         ),
-                        Text(
-                            '${t.reference_number} ${widget.order.referenceNumber}',
+                        Text('${t.reference_number} ${widget.order.referenceNumber}',
                             style: const TextStyle(
-                                fontSize: 14,
-                                color: Palette.blackColor,
-                                height: 1)),
+                                fontSize: 14, color: Palette.blackColor, height: 1)),
                         SizedBox(
                           height: size.height * 0.01,
                         ),
-                        Text(
-                            '${t.literCount} ${widget.order.totalQuantity} ${t.liter}',
+                        Text('${t.literCount} ${widget.order.totalQuantity} ${t.liter}',
                             style: const TextStyle(
-                                fontSize: 14,
-                                color: Palette.blackColor,
-                                height: 1)),
+                                fontSize: 14, color: Palette.blackColor, height: 1)),
                         SizedBox(
                           height: size.height * 0.01,
                         ),
-                        Text(
-                            '${t.price} ${widget.order.totalPrice?.toStringAsFixed(2)} ${t.sar}',
+                        Text('${t.price} ${widget.order.totalPrice?.toStringAsFixed(2)} ${t.sar}',
                             style: const TextStyle(
-                                fontSize: 14,
-                                color: Palette.blackColor,
-                                height: 1)),
+                                fontSize: 14, color: Palette.blackColor, height: 1)),
                         SizedBox(
                           height: size.height * 0.01,
                         ),
@@ -137,12 +126,10 @@ class _CompanyOrdersDetailsScreenState
                     children: [
                       TextSpan(
                         text: t.products,
-                        style:
-                            theme.textTheme.titleLarge!.copyWith(fontSize: 20),
+                        style: theme.textTheme.titleLarge!.copyWith(fontSize: 20),
                       ),
                       TextSpan(
-                        text:
-                            "    (${t.count_products(widget.order.products!.length)})",
+                        text: "    (${t.count_products(widget.order.products!.length)})",
                         style: theme.textTheme.bodySmall!.copyWith(
                           fontSize: 12,
                           color: Palette.primaryLightColor,

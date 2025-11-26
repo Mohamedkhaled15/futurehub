@@ -129,7 +129,7 @@ class PuncherOrderServices {
       final response = await _dioHelper.postData(
         url: ApiConstants.readPlate,
         data: formData,
-        // token: token,
+        token: token,
         contentType: 'multipart/form-data',
       );
 

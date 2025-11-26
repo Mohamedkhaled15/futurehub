@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:future_hub/common/auth/cubit/auth_cubit.dart';
 import 'package:future_hub/common/auth/cubit/auth_state.dart';
@@ -21,6 +20,8 @@ import 'package:future_hub/company/employees/widgets/employee_list_item.dart';
 import 'package:future_hub/company/home/widget/company_bottom_navbar.dart';
 import 'package:future_hub/puncher/components/past_order_card.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../l10n/app_localizations.dart';
 
 class CompanyHomeScreen extends StatefulWidget {
   const CompanyHomeScreen({
@@ -80,9 +81,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                 duration: const Duration(milliseconds: 300),
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.2),
-                  borderRadius: isDrawerOpen
-                      ? BorderRadius.circular(40)
-                      : BorderRadius.circular(0),
+                  borderRadius: isDrawerOpen ? BorderRadius.circular(40) : BorderRadius.circular(0),
                 ),
               ),
               AnimatedContainer(
@@ -108,9 +107,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                 duration: const Duration(milliseconds: 300),
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.2),
-                  borderRadius: isDrawerOpen
-                      ? BorderRadius.circular(40)
-                      : BorderRadius.circular(0),
+                  borderRadius: isDrawerOpen ? BorderRadius.circular(40) : BorderRadius.circular(0),
                 ),
               ),
               AnimatedContainer(
@@ -136,9 +133,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                 duration: const Duration(milliseconds: 300),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: isDrawerOpen
-                      ? BorderRadius.circular(40)
-                      : BorderRadius.circular(0),
+                  borderRadius: isDrawerOpen ? BorderRadius.circular(40) : BorderRadius.circular(0),
                 ),
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: paddingTop),
@@ -154,9 +149,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                             child: Transform.flip(
                               flipX: !arabic,
                               child: SvgPicture.asset(
-                                isDrawerOpen
-                                    ? 'assets/icons/close.svg'
-                                    : 'assets/icons/drawer.svg',
+                                isDrawerOpen ? 'assets/icons/close.svg' : 'assets/icons/drawer.svg',
                                 height: isDrawerOpen ? 40 : 20,
                               ),
                             ),
@@ -176,10 +169,11 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Image.asset('assets/images/trekker.png',
-                            filterQuality:
-                                FilterQuality.none, // Disable mipmapping
-                            isAntiAlias: false,),
+                                  Image.asset(
+                                    'assets/images/trekker.png',
+                                    filterQuality: FilterQuality.none, // Disable mipmapping
+                                    isAntiAlias: false,
+                                  ),
                                   const SizedBox(
                                     width: 10,
                                   ),
@@ -197,21 +191,17 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                                 height: 20,
                               ),
                               Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 14.0),
+                                padding: const EdgeInsets.symmetric(horizontal: 14.0),
                                 child: GestureDetector(
                                   onTap: widget.onTapBalance,
                                   child: BlocBuilder<AuthCubit, AuthState>(
                                     builder: (context, state) {
                                       return Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
                                           Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
+                                            mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               GestureDetector(
                                                 onTap: () {
@@ -222,32 +212,28 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                                                 child: Container(
                                                   decoration: BoxDecoration(
                                                     color: Colors.white,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20.0),
+                                                    borderRadius: BorderRadius.circular(20.0),
                                                     boxShadow: [
                                                       BoxShadow(
-                                                        color: Colors.grey
-                                                            .withOpacity(0.2),
+                                                        color: Colors.grey.withOpacity(0.2),
                                                         spreadRadius: 2,
                                                         blurRadius: 4,
-                                                        offset: const Offset(0,
-                                                            3), // changes position of shadow
+                                                        offset: const Offset(
+                                                            0, 3), // changes position of shadow
                                                       ),
                                                     ],
                                                   ),
-                                                  padding: const EdgeInsets.all(
-                                                      16.0),
+                                                  padding: const EdgeInsets.all(16.0),
                                                   child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center, // Center elements in the container
+                                                    crossAxisAlignment: CrossAxisAlignment
+                                                        .center, // Center elements in the container
                                                     children: [
                                                       Image.asset(
-                                                          'assets/images/Group 7.png',
-                            filterQuality:
-                                FilterQuality.none, // Disable mipmapping
-                            isAntiAlias: false,),
+                                                        'assets/images/Group 7.png',
+                                                        filterQuality: FilterQuality
+                                                            .none, // Disable mipmapping
+                                                        isAntiAlias: false,
+                                                      ),
                                                       const SizedBox(height: 5),
                                                       Text(
                                                         (state as AuthSignedIn)
@@ -256,22 +242,18 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                                                             .ordersCount
                                                             .toString(),
                                                         style: const TextStyle(
-                                                          color: Palette
-                                                              .blackColor,
+                                                          color: Palette.blackColor,
                                                           fontSize: 22,
-                                                          fontWeight:
-                                                              FontWeight.w600,
+                                                          fontWeight: FontWeight.w600,
                                                         ),
                                                       ),
                                                       const SizedBox(height: 5),
                                                       Text(
                                                         t.order_total,
                                                         style: const TextStyle(
-                                                          color:
-                                                              Palette.greyColor,
+                                                          color: Palette.greyColor,
                                                           fontSize: 14,
-                                                          fontWeight:
-                                                              FontWeight.w400,
+                                                          fontWeight: FontWeight.w400,
                                                         ),
                                                       ),
                                                     ],
@@ -288,47 +270,41 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                                                 child: Container(
                                                   decoration: BoxDecoration(
                                                     color: Colors.white,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20.0),
+                                                    borderRadius: BorderRadius.circular(20.0),
                                                     boxShadow: [
                                                       BoxShadow(
-                                                        color: Colors.grey
-                                                            .withOpacity(0.2),
+                                                        color: Colors.grey.withOpacity(0.2),
                                                         spreadRadius: 2,
                                                         blurRadius: 4,
-                                                        offset: const Offset(0,
-                                                            3), // changes position of shadow
+                                                        offset: const Offset(
+                                                            0, 3), // changes position of shadow
                                                       ),
                                                     ],
                                                   ),
-                                                  padding: const EdgeInsets.all(
-                                                      16.0),
+                                                  padding: const EdgeInsets.all(16.0),
                                                   child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center, // Center elements in the container
+                                                    crossAxisAlignment: CrossAxisAlignment
+                                                        .center, // Center elements in the container
                                                     children: [
                                                       Image.asset(
-                                                          'assets/images/Group 7.png',
-                            filterQuality:
-                                FilterQuality.none, // Disable mipmapping
-                            isAntiAlias: false,),
+                                                        'assets/images/Group 7.png',
+                                                        filterQuality: FilterQuality
+                                                            .none, // Disable mipmapping
+                                                        isAntiAlias: false,
+                                                      ),
                                                       const SizedBox(
                                                         height: 5,
                                                       ),
                                                       Text(
-                                                        (state as AuthSignedIn)
+                                                        (state)
                                                             .user
                                                             .company!
                                                             .vehiclesCount
                                                             .toString(),
                                                         style: const TextStyle(
-                                                          color: Palette
-                                                              .blackColor,
+                                                          color: Palette.blackColor,
                                                           fontSize: 22,
-                                                          fontWeight:
-                                                              FontWeight.w600,
+                                                          fontWeight: FontWeight.w600,
                                                         ),
                                                       ),
                                                       const SizedBox(
@@ -337,11 +313,9 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                                                       Text(
                                                         t.vicheleNumber,
                                                         style: const TextStyle(
-                                                          color:
-                                                              Palette.greyColor,
+                                                          color: Palette.greyColor,
                                                           fontSize: 14,
-                                                          fontWeight:
-                                                              FontWeight.w400,
+                                                          fontWeight: FontWeight.w400,
                                                         ),
                                                       ),
                                                     ],
@@ -354,59 +328,48 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                                             width: 50,
                                           ),
                                           Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
+                                            mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               GestureDetector(
                                                 onTap: () {
-                                                  context.push(
-                                                      '/company/employee');
+                                                  context.push('/company/employee');
                                                 },
                                                 child: Container(
                                                   decoration: BoxDecoration(
                                                     color: Colors.white,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20.0),
+                                                    borderRadius: BorderRadius.circular(20.0),
                                                     boxShadow: [
                                                       BoxShadow(
-                                                        color: Colors.grey
-                                                            .withOpacity(0.2),
+                                                        color: Colors.grey.withOpacity(0.2),
                                                         spreadRadius: 2,
                                                         blurRadius: 4,
-                                                        offset: const Offset(0,
-                                                            3), // changes position of shadow
+                                                        offset: const Offset(
+                                                            0, 3), // changes position of shadow
                                                       ),
                                                     ],
                                                   ),
-                                                  padding: const EdgeInsets.all(
-                                                      16.0),
+                                                  padding: const EdgeInsets.all(16.0),
                                                   child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center, // Center elements in the container
+                                                    crossAxisAlignment: CrossAxisAlignment
+                                                        .center, // Center elements in the container
                                                     children: [
                                                       Image.asset(
-                                                          'assets/images/Group 7.png',
-                            filterQuality:
-                                FilterQuality.none, // Disable mipmapping
-                            isAntiAlias: false,),
+                                                        'assets/images/Group 7.png',
+                                                        filterQuality: FilterQuality
+                                                            .none, // Disable mipmapping
+                                                        isAntiAlias: false,
+                                                      ),
                                                       const SizedBox(
                                                         height: 5,
                                                       ),
                                                       Text(
-                                                        t.count_employees(
-                                                            num.parse(state
-                                                                .user
-                                                                .company!
-                                                                .driversCount
-                                                                .toString())),
+                                                        t.count_employees(num.parse(state
+                                                            .user.company!.driversCount
+                                                            .toString())),
                                                         style: const TextStyle(
-                                                          color: Palette
-                                                              .blackColor,
+                                                          color: Palette.blackColor,
                                                           fontSize: 22,
-                                                          fontWeight:
-                                                              FontWeight.w600,
+                                                          fontWeight: FontWeight.w600,
                                                         ),
                                                       ),
                                                       const SizedBox(
@@ -415,11 +378,9 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                                                       Text(
                                                         t.employees,
                                                         style: const TextStyle(
-                                                          color:
-                                                              Palette.greyColor,
+                                                          color: Palette.greyColor,
                                                           fontSize: 14,
-                                                          fontWeight:
-                                                              FontWeight.w400,
+                                                          fontWeight: FontWeight.w400,
                                                         ),
                                                       ),
                                                     ],
@@ -432,45 +393,37 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                                               Container(
                                                 decoration: BoxDecoration(
                                                   color: Colors.white,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          20.0),
+                                                  borderRadius: BorderRadius.circular(20.0),
                                                   boxShadow: [
                                                     BoxShadow(
-                                                      color: Colors.grey
-                                                          .withOpacity(0.2),
+                                                      color: Colors.grey.withOpacity(0.2),
                                                       spreadRadius: 2,
                                                       blurRadius: 4,
-                                                      offset: const Offset(0,
-                                                          3), // changes position of shadow
+                                                      offset: const Offset(
+                                                          0, 3), // changes position of shadow
                                                     ),
                                                   ],
                                                 ),
-                                                padding:
-                                                    const EdgeInsets.all(16.0),
+                                                padding: const EdgeInsets.all(16.0),
                                                 child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment
-                                                          .center, // Center elements in the container
+                                                  crossAxisAlignment: CrossAxisAlignment
+                                                      .center, // Center elements in the container
                                                   children: [
                                                     Image.asset(
-                                                        'assets/images/down.png',
-                            filterQuality:
-                                FilterQuality.none, // Disable mipmapping
-                            isAntiAlias: false,),
+                                                      'assets/images/down.png',
+                                                      filterQuality:
+                                                          FilterQuality.none, // Disable mipmapping
+                                                      isAntiAlias: false,
+                                                    ),
                                                     const SizedBox(
                                                       height: 13,
                                                     ),
                                                     Text(
-                                                      (state as AuthSignedIn)
-                                                          .user
-                                                          .balance!,
+                                                      (state).user.balance!,
                                                       style: const TextStyle(
-                                                        color:
-                                                            Palette.blackColor,
+                                                        color: Palette.blackColor,
                                                         fontSize: 22,
-                                                        fontWeight:
-                                                            FontWeight.w600,
+                                                        fontWeight: FontWeight.w600,
                                                       ),
                                                     ),
                                                     const SizedBox(
@@ -479,11 +432,9 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                                                     Text(
                                                       t.balance,
                                                       style: const TextStyle(
-                                                        color:
-                                                            Palette.greyColor,
+                                                        color: Palette.greyColor,
                                                         fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w400,
+                                                        fontWeight: FontWeight.w400,
                                                       ),
                                                     ),
                                                   ],
@@ -580,8 +531,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                               ],
                             ),
                             child: Column(
-                              mainAxisSize: MainAxisSize
-                                  .min, // Content wraps based on child size
+                              mainAxisSize: MainAxisSize.min, // Content wraps based on child size
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 // Purple Header Section
@@ -594,18 +544,17 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                                       topRight: Radius.circular(26.0),
                                     ), // Rounded top corners
                                   ),
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 20.0, horizontal: 30.0),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 20.0, horizontal: 30.0),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Image.asset('assets/images/vector.png',
-                            filterQuality:
-                                FilterQuality.none, // Disable mipmapping
-                            isAntiAlias: false,),
-                                      const SizedBox(
-                                          width:
-                                              10), // Spacing between icon and text
+                                      Image.asset(
+                                        'assets/images/vector.png',
+                                        filterQuality: FilterQuality.none, // Disable mipmapping
+                                        isAntiAlias: false,
+                                      ),
+                                      const SizedBox(width: 10), // Spacing between icon and text
                                       Text(
                                         t.lastOrders,
                                         style: theme.textTheme.titleLarge!
@@ -620,8 +569,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                                   padding: const EdgeInsets.all(20.0),
                                   child: SizedBox(
                                     height: 250, // Adjust height as needed
-                                    child: BlocBuilder<CompanyOrderCubit,
-                                        CompanyOrderState>(
+                                    child: BlocBuilder<CompanyOrderCubit, CompanyOrderState>(
                                       builder: (context, state) {
                                         if (state is CompanyOrderLoadingState &&
                                             state.isFirstFetch) {
@@ -632,32 +580,25 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                                         bool canLoadMore = true;
                                         if (state is CompanyOrderLoadingState) {
                                           orders = state.oldOrders;
-                                        } else if (state
-                                            is CompanyOrderLoadedState) {
+                                        } else if (state is CompanyOrderLoadedState) {
                                           orders = state.orders;
                                           // canLoadMore = state.canLoadMore;
                                         }
-                                        if (orders.length == 0) {
+                                        if (orders.isEmpty) {
                                           return LabeledIconPlaceholder(
-                                            icon: SvgPicture.asset(
-                                                'assets/icons/no-orders.svg'),
+                                            icon: SvgPicture.asset('assets/icons/no-orders.svg'),
                                             label: t.there_are_no_orders,
                                           );
                                         } else {
                                           return ListView.builder(
                                             padding: EdgeInsets.zero,
-                                            itemCount: orders.length > 4
-                                                ? 4
-                                                : orders.length,
+                                            itemCount: orders.length > 4 ? 4 : orders.length,
                                             itemBuilder: (context, index) {
                                               return Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 10),
+                                                padding: const EdgeInsets.symmetric(vertical: 10),
                                                 child: PastOrderCard(
                                                     order: orders[index],
-                                                    isLast: orders.last ==
-                                                        orders[index]),
+                                                    isLast: orders.last == orders[index]),
                                               );
                                             },
                                           );
@@ -707,8 +648,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                               ],
                             ),
                             child: Column(
-                              mainAxisSize: MainAxisSize
-                                  .min, // Content wraps based on child size
+                              mainAxisSize: MainAxisSize.min, // Content wraps based on child size
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 // Purple Header Section
@@ -721,18 +661,17 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                                       topRight: Radius.circular(26.0),
                                     ), // Rounded top corners
                                   ),
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 20.0, horizontal: 30.0),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 20.0, horizontal: 30.0),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Image.asset('assets/images/people.png',
-                            filterQuality:
-                                FilterQuality.none, // Disable mipmapping
-                            isAntiAlias: false,),
-                                      const SizedBox(
-                                          width:
-                                              10), // Spacing between icon and text
+                                      Image.asset(
+                                        'assets/images/people.png',
+                                        filterQuality: FilterQuality.none, // Disable mipmapping
+                                        isAntiAlias: false,
+                                      ),
+                                      const SizedBox(width: 10), // Spacing between icon and text
                                       Text(
                                         t.employees,
                                         style: theme.textTheme.titleLarge!
@@ -747,8 +686,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                                   padding: const EdgeInsets.all(20.0),
                                   child: SizedBox(
                                     height: 250, // Adjust height as needed
-                                    child: BlocBuilder<EmployeesCubit,
-                                        EmployeesState>(
+                                    child: BlocBuilder<EmployeesCubit, EmployeesState>(
                                       builder: (context, state) {
                                         if (state is EmployeesLoading) {
                                           return const PaginatorLoadingIndicator();
@@ -765,18 +703,14 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                                         if (state is EmployeesLoaded) {
                                           return ListView.builder(
                                             padding: EdgeInsets.zero,
-                                            itemCount:
-                                                state.employees.length > 4
-                                                    ? 4
-                                                    : state.employees.length,
+                                            itemCount: state.employees.length > 4
+                                                ? 4
+                                                : state.employees.length,
                                             itemBuilder: (context, index) {
                                               return Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 10),
+                                                padding: const EdgeInsets.symmetric(vertical: 10),
                                                 child: EmployeeListItem(
-                                                  employee:
-                                                      state.employees[index],
+                                                  employee: state.employees[index],
                                                   onPressed: () {
                                                     // context.push(
                                                     //   '/company/employee/${state.employees[index].id}',
@@ -930,9 +864,8 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                 child: Image.asset(
                   'assets/images/home-logo.png',
                   fit: BoxFit.contain,
-                            filterQuality:
-                                FilterQuality.none, // Disable mipmapping
-                            isAntiAlias: false,
+                  filterQuality: FilterQuality.none, // Disable mipmapping
+                  isAntiAlias: false,
                 ),
               ),
               // Second Image
@@ -941,9 +874,8 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                 duration: const Duration(milliseconds: 500), // Fade duration
                 child: Image.asset(
                   'assets/images/Service Provider.png',
-                            filterQuality:
-                                FilterQuality.none, // Disable mipmapping
-                            isAntiAlias: false, // Your second image
+                  filterQuality: FilterQuality.none, // Disable mipmapping
+                  isAntiAlias: false, // Your second image
                   fit: BoxFit.contain,
                 ),
               ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:future_hub/common/shared/models/products.dart';
 import 'package:future_hub/common/shared/palette.dart';
@@ -7,6 +6,8 @@ import 'package:future_hub/common/shared/widgets/chevron_button.dart';
 import 'package:future_hub/common/shared/widgets/chevron_card.dart';
 import 'package:future_hub/common/shared/widgets/price_text.dart';
 import 'package:future_hub/company/products/widgets/change_public_price_bottom_sheet.dart';
+
+import '../../../l10n/app_localizations.dart';
 
 class ProductCard extends StatelessWidget {
   final void Function()? onPressed;
@@ -64,7 +65,7 @@ class ProductCard extends StatelessWidget {
                           child: SizedBox(
                             height: 50,
                             child: Text(
-                              product.title?.ar ?? "",
+                              product.title.ar ?? "",
                               maxLines: 2,
                               style: theme.textTheme.bodyLarge,
                               overflow: TextOverflow.ellipsis,
@@ -102,8 +103,7 @@ class ProductCard extends StatelessWidget {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              PriceText(
-                                  price: double.parse(product.price) ?? 0),
+                              PriceText(price: double.parse(product.price) ?? 0),
                               const SizedBox(height: 5.0),
                               Text(
                                 t.public_price,

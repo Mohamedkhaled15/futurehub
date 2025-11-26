@@ -23,8 +23,7 @@ class MapServices {
   static bool _isTracking = false;
   static Timer? _backgroundTimer;
   static final Battery _battery = Battery();
-  static final PusherChannelsFlutter pusher =
-      PusherChannelsFlutter.getInstance();
+  static final PusherChannelsFlutter pusher = PusherChannelsFlutter.getInstance();
 
   static Future<void> initPusherAndTracking() async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -50,15 +49,24 @@ class MapServices {
 
   static Future<bool> ensureLocationEnabled() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) return false;
+    if (!serviceEnabled) {
+      // الخدمة مقفولة
+      await Geolocator.openLocationSettings();
+      return false;
+    }
 
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
-      if (permission != LocationPermission.whileInUse &&
-          permission != LocationPermission.always) {
+      if (permission != LocationPermission.whileInUse && permission != LocationPermission.always) {
         return false;
       }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // البرميشن مرفوض للأبد → افتح إعدادات التطبيق
+      await Geolocator.openAppSettings();
+      return false;
     }
 
     return true;
@@ -74,8 +82,7 @@ class MapServices {
     );
   }
 
-  static void addTracker(
-      int trackerId, Function(Position) callback, BuildContext context) {
+  static void addTracker(int trackerId, Function(Position) callback, BuildContext context) {
     _activeTrackers[trackerId] = callback;
     _startTracking(context);
   }
@@ -218,8 +225,7 @@ class MapServices {
     }
 
     _backgroundTimer?.cancel();
-    _backgroundTimer =
-        Timer.periodic(const Duration(seconds: 25), (timer) async {
+    _backgroundTimer = Timer.periodic(const Duration(seconds: 25), (timer) async {
       if (await CacheManager.isTrackingActive()) {
         final driverId = await CacheManager.getCurrentDriverId();
         if (driverId != null) {
@@ -242,8 +248,7 @@ class MapServices {
     return true;
   }
 
-  static Future<void> _sendBackgroundLocationUpdate(
-      int driverId, Position position) async {
+  static Future<void> _sendBackgroundLocationUpdate(int driverId, Position position) async {
     final token = await CacheManager.getToken();
     try {
       await http.post(

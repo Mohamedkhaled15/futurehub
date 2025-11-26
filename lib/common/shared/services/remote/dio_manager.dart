@@ -15,11 +15,12 @@ class DioHelper {
     dio = customDio ??
         Dio(
           BaseOptions(
-            baseUrl: ApiConstants.baseLiveURL,
+            baseUrl: ApiConstants.baseTestURL,
             receiveDataWhenStatusError: true,
           ),
         );
-    dio!.interceptors.add(PrettyDioLogger(
+    dio!.interceptors.add(
+      PrettyDioLogger(
         error: true,
         enabled: true,
         responseHeader: true,
@@ -28,7 +29,9 @@ class DioHelper {
         requestBody: true,
         responseBody: true,
         compact: true,
-        maxWidth: 90));
+        maxWidth: 90
+        )
+        );
   }
 
   Future<Response> getData({

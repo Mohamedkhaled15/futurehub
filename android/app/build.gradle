@@ -36,7 +36,7 @@ android {
     }
 
     namespace = "com.futurehu.app"
-    compileSdk = 35
+    compileSdk = 36
     ndkVersion = "27.0.12077973"
 //            flutter.ndkVersion
 
@@ -61,8 +61,8 @@ android {
         applicationId = "com.futurehu.app"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdk = 23
-        targetSdk = 35
+        minSdkVersion = flutter.minSdkVersion
+        targetSdk = 36
         versionCode = flutter.versionCode
         versionName = flutterVersionName
         multiDexEnabled true 

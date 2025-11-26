@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:future_hub/common/shared/palette.dart';
 import 'package:future_hub/common/shared/widgets/chevron_button.dart';
@@ -10,6 +9,7 @@ import 'package:future_hub/employee/orders/cubit/order_cubit.dart';
 import 'package:future_hub/employee/orders/cubit/order_state.dart';
 
 import '../../../common/shared/models/products.dart';
+import '../../../l10n/app_localizations.dart';
 
 class EmployeeProductCard extends StatefulWidget {
   final CompanyProduct product;
@@ -28,8 +28,7 @@ class EmployeeProductCard extends StatefulWidget {
 class _EmployeeProductCardState extends State<EmployeeProductCard> {
   void _incrementQuantity() {
     final orderCubit = context.read<OrderCubit>();
-    final isSelected =
-        orderCubit.state.products!.containsKey(widget.product.id.toString());
+    final isSelected = orderCubit.state.products!.containsKey(widget.product.id.toString());
 
     if (isSelected) {
       orderCubit.incrementProductQuantity(widget.product.id.toString());
@@ -55,10 +54,8 @@ class _EmployeeProductCardState extends State<EmployeeProductCard> {
           BlocBuilder<OrderCubit, OrderState>(
             builder: (context, state) {
               final isSelected = state.products!.containsKey(widget.product.id);
-              final quantity =
-                  isSelected ? state.products![widget.product.id]!.quantity : 0;
-              final TextEditingController _quantityController =
-                  TextEditingController();
+              final quantity = isSelected ? state.products![widget.product.id]!.quantity : 0;
+              final TextEditingController _quantityController = TextEditingController();
               return Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -74,8 +71,7 @@ class _EmployeeProductCardState extends State<EmployeeProductCard> {
                         if (value == true) {
                           orderCubit.addProduct(widget.product);
                         } else {
-                          orderCubit
-                              .removeProduct(widget.product.id.toString());
+                          orderCubit.removeProduct(widget.product.id.toString());
                         }
                       },
                       shape: RoundedRectangleBorder(
@@ -102,9 +98,9 @@ class _EmployeeProductCardState extends State<EmployeeProductCard> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Text(
-                          widget.product.title?.ar ?? "",
-                          style: theme.textTheme.bodyLarge!.copyWith(
-                              fontSize: 18, fontWeight: FontWeight.w700),
+                          widget.product.title.ar ?? "",
+                          style: theme.textTheme.bodyLarge!
+                              .copyWith(fontSize: 18, fontWeight: FontWeight.w700),
                         ),
                         const SizedBox(height: 16.0),
                         Row(
@@ -115,9 +111,8 @@ class _EmployeeProductCardState extends State<EmployeeProductCard> {
                                 children: [
                                   TextSpan(
                                     text: '${widget.product.price}',
-                                    style: theme.textTheme.bodyLarge!.copyWith(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w700),
+                                    style: theme.textTheme.bodyLarge!
+                                        .copyWith(fontSize: 15, fontWeight: FontWeight.w700),
                                   ),
                                   TextSpan(
                                     text: t.sar,

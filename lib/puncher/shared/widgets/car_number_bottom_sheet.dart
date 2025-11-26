@@ -49,7 +49,8 @@ class _CarNumberScreenState extends State<CarNumberScreen> {
   @override
   void initState() {
     super.initState();
-    _initCamera();
+
+    _init();
 
     final authState = context.read<AuthCubit>().state;
     if (authState is AuthSignedIn) {
@@ -59,10 +60,17 @@ class _CarNumberScreenState extends State<CarNumberScreen> {
     }
   }
 
+  Future<void> _init() async {
+    position = await MapServices.getCurrentLocation(); 
+    if (position != null) {
+      await _initCamera(); 
+    }
+  }
+
   Future<void> _initCamera() async {
     final cameras = await availableCameras();
     final backCamera = cameras.firstWhere((c) => c.lensDirection == CameraLensDirection.back);
-    position = await MapServices.getCurrentLocation();
+
     _controller = CameraController(
       backCamera,
       ResolutionPreset.medium,
@@ -206,7 +214,6 @@ class _CarNumberScreenState extends State<CarNumberScreen> {
     final byteData = await imgOut.toByteData(format: ui.ImageByteFormat.png);
     return byteData!.buffer.asUint8List();
   }
-
 
   Future<bool> uploadImageAndValidate(XFile image) async {
     try {
