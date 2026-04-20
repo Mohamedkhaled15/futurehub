@@ -3,6 +3,7 @@ class ApiConstants {
   static const String baseUrl = 'https://pro.future-food.sa/api';
   static const String baseLiveURL = 'https://futurehub.sa/api';
   static const String baseTestURL = 'https://live.sairhub.com/api';
+  static const String baseTestURL2 = 'https://live.sairhub.com/';
   static const String login = '/login';
   static const String register = '/register';
   static const String logout = '/logout';
@@ -71,5 +72,6 @@ class ApiConstants {
   static const String readPlate = '/read-plate';
   static const String reportServicesProvider =
       '/service-providers/employee/day-report/service-orders';
+  static const String spUploadPumpImage = '/read-pump';
   // static String currentVersion = '1.1';
 }

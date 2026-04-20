@@ -13,6 +13,8 @@ import 'package:future_hub/common/shared/services/map_services.dart';
 import 'package:future_hub/common/shared/widgets/chevron_app_bar.dart';
 import 'package:future_hub/common/shared/widgets/flutter_toast.dart';
 import 'package:future_hub/puncher/orders/order_cubit/service_provider_orders_cubit.dart';
+import 'package:future_hub/common/shared/utils/location_helper.dart';
+import 'package:future_hub/common/shared/utils/image_compression_helper.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -25,6 +27,7 @@ class CarNumberScreen extends StatefulWidget {
   final String type;
   final String vehicleId;
   final XFile? odometerImage;
+  final String? orderId;
 
   const CarNumberScreen({
     super.key,
@@ -32,13 +35,14 @@ class CarNumberScreen extends StatefulWidget {
     required this.type,
     required this.vehicleId,
     this.odometerImage,
+    this.orderId,
   });
 
   @override
   State<CarNumberScreen> createState() => _CarNumberScreenState();
 }
 
-class _CarNumberScreenState extends State<CarNumberScreen> {
+class _CarNumberScreenState extends State<CarNumberScreen> with WidgetsBindingObserver, LocationHelper {
   XFile? editedImage;
   String? fullImageWithData;
   bool isLoading = false;
@@ -61,9 +65,22 @@ class _CarNumberScreenState extends State<CarNumberScreen> {
   }
 
   Future<void> _init() async {
-    position = await MapServices.getCurrentLocation(); 
-    if (position != null) {
-      await _initCamera(); 
+    try {
+      position = await MapServices.getCurrentLocation();
+      if (position != null) {
+        await _initCamera();
+      }
+    } catch (e) {
+      if (mounted) {
+        ensureLocationWithDialog(
+          onGranted: () {
+            _init();
+          },
+          onCancel: () {
+            context.pop();
+          },
+        );
+      }
     }
   }
 
@@ -140,11 +157,13 @@ class _CarNumberScreenState extends State<CarNumberScreen> {
 
       final croppedBytes = byteData.buffer.asUint8List();
 
-      // setState(() => isLoading = false);
-
       final directory = await getApplicationDocumentsDirectory();
       final croppedPath = '${directory.path}/plate_cropped.png';
-      await File(croppedPath).writeAsBytes(croppedBytes);
+      final croppedFile = File(croppedPath);
+      await croppedFile.writeAsBytes(croppedBytes);
+
+      // Compress cropped image
+      final compressedCroppedFile = await ImageCompressionHelper.compressImage(croppedFile);
 
       final now = DateTime.now();
       final locale = Localizations.localeOf(context).languageCode;
@@ -155,11 +174,15 @@ class _CarNumberScreenState extends State<CarNumberScreen> {
 
       final withDataBytes = await _drawTextOnImage(imageBytes, text);
       final fullPath = '${directory.path}/plate_full.png';
-      await File(fullPath).writeAsBytes(withDataBytes);
+      final fullFile = File(fullPath);
+      await fullFile.writeAsBytes(withDataBytes);
+
+      // Compress full image
+      final compressedFullFile = await ImageCompressionHelper.compressImage(fullFile);
 
       setState(() {
-        editedImage = XFile(croppedPath);
-        fullImageWithData = fullPath;
+        editedImage = XFile(compressedCroppedFile.path);
+        fullImageWithData = compressedFullFile.path;
       });
 
       final isValid = await uploadImageAndValidate(editedImage!);
@@ -240,6 +263,7 @@ class _CarNumberScreenState extends State<CarNumberScreen> {
       extra: {
         'editedImagePath': fullImageWithData,
         'odometerImage': widget.odometerImage,
+        'orderId': widget.orderId,
       },
     );
   }

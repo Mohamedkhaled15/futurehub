@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:future_hub/common/shared/palette.dart';
 import 'package:future_hub/common/shared/utils/run_fetch.dart';
 import 'package:future_hub/common/shared/widgets/chevron_app_bar.dart';
+import 'package:future_hub/common/shared/widgets/flutter_toast.dart';
 import 'package:future_hub/common/shared/widgets/qr_code_scan_camera.dart';
 import 'package:future_hub/puncher/components/enter_user_code_view.dart';
 import 'package:future_hub/puncher/components/scanning_image_animation.dart';
@@ -41,8 +42,15 @@ class _RecieveOrderScreenState extends State<RecieveOrderScreen>
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    FuelOrderScreen(order:order, selectedDriver: order.data.drivers.first),
+                    FuelOrderScreen(order: order, selectedDriver: order.data.drivers.first),
               ),
+            );
+          }
+          if (order.data.drivers.isEmpty) {
+            final t = AppLocalizations.of(context)!;
+            showToast(
+              text: t.noDriversOnThisVehicle,
+              state: ToastStates.error,
             );
           } else {
             context.pushReplacement('/puncher/vehicle-details', extra: order);
@@ -265,10 +273,8 @@ class _RecieveOrderScreenState extends State<RecieveOrderScreen>
     //         SizedBox(
     //           height: size.height * 0.08,
     //         ),
-
     //       ],
     //     ),
-
     //   );
     // }
   }

@@ -13,6 +13,7 @@ import 'package:future_hub/common/shared/widgets/chevron_app_bar.dart';
 import 'package:future_hub/common/shared/widgets/infinite_list_view.dart';
 import 'package:future_hub/common/shared/widgets/labeled_icon_placeholder.dart';
 import 'package:future_hub/common/shared/widgets/services_map_widget.dart';
+import 'package:future_hub/common/shared/utils/location_helper.dart';
 import 'package:future_hub/employee/home/model/services-categories_model.dart';
 import 'package:future_hub/employee/orders/cubit/employee_services_barnches_state.dart';
 import 'package:future_hub/employee/orders/widgets/puncher_card.dart';
@@ -32,7 +33,7 @@ class EmployeeServicesBranchesScreen extends StatefulWidget {
 }
 
 class _EmployeeServicesBranchesScreenState
-    extends State<EmployeeServicesBranchesScreen> {
+    extends State<EmployeeServicesBranchesScreen> with WidgetsBindingObserver, LocationHelper {
   Future<void> _onLoadMore() async {
     return BlocProvider.of<ServicesPunchersCubit>(context)
         .loadServicesPunchers(id: widget.categories.id);
@@ -44,7 +45,21 @@ class _EmployeeServicesBranchesScreenState
     final size = MediaQuery.of(context).size;
 
     return BlocConsumer<ServicesPunchersCubit, EmployeeServicesBranchesState>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        if (state is PunchersErrorState) {
+          ensureLocationWithDialog(
+            onGranted: () {
+              context.read<ServicesPunchersCubit>().loadServicesPunchers(
+                    id: widget.categories.id,
+                    refresh: true,
+                  );
+            },
+            onCancel: () {
+              // Optionally handle cancel, maybe go back or show a message
+            },
+          );
+        }
+      },
       builder: (context, state) {
         var cubit = ServicesPunchersCubit.get(context);
         if (state is EmployeeServicesBranchesLoadingState &&

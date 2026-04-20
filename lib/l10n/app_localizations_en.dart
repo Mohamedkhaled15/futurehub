@@ -1154,4 +1154,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get confirmImage => 'Confirm Image';
+
+  @override
+  String get noDriversOnThisVehicle => 'No Drivers On This Vehicle';
 }

@@ -1,84 +1,25 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:future_hub/common/shared/services/remote/dio_manager.dart';
 import 'package:future_hub/common/shared/services/remote/end_points.dart';
 import 'package:future_hub/common/shared/utils/cache_manager.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:future_hub/common/shared/utils/image_compression_helper.dart';
 
 class WalletService {
-  // Future<PaginatorInfo<Transaction>> fetchWalletData({
-  //   int page = 1,
-  //   int? employee,
-  //   bool cache = false,
-  // }) async {
-  //   final result = await Client.current.queryWallet(
-  //     OptionsQueryWallet(
-  //       variables: VariablesQueryWallet(
-  //         page: page,
-  //         employee: employee,
-  //       ),
-  //       fetchPolicy: cache ? FetchPolicy.cacheFirst : null,
-  //     ),
-  //   );
-  //
-  //   if (result.hasException) {
-  //     throw FetchException.fromOperation(result.exception!);
-  //   }
-  //
-  //   final data = result.parsedData?.wallets;
-  //   final transactions = data?.data ?? [];
-  //   final hasMorePages = data?.paginatorInfo.hasMorePages ?? false;
-  //   final total = data?.paginatorInfo.total ?? 0;
-  //
-  //   return PaginatorInfo(
-  //     data: transactions
-  //         .map(
-  //           (transaction) => Transaction(
-  //             id: transaction.id,
-  //             title: transaction.title ?? "",
-  //             type: transaction.type ?? "",
-  //             description: transaction.description ?? "",
-  //             wallet: transaction.wallet != null
-  //                 ? Wallet(
-  //                     customer: transaction.wallet!.customer != null
-  //                         ? User(
-  //                             id: int.parse(transaction.wallet!.customer!.id),
-  //                             name: transaction.wallet!.customer!.name ?? "",
-  //                             // email: transaction.wallet!.customer!.email ?? "",
-  //                             mobile:
-  //                                 transaction.wallet!.customer!.mobile ?? "",
-  //                             type: transaction.wallet!.customer!.type ?? "",
-  //                             // limit:
-  //                             //     transaction.wallet!.customer!.wallet_limit ??
-  //                             //         0,
-  //                             // spentAmount:
-  //                             //     transaction.wallet!.customer!.withdrawal ?? 0,
-  //                             wallet: transaction.wallet!.customer!.wallet ?? 0,
-  //                           )
-  //                         : null,
-  //                   )
-  //                 : null,
-  //             amount: transaction.amount ?? "",
-  //             paymentMethod: transaction.payment_method ?? "",
-  //             createdAt: transaction.created_at ?? "",
-  //             attachment: transaction.attachment ?? "",
-  //             transactionNumber: transaction.transaction_number ?? "",
-  //           ),
-  //         )
-  //         .toList(),
-  //     hasMorePages: hasMorePages,
-  //     total: total,
-  //   );
-  // }
   final _dioHelper = DioHelper();
 
   Future<String> addBalanceToCompany({
     required double amount,
     required XFile file,
   }) async {
+    final compressedFile = await ImageCompressionHelper.compressImage(File(file.path));
+
     final formData = FormData.fromMap({
       "amount": amount,
-      "attachment": await MultipartFile.fromFile(file.path,
-          filename: file.path.split('/').last),
+      "attachment": await MultipartFile.fromFile(compressedFile.path,
+          filename: compressedFile.path.split('/').last),
     });
     try {
       final token = await CacheManager.getToken();

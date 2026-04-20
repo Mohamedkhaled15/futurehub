@@ -7,9 +7,9 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:future_hub/common/shared/palette.dart';
 import 'package:future_hub/common/shared/widgets/chevron_app_bar.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:future_hub/common/shared/utils/image_compression_helper.dart';
 
 import '../../../l10n/app_localizations.dart';
 
@@ -17,12 +17,14 @@ class OdometerImageScreen extends StatefulWidget {
   final String referenceNumber;
   final String type;
   final String vehicleId;
+  final String? orderId;
 
   const OdometerImageScreen({
     super.key,
     required this.referenceNumber,
     required this.type,
     required this.vehicleId,
+    this.orderId,
   });
 
   @override
@@ -33,7 +35,6 @@ class _OdometerImageScreenState extends State<OdometerImageScreen> {
   CameraController? _controller;
   XFile? editedImage;
   bool isLoading = false;
-  static Position? position;
 
   @override
   void initState() {
@@ -57,16 +58,21 @@ class _OdometerImageScreenState extends State<OdometerImageScreen> {
     if (mounted) setState(() {});
   }
 
-  void navigateToCarNumberScreen(BuildContext context, String referenceNumber, String vehicleId) {
-    context.pushNamed(
-      'carNumber',
-      pathParameters: {
-        'referenceNumber': referenceNumber,
-        'type': "fuel_order",
-        'vehicle_id': vehicleId,
-      },
-      extra: editedImage,
-    );
+  void navigateToCarNumberScreen(BuildContext context) {
+    if (mounted) {
+      context.pushReplacementNamed(
+        'carNumber',
+        pathParameters: {
+          'referenceNumber': widget.referenceNumber,
+          'type': widget.type,
+          'vehicle_id': widget.vehicleId,
+        },
+        extra: {
+          'odometerImage': editedImage,
+          'orderId': widget.orderId,
+        },
+      );
+    }
   }
 
   Future<void> _captureAndSave() async {
@@ -80,26 +86,21 @@ class _OdometerImageScreenState extends State<OdometerImageScreen> {
       final ui.Codec codec = await ui.instantiateImageCodec(imageBytes);
       final ui.FrameInfo frameInfo = await codec.getNextFrame();
       final ui.Image fullImage = frameInfo.image;
-// أبعاد الصورة الحقيقية من الكاميرا
-      // 🟢 أبعاد الصورة الحقيقية
+
       final imageWidth = fullImage.width;
       final imageHeight = fullImage.height;
 
-      // مقدار المسافة اللي نزودها (ممكن تزود الرقم على حسب التجربة)
-      final extraTop = MediaQuery.of(context).size.height * 0.2; // بكسل زيادة فوق
-      final extraBottom = MediaQuery.of(context).size.height * 0.2; // بكسل زيادة تحت
+      final extraTop = MediaQuery.of(context).size.height * 0.2;
+      final extraBottom = MediaQuery.of(context).size.height * 0.2;
 
-// أبعاد overlay الأصلية
       final overlayWidth = MediaQuery.of(context).size.width * 0.8;
       final overlayHeight = MediaQuery.of(context).size.height * 0.15;
       final overlayLeft = (MediaQuery.of(context).size.width - overlayWidth) / 2;
       final overlayTop = (MediaQuery.of(context).size.height - overlayHeight) / 2;
 
-// scale من الشاشة → الصورة
       final scaleX = imageWidth / MediaQuery.of(context).size.width;
       final scaleY = imageHeight / MediaQuery.of(context).size.height;
 
-// 🟢 مستطيل القص مع المسافة الزيادة
       final cropRect = Rect.fromLTWH(
         overlayLeft * scaleX,
         (overlayTop - extraTop) * scaleY,
@@ -107,7 +108,6 @@ class _OdometerImageScreenState extends State<OdometerImageScreen> {
         (overlayHeight + extraTop + extraBottom) * scaleY,
       );
 
-      // 🟢 قص الجزء المطلوب
       final recorder = ui.PictureRecorder();
       final canvas = Canvas(recorder);
 
@@ -126,16 +126,20 @@ class _OdometerImageScreenState extends State<OdometerImageScreen> {
       final byteData = await cropped.toByteData(format: ui.ImageByteFormat.png);
       final croppedBytes = byteData!.buffer.asUint8List();
 
-      // 🟢 حفظ الصورة في ملف
       final directory = await getApplicationDocumentsDirectory();
-      final croppedPath = '${directory.path}/odometer.png';
-      await File(croppedPath).writeAsBytes(croppedBytes);
+      final croppedPath = '${directory.path}/odometer_${DateTime.now().millisecondsSinceEpoch}.png';
+      final croppedFile = File(croppedPath);
+      await croppedFile.writeAsBytes(croppedBytes);
+
+      // Compress the image
+      final compressedFile = await ImageCompressionHelper.compressImage(croppedFile);
 
       setState(() {
-        editedImage = XFile(croppedPath);
+        editedImage = XFile(compressedFile.path);
       });
-      navigateToCarNumberScreen(context, widget.referenceNumber, widget.vehicleId);
+      
       log("Odometer image saved at: ${editedImage?.path}");
+      navigateToCarNumberScreen(context);
     } catch (e) {
       debugPrint("Capture error: $e");
     } finally {
@@ -168,7 +172,7 @@ class _OdometerImageScreenState extends State<OdometerImageScreen> {
                   child: Image.asset(
                     "assets/images/speedometerImage.png",
                     height: MediaQuery.of(context).size.height * 0.2,
-                    filterQuality: FilterQuality.none, // Disable mipmapping
+                    filterQuality: FilterQuality.none,
                     isAntiAlias: false,
                   ),
                 )

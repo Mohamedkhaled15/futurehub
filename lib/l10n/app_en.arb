@@ -361,5 +361,6 @@
   "plateMatched": "Plate Matched",
   "confirmImage": "Confirm Image",
   "reTakeImage": "reTake Image",
-  "confirm": "Confirm"
+  "confirm": "Confirm",
+  "noDriversOnThisVehicle":"No Drivers On This Vehicle"
 }

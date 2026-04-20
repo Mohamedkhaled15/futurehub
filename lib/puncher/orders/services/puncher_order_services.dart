@@ -6,6 +6,7 @@ import 'package:future_hub/common/shared/models/order_model.dart';
 import 'package:future_hub/common/shared/services/remote/dio_manager.dart';
 import 'package:future_hub/common/shared/services/remote/end_points.dart';
 import 'package:future_hub/common/shared/utils/cache_manager.dart';
+import 'package:future_hub/common/shared/utils/image_compression_helper.dart';
 import 'package:future_hub/common/shared/widgets/flutter_toast.dart';
 import 'package:future_hub/puncher/orders/model/service_provider_order_model.dart';
 import 'package:future_hub/puncher/orders/model/service_provider_order_model_confirm_canel.dart';
@@ -305,6 +306,49 @@ class PuncherOrderServices {
       // Handle general errors
       debugPrint('Error: $e');
       throw Exception('An unexpected error occurred');
+    }
+  }
+
+  Future<void> uploadPumpImage({
+    required String orderId,
+    required XFile image,
+    required XFile imageWithTimestamp,
+  }) async {
+    try {
+      // Compress images before sending
+      final compressedImage = await ImageCompressionHelper.compressImage(File(image.path));
+      final compressedImageWithTimestamp =
+          await ImageCompressionHelper.compressImage(File(imageWithTimestamp.path));
+
+      FormData formData = FormData.fromMap({
+        "order_id": orderId,
+        "image": await MultipartFile.fromFile(
+          compressedImage.path,
+          filename: compressedImage.path.split('/').last,
+        ),
+        "image_with_timestamp": await MultipartFile.fromFile(
+          compressedImageWithTimestamp.path,
+          filename: compressedImageWithTimestamp.path.split('/').last,
+        ),
+      });
+      final token = await CacheManager.getToken();
+      final response = await _dioHelper.postData(
+        url: ApiConstants.spUploadPumpImage,
+        data: formData,
+        token: token,
+      );
+      final responseData = response.data;
+      if (responseData['success'] != true) {
+        throw Exception(responseData['message'] ?? 'Failed to upload pump image');
+      }
+    } on DioException catch (e) {
+      if (e.response != null) {
+        throw Exception(e.response?.data['message'] ?? 'An error occurred');
+      } else {
+        throw Exception('Network error: ${e.message}');
+      }
+    } catch (e) {
+      rethrow;
     }
   }
 }

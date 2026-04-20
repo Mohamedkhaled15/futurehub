@@ -12,6 +12,7 @@ import 'package:future_hub/common/auth/cubit/auth_state.dart';
 import 'package:future_hub/common/shared/palette.dart';
 import 'package:future_hub/common/shared/utils/cache_manager.dart';
 import 'package:future_hub/common/shared/widgets/infinite_list_view.dart';
+import 'package:future_hub/common/shared/utils/location_helper.dart';
 import 'package:future_hub/employee/orders/cubit/employee_punchers_cubit.dart';
 import 'package:future_hub/employee/orders/cubit/employee_punchers_state.dart';
 import 'package:future_hub/employee/orders/widgets/puncher_card.dart';
@@ -26,7 +27,7 @@ class EmployeeNewOrderScreen extends StatefulWidget {
   State<EmployeeNewOrderScreen> createState() => _EmployeeNewOrderScreenState();
 }
 
-class _EmployeeNewOrderScreenState extends State<EmployeeNewOrderScreen> {
+class _EmployeeNewOrderScreenState extends State<EmployeeNewOrderScreen> with WidgetsBindingObserver, LocationHelper {
   Future<void> _onLoadMore() async {
     return BlocProvider.of<EmployeePunchersCubit>(context).loadPunchers();
   }
@@ -36,7 +37,20 @@ class _EmployeeNewOrderScreenState extends State<EmployeeNewOrderScreen> {
     final t = AppLocalizations.of(context)!;
     final size = MediaQuery.of(context).size;
     return BlocConsumer<EmployeePunchersCubit, EmployeePunchersState>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        if (state is PunchersErrorState) {
+          ensureLocationWithDialog(
+            onGranted: () {
+              context.read<EmployeePunchersCubit>().loadPunchers(
+                    refresh: true,
+                  );
+            },
+            onCancel: () {
+              // Optionally handle cancel
+            },
+          );
+        }
+      },
       builder: (context, state) {
         var cubit = EmployeePunchersCubit.get(context);
         if (state is PunchersLoadingState && state.isFirstFetch) {

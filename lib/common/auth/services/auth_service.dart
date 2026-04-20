@@ -13,6 +13,7 @@ import 'package:future_hub/common/shared/router.dart';
 import 'package:future_hub/common/shared/services/remote/dio_manager.dart';
 import 'package:future_hub/common/shared/services/remote/end_points.dart';
 import 'package:future_hub/common/shared/utils/cache_manager.dart';
+import 'package:future_hub/common/shared/utils/image_compression_helper.dart';
 
 import '../../shared/utils/fetch_exception.dart';
 
@@ -376,10 +377,11 @@ class AuthService {
   Future<String> updateProfilePhoto(File file) async {
     try {
       final token = await CacheManager.getToken();
+      final compressedFile = await ImageCompressionHelper.compressImage(file);
       final formData = FormData.fromMap({
         'image': await MultipartFile.fromFile(
-          file.path,
-          filename: file.path.split('/').last,
+          compressedFile.path,
+          filename: compressedFile.path.split('/').last,
         ),
       });
 

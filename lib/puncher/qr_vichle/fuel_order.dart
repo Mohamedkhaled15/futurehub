@@ -125,18 +125,22 @@ class _FuelOrderScreenState extends State<FuelOrderScreen> {
     });
   }
 
-  void navigateToCarNumberScreen(BuildContext context, String referenceNumber) {
+  void navigateToCarNumberScreen(BuildContext context, String referenceNumber, String orderId) {
     if (scanOdometer == true) {
       context.pushNamed('OdometerScreen', pathParameters: {
         'referenceNumber': referenceNumber,
         'type': "fuel_order",
         'vehicle_id': widget.order.data.id.toString(),
+      }, extra: {
+        'orderId': orderId,
       });
     } else {
       context.pushNamed('carNumber', pathParameters: {
         'referenceNumber': referenceNumber,
         'type': "fuel_order",
         'vehicle_id': widget.order.data.id.toString(),
+      }, extra: {
+        'orderId': orderId,
       });
     }
   }
@@ -164,7 +168,7 @@ class _FuelOrderScreenState extends State<FuelOrderScreen> {
 
   bool isButtonEnabled = true;
 
-  Future<void> _confirm(BuildContext context, String referenceNumber) async {
+  Future<void> _confirm(BuildContext context, String referenceNumber, String orderId) async {
     debugPrint("helloooo");
     if (isButtonEnabled) {
       // Disable the button
@@ -173,7 +177,7 @@ class _FuelOrderScreenState extends State<FuelOrderScreen> {
       });
 
       // Open the OTP bottom sheet immediately
-      navigateToCarNumberScreen(context, referenceNumber);
+      navigateToCarNumberScreen(context, referenceNumber, orderId);
 
       // Run the OTP sending process in the background
       // await runFetch(
@@ -315,7 +319,6 @@ class _FuelOrderScreenState extends State<FuelOrderScreen> {
     final t = AppLocalizations.of(context)!;
     return Container(
       width: 360,
-      height: 83,
       margin: const EdgeInsets.symmetric(vertical: 35),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -500,6 +503,7 @@ class _FuelOrderScreenState extends State<FuelOrderScreen> {
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
                   child: Column(
@@ -622,7 +626,7 @@ class _FuelOrderScreenState extends State<FuelOrderScreen> {
                 if (!mounted) return;
                 context.pop();
 
-                await _confirm(context, order.referenceNumber.toString());
+                await _confirm(context, order.referenceNumber.toString(), order.id.toString());
               } catch (e) {
                 // Handle any errors that occur during the operation
                 if (!mounted) return;

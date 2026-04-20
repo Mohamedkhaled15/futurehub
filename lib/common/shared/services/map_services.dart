@@ -17,6 +17,32 @@ import 'package:workmanager/workmanager.dart';
 
 @pragma('vm:entry-point')
 class MapServices {
+  static Future<bool> requestLocationPermission() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      await Geolocator.openLocationSettings();
+      serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) return false;
+    }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return false;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // لازم تفتح إعدادات التطبيق علشان يدوّر الإذن بنفسه
+      await Geolocator.openAppSettings();
+      return false;
+    }
+
+    return true;
+  }
+
   static Stream<Position>? _locationStream;
   static StreamSubscription<Position>? _locationSubscription;
   static final Map<int, Function(Position)> _activeTrackers = {};
@@ -50,8 +76,6 @@ class MapServices {
   static Future<bool> ensureLocationEnabled() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      // الخدمة مقفولة
-      await Geolocator.openLocationSettings();
       return false;
     }
 
@@ -64,22 +88,33 @@ class MapServices {
     }
 
     if (permission == LocationPermission.deniedForever) {
-      // البرميشن مرفوض للأبد → افتح إعدادات التطبيق
-      await Geolocator.openAppSettings();
       return false;
     }
 
     return true;
   }
 
-  static Future<Position> getCurrentLocation() async {
-    if (!await ensureLocationEnabled()) {
-      throw Exception('Location services are disabled or permission denied');
-    }
+  static Future<void> openLocationSettings() async {
+    await Geolocator.openLocationSettings();
+  }
 
-    return await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
+  static Future<void> openAppSettings() async {
+    await Geolocator.openAppSettings();
+  }
+
+  static Future<Position?> getCurrentLocation() async {
+    final hasPermission = await requestLocationPermission();
+    if (!hasPermission) return null;
+
+    try {
+      return await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        ),
+      );
+    } catch (_) {
+      return null;
+    }
   }
 
   static void addTracker(int trackerId, Function(Position) callback, BuildContext context) {

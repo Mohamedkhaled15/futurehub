@@ -8,6 +8,7 @@ import 'package:future_hub/common/auth/cubit/auth_state.dart';
 import 'package:future_hub/common/auth/models/user.dart';
 import 'package:future_hub/common/shared/services/map_services.dart';
 import 'package:future_hub/common/shared/utils/cache_manager.dart';
+import 'package:future_hub/common/shared/utils/location_helper.dart';
 import 'package:future_hub/common/shared/utils/pusher_config.dart';
 import 'package:future_hub/common/shared/widgets/drawer_screen.dart';
 import 'package:future_hub/common/shared/widgets/new_driver_app_bar.dart';
@@ -16,7 +17,6 @@ import 'package:future_hub/employee/components/carousel_slider.dart';
 import 'package:future_hub/employee/components/fuel_silder.dart';
 import 'package:future_hub/employee/components/services_list.dart';
 import 'package:future_hub/l10n/app_localizations.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 
 class EmployeeHomeScreen extends StatefulWidget {
@@ -31,7 +31,7 @@ class EmployeeHomeScreen extends StatefulWidget {
   State<EmployeeHomeScreen> createState() => _EmployeeHomeScreenState();
 }
 
-class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
+class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> with WidgetsBindingObserver, LocationHelper {
   bool isDrawerOpen = false;
   bool showHint = false;
   bool showFirstImage = true;
@@ -59,7 +59,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
   final pusherConfig = PusherConfig();
   @override
   void initState() {
-    _checkLocationService();
+    _checkLocation();
     authState = context.read<AuthCubit>().state as AuthSignedIn;
     user = authState.user;
     log("============================================== pusher event came ======================================================");
@@ -79,39 +79,13 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
     // });
   }
 
-  Future<void> _checkLocationService() async {
-    final enabled = await MapServices.ensureLocationEnabled();
-
-    if (!enabled && mounted) {
-      // Show alert dialog to guide user
-      _showLocationAlert();
-    } else {
-      setState(() => _locationEnabled = true);
-    }
-  }
-
-  void _showLocationAlert() {
-    final t = AppLocalizations.of(context)!;
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(t.locationRequired),
-        content: Text(t.pleaseEnableLocationServicesForThisApp),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(t.cancel),
-          ),
-          TextButton(
-            onPressed: () async {
-              Navigator.pop(context);
-              await Geolocator.openLocationSettings(); // Open device settings
-              _checkLocationService(); // Re-check after returning
-            },
-            child: Text(t.enable),
-          ),
-        ],
-      ),
+  Future<void> _checkLocation() async {
+    await ensureLocationWithDialog(
+      onGranted: () {
+        if (mounted) {
+          setState(() => _locationEnabled = true);
+        }
+      },
     );
   }
 

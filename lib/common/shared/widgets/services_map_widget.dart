@@ -10,6 +10,7 @@ import 'package:future_hub/employee/components/services_map_pop_up.dart';
 import 'package:future_hub/employee/home/model/services-categories_model.dart';
 import 'package:future_hub/employee/orders/cubit/employee_services_branches_cubit.dart';
 import 'package:future_hub/employee/orders/models/services_branch_model.dart';
+import 'package:future_hub/common/shared/utils/location_helper.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -27,14 +28,14 @@ class ServicesMapWidget extends StatefulWidget {
   createState() => _MapWidgetState();
 }
 
-class _MapWidgetState extends State<ServicesMapWidget> {
+class _MapWidgetState extends State<ServicesMapWidget> with WidgetsBindingObserver, LocationHelper {
   static Position? position;
   final Completer<GoogleMapController> _mapController = Completer();
   // String? distanceInKm;
   // String? selectedDistance;
   static final CameraPosition _myCurrentLocationCameraPosition = CameraPosition(
     bearing: 0.0,
-    target: LatLng(position!.latitude, position!.longitude),
+    target: LatLng(position?.latitude ?? 0.0, position?.longitude ?? 0.0),
     tilt: 0.0,
     zoom: 17,
   );
@@ -124,6 +125,16 @@ class _MapWidgetState extends State<ServicesMapWidget> {
       }
     } catch (e) {
       print("Error getting location: $e");
+      if (mounted) {
+        ensureLocationWithDialog(
+          onGranted: () {
+            getMyCurrentLocation();
+          },
+          onCancel: () {
+            // Navigator.pop(context);
+          },
+        );
+      }
     }
   }
 

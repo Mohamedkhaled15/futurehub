@@ -40,14 +40,18 @@ class _PuncherOrderDetailsScreenState extends State<PuncherOrderDetailsScreen> {
     final referenceNumber = widget.order.data!.referenceNumber!;
     final type = widget.order.type ?? "";
     final vehicleId = widget.order.data!.vehicleId ?? "";
+    final orderId = widget.order.data!.id.toString();
 
-    log("$referenceNumber $type $vehicleId");
+    log("$referenceNumber $type $vehicleId $orderId");
     context.pushReplacementNamed(
       'carNumber',
       pathParameters: {
         'referenceNumber': referenceNumber,
         'type': type,
         'vehicle_id': vehicleId.toString(),
+      },
+      extra: {
+        'orderId': orderId,
       },
     );
   }

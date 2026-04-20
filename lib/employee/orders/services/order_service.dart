@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:future_hub/common/shared/models/order_model.dart';
@@ -7,6 +9,7 @@ import 'package:future_hub/common/shared/utils/cache_manager.dart';
 import 'package:future_hub/employee/orders/models/employee_order_model.dart';
 import 'package:future_hub/employee/orders/models/order_product.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:future_hub/common/shared/utils/image_compression_helper.dart';
 
 class OrderService {
   final _dioHelper = DioHelper();
@@ -71,13 +74,18 @@ class OrderService {
       final token = await CacheManager.getToken();
       if (token == null) throw Exception("Token is missing");
 
+      File? compressedFile;
+      if (image != null) {
+        compressedFile = await ImageCompressionHelper.compressImage(File(image.path));
+      }
+
       // Prepare multipart form data
       final formData = FormData.fromMap({
         "reference_number": refNumber,
-        if (image != null)
+        if (compressedFile != null)
           "odometer_image": await MultipartFile.fromFile(
-            image.path,
-            filename: image.path.split('/').last,
+            compressedFile.path,
+            filename: compressedFile.path.split('/').last,
           ),
       });
 
@@ -99,55 +107,6 @@ class OrderService {
       rethrow; // Propagate the error to handle it in the UI
     }
   }
-
-  // Future<dynamic> validateCoupon({
-  //   required int puncher,
-  //   required List<OrderProduct> products,
-  //   String? coupon,
-  // }) async {
-  //   final orderProducts = products
-  //       .map(
-  //         (product) => InputProductItem(
-  //           quantity: product.quantity,
-  //           product_id: int.parse(product.product.id.toString()),
-  //         ),
-  //       )
-  //       .toList();
-  //
-  //   final result = await Client.current.mutateValidateCoupon(
-  //     OptionsMutationValidateCoupon(
-  //       variables: VariablesMutationValidateCoupon(
-  //         puncherId: puncher,
-  //         coupon: coupon,
-  //         products: orderProducts,
-  //       ),
-  //     ),
-  //   );
-  //
-  //   debugPrint(result.toString());
-  //   if (result.hasException) {
-  //     debugPrint(result.exception!.graphqlErrors[0].message.toString());
-  //     return result.exception!.graphqlErrors[0].message.toString();
-  //   }
-  //
-  //   final data = result.parsedData?.validateCoupon;
-  //   final details = data!.data;
-  //   debugPrint(data.message);
-  //   debugPrint(details!.vat_value.toString());
-  //   debugPrint(details.total_price.toString());
-  //   debugPrint(details.discount.toString());
-  //
-  //   if (result.hasException) {
-  //     throw FetchException.fromOperation(result.exception!);
-  //   }
-  //   return Order(
-  //     totalPrice: details.total_price,
-  //     discount: details.discount,
-  //     vatValue: details.vat_value,
-  //     vat: details.vat,
-  //     discountValue: details.discount_value,
-  //   );
-  // }
 
   Future<EmployeeOrderModel> fetchOrders({
     int page = 1,
@@ -266,13 +225,18 @@ class OrderService {
       final token = await CacheManager.getToken();
       if (token == null) throw Exception("Token is missing");
 
+      File? compressedFile;
+      if (image != null) {
+        compressedFile = await ImageCompressionHelper.compressImage(File(image.path));
+      }
+
       // Prepare multipart form data
       final formData = FormData.fromMap({
         "reference_number": refNumber,
-        if (image != null)
+        if (compressedFile != null)
           "odometer_image": await MultipartFile.fromFile(
-            image.path,
-            filename: image.path.split('/').last,
+            compressedFile.path,
+            filename: compressedFile.path.split('/').last,
           ),
       });
 

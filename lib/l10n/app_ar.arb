@@ -391,5 +391,6 @@
   "plateNotMatched": "يرجى تصوير اللوحه عن قرب او تاكد من رقم اللوحه",
   "confirmImage": "تأكيد الصورة",
   "reTakeImage": "إعادة التصوير",
-  "confirm": "تأكيد"
+  "confirm": "تأكيد",
+  "noDriversOnThisVehicle":"لا يوجد سائقين علي هذة المركبة"
 }

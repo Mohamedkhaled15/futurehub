@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import '../../../l10n/app_localizations.dart';
 import 'package:future_hub/common/shared/widgets/chevron_app_bar.dart';
 import 'package:future_hub/puncher/orders/model/vehicle_qr.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../common/shared/palette.dart';
 import 'fuel_order.dart';
 
 class VehicleDetailsScreen extends StatefulWidget {
   final VehicleQr order;
 
-  const VehicleDetailsScreen({Key? key, required this.order}) : super(key: key);
+  const VehicleDetailsScreen({super.key, required this.order});
 
   @override
   _VehicleDetailsScreenState createState() => _VehicleDetailsScreenState();
@@ -34,10 +34,8 @@ class _VehicleDetailsScreenState extends State<VehicleDetailsScreen> {
       appBar: FutureHubAppBar(
         title: Text(
           t.vicheleInfo,
-          style: const TextStyle(
-              color: Palette.blackColor,
-              fontSize: 22,
-              fontWeight: FontWeight.bold),
+          style:
+              const TextStyle(color: Palette.blackColor, fontSize: 22, fontWeight: FontWeight.bold),
         ),
         context: context,
       ),
@@ -84,29 +82,23 @@ class _VehicleDetailsScreenState extends State<VehicleDetailsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    vehicle.drivers[0].companyName,
+                    vehicle.drivers[0].companyName ?? "",
                     style: const TextStyle(
-                        fontSize: 18,
-                        color: Colors.black,
-                        fontWeight: FontWeight.w700),
+                        fontSize: 18, color: Colors.black, fontWeight: FontWeight.w700),
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 10),
                   Text(
                     "${vehicle.plateLetters.ar} - ${vehicle.plateNumbers}",
                     style: const TextStyle(
-                        fontSize: 18,
-                        color: Colors.black,
-                        fontWeight: FontWeight.w700),
+                        fontSize: 18, color: Colors.black, fontWeight: FontWeight.w700),
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 20),
                   Text(
                     "${vehicle.carBrand} ${vehicle.carModel}",
                     style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                        color: Color(0xff545454)),
+                        fontSize: 14, fontWeight: FontWeight.w400, color: Color(0xff545454)),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
@@ -131,6 +123,11 @@ class _VehicleDetailsScreenState extends State<VehicleDetailsScreen> {
           final driver = widget.order.data.drivers[index];
           final isSelected = selectedDriverId == driver.id;
           return ListTile(
+            onTap: () {
+              setState(() {
+                selectedDriverId = driver.id;
+              });
+            },
             leading: CircleAvatar(
               backgroundImage: NetworkImage(driver.image),
             ),
@@ -163,13 +160,13 @@ class _VehicleDetailsScreenState extends State<VehicleDetailsScreen> {
         onPressed: selectedDriverId == null
             ? null
             : () {
-                final selectedDriver = widget.order.data.drivers
-                    .firstWhere((driver) => driver.id == selectedDriverId);
+                final selectedDriver =
+                    widget.order.data.drivers.firstWhere((driver) => driver.id == selectedDriverId);
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => FuelOrderScreen(
-                        order: widget.order, selectedDriver: selectedDriver),
+                    builder: (context) =>
+                        FuelOrderScreen(order: widget.order, selectedDriver: selectedDriver),
                   ),
                 );
               },
@@ -181,10 +178,7 @@ class _VehicleDetailsScreenState extends State<VehicleDetailsScreen> {
           ),
         ),
         child: Text(t.next,
-            style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w700,
-                fontSize: 20)),
+            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 20)),
       ),
     );
   }

@@ -19,11 +19,13 @@ class OtpBottomSheetScreen extends StatefulWidget {
       required this.editedImage,
       required this.type,
       this.odometerImage,
+      this.orderId,
       super.key});
   final String referenceNumber;
   final String? editedImage;
   final String type;
   final XFile? odometerImage;
+  final String? orderId;
 
   @override
   State<OtpBottomSheetScreen> createState() => VerifyOtpBottomSheetState();
@@ -38,30 +40,22 @@ class VerifyOtpBottomSheetState extends State<OtpBottomSheetScreen> {
   XFile? get editedImage => widget.editedImage != null ? XFile(widget.editedImage!) : null;
   bool _loading = false;
   Future<String?> _onActivate(String otp) async {
-    String? error;
-    try {
-      setState(() => _loading = true);
-
-      await _ordersService.confirmOrder(
-          otp, widget.referenceNumber, editedImage ?? XFile(""), widget.type, widget.odometerImage);
-
-      await _refreshOrders();
-      await _playSuccessEffects();
-
-      if (mounted) {
-        context.pushNamed('success-order');
-      }
-    } catch (e) {
-      debugPrint("Error confirming order: $e");
-      await _playFailureEffects();
-      if (mounted) {
-        context.pushNamed('fail-order');
-      }
-      error = e.toString();
-    } finally {
-      if (mounted) setState(() => _loading = false);
+    if (mounted) {
+      context.pushReplacementNamed(
+        'pump-image',
+        pathParameters: {
+          'referenceNumber': widget.referenceNumber,
+          'type': widget.type,
+          'otp': otp,
+          'orderId': widget.orderId ?? "",
+        },
+        extra: {
+          'odometerImage': widget.odometerImage,
+          'plateImage': editedImage,
+        },
+      );
     }
-    return error;
+    return null;
   }
 
   Future<void> _playSuccessEffects() async {

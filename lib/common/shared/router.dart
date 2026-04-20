@@ -72,9 +72,10 @@ import 'package:future_hub/puncher/orders/screens/puncher_orders_screen.dart';
 import 'package:future_hub/puncher/orders/screens/recieve_order_screen.dart';
 import 'package:future_hub/puncher/qr_vichle/fail_order_screen.dart';
 import 'package:future_hub/puncher/qr_vichle/vichle_deatils.dart';
-import 'package:future_hub/puncher/shared/widgets/car_number_bottom_sheet.dart';
+import 'package:future_hub/puncher/shared/widgets/car_number_screen.dart';
 import 'package:future_hub/puncher/shared/widgets/odometer_image_screen.dart';
 import 'package:future_hub/puncher/shared/widgets/otp_bottom_sheet.dart';
+import 'package:future_hub/puncher/shared/widgets/pump_image_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -434,13 +435,16 @@ final router = GoRouter(
         final referenceNumber = state.pathParameters['referenceNumber']!;
         final type = state.pathParameters['type']!;
         final vehicleId = state.pathParameters['vehicle_id']!;
-        final odometerImage = state.extra as XFile?;
+        final extra = state.extra as Map<String, dynamic>? ?? {};
+        final odometerImage = extra['odometerImage'] as XFile?;
+        final orderId = extra['orderId'] as String?;
 
         return CarNumberScreen(
           referenceNumber: referenceNumber,
           type: type,
           vehicleId: vehicleId,
           odometerImage: odometerImage,
+          orderId: orderId,
         );
       },
     ),
@@ -451,10 +455,13 @@ final router = GoRouter(
         final referenceNumber = state.pathParameters['referenceNumber']!;
         final type = state.pathParameters['type']!;
         final vehicleId = state.pathParameters['vehicle_id']!;
+        final extra = state.extra as Map<String, dynamic>? ?? {};
+        final orderId = extra['orderId'] as String?;
         return OdometerImageScreen(
           referenceNumber: referenceNumber,
           type: type,
           vehicleId: vehicleId,
+          orderId: orderId,
         );
       },
     ),
@@ -468,6 +475,26 @@ final router = GoRouter(
           type: state.pathParameters['type']!,
           editedImage: extras['editedImagePath'] as String?,
           odometerImage: extras['odometerImage'] as XFile?,
+          orderId: extras['orderId'] as String?,
+        );
+      },
+    ),
+    GoRoute(
+      path: '/pump-image/:referenceNumber/:type/:otp/:orderId',
+      name: 'pump-image',
+      builder: (context, state) {
+        final referenceNumber = state.pathParameters['referenceNumber']!;
+        final type = state.pathParameters['type']!;
+        final otp = state.pathParameters['otp']!;
+        final orderId = state.pathParameters['orderId']!;
+        final extras = state.extra as Map<String, dynamic>? ?? {};
+        return PumpImageScreen(
+          referenceNumber: referenceNumber,
+          type: type,
+          otp: otp,
+          orderId: orderId,
+          odometerImage: extras['odometerImage'] as XFile?,
+          plateImage: extras['plateImage'] as XFile?,
         );
       },
     ),

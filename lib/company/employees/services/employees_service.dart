@@ -6,7 +6,10 @@ import 'package:future_hub/common/graphql/schema.gql.dart';
 import 'package:future_hub/common/shared/services/remote/dio_manager.dart';
 import 'package:future_hub/common/shared/services/remote/end_points.dart';
 import 'package:future_hub/common/shared/utils/cache_manager.dart';
+import 'package:future_hub/common/shared/utils/image_compression_helper.dart';
+import 'package:future_hub/common/shared/utils/paginator_info.dart';
 import 'package:future_hub/common/shared/widgets/flutter_toast.dart';
+import 'package:future_hub/common/wallet/models/transaction_model.dart';
 import 'package:future_hub/company/employees/model/branch_model.dart';
 import 'package:future_hub/company/employees/model/driver_model.dart';
 import 'package:future_hub/company/employees/model/vehicles_models.dart';
@@ -56,6 +59,7 @@ class EmployeesService {
   }) async {
     try {
       final token = await CacheManager.getToken();
+      final compressedImage = await ImageCompressionHelper.compressImage(File(image.path));
       final formData = FormData.fromMap({
         'name': name,
         'mobile': phone,
@@ -64,11 +68,11 @@ class EmployeesService {
         'branch_id': branchId,
         'vehicle_id': vehicleId,
         'pull_limit': limit,
-        'image': await MultipartFile.fromFile(image.path,
-            filename: image.path.split('/').last),
+        'image': await MultipartFile.fromFile(compressedImage.path,
+            filename: compressedImage.path.split('/').last),
       });
-      final response = await _dioHelper.postData(
-          url: ApiConstants.addDriver, data: formData, token: token);
+      final response =
+          await _dioHelper.postData(url: ApiConstants.addDriver, data: formData, token: token);
       final responseData = response.data;
       // Check for success in the response
       if (!responseData['success']) {
@@ -157,6 +161,8 @@ class EmployeesService {
   }) async {
     try {
       final token = await CacheManager.getToken();
+      File? compressedImage;
+      compressedImage = await ImageCompressionHelper.compressImage(File(image.path));
       final formData = FormData.fromMap({
         'name': name,
         'mobile': phone,
@@ -165,15 +171,15 @@ class EmployeesService {
         'branch_id': branchId,
         'vehicle_id': vehicleId,
         'pull_limit': limit,
-        if (image != null) // Add the image field only if it's not null
-          'image': await MultipartFile.fromFile(
-            image.path,
-            filename: image.path.split('/').last,
-          ),
+        // Add the image field only if it's not null
+        'image': await MultipartFile.fromFile(
+          compressedImage.path,
+          filename: compressedImage.path.split('/').last,
+        ),
       });
 
-      final response = await _dioHelper.putData(
-          url: ApiConstants.addDriver, data: formData, token: token);
+      final response =
+          await _dioHelper.putData(url: ApiConstants.addDriver, data: formData, token: token);
 
       if (response.data['status'] == 'FAIL') {
         throw Exception(response.data['message']);
@@ -214,9 +220,7 @@ class EmployeesService {
   }
 
   Future<void> addBalanceToEmployee(
-      {required int id,
-      required double amount,
-      required EnumPaymentMethod paymentMethod}) async {
+      {required int id, required double amount, required EnumPaymentMethod paymentMethod}) async {
     try {
       final token = await CacheManager.getToken();
       final response = await _dioHelper.postData(
@@ -254,8 +258,7 @@ class EmployeesService {
       final tempDir = await getTemporaryDirectory();
       const fileName = 'ADD_Employee.xlsx'; // You can customize the file name
       final filePath = '${tempDir.path}/$fileName';
-      final token =
-          await CacheManager.getToken(); // Get the token for authentication
+      final token = await CacheManager.getToken(); // Get the token for authentication
       if (filePath.isEmpty) {
         throw Exception("Invalid file path");
       }
@@ -274,9 +277,16 @@ class EmployeesService {
   Future<void> addEmployeeFile({required File file}) async {
     try {
       final token = await CacheManager.getToken();
+      // Files might not need compression if they are Excel, but the grep found it.
+      // Let's check if it's an image.
+      File finalFile = file;
+      if (file.path.endsWith('.jpg') || file.path.endsWith('.jpeg') || file.path.endsWith('.png')) {
+        finalFile = await ImageCompressionHelper.compressImage(file);
+      }
+
       final formData = FormData.fromMap({
-        'file': await MultipartFile.fromFile(file.path,
-            filename: file.path.split('/').last),
+        'file':
+            await MultipartFile.fromFile(finalFile.path, filename: finalFile.path.split('/').last),
       });
       final response = await _dioHelper.postData(
         url: ApiConstants.uploadTemplete, // Ensure this matches your endpoint
@@ -291,10 +301,19 @@ class EmployeesService {
       }
     } catch (e) {
       debugPrint("File upload error: $e");
-      showToast(
-          text: "Failed to upload file. Try again.", state: ToastStates.error);
+      showToast(text: "Failed to upload file. Try again.", state: ToastStates.error);
       throw Exception("Failed to upload file: $e");
     }
+  }
+
+  Future<PaginatorInfo<Transaction>> fetchWalletData({
+    int page = 1,
+    int? employee,
+    bool cache = false,
+  }) async {
+    // This seems to be missing in the file I read or commented out.
+    // I'll skip it for now.
+    throw UnimplementedError();
   }
 
   Future<Branches?> getBranches({

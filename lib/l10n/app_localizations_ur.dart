@@ -1156,4 +1156,7 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get confirmImage => 'تصویر کی تصدیق';
+
+  @override
+  String get noDriversOnThisVehicle => 'No Drivers On This Vehicle';
 }
