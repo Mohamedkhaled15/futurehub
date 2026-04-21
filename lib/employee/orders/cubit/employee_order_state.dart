@@ -9,7 +9,8 @@ class EmployeeOrdersInitState extends EmployeeOrderStates {
 class EmployeeOrdersLoadedState extends EmployeeOrderStates {
   final List<EmployeeOrder> orders;
   bool canLoadMore;
-  EmployeeOrdersLoadedState(this.orders, this.canLoadMore);
+  final int total;
+  EmployeeOrdersLoadedState(this.orders, this.canLoadMore, this.total);
   bool get canLoadMoreOrders => canLoadMore;
 }
 
@@ -23,8 +24,9 @@ class EmployeeOrdersLoadingState extends EmployeeOrderStates {
 class EmployeeServicesOrdersLoadedState extends EmployeeOrderStates {
   final List<EmployeeOrder> orders;
   bool canLoadMore;
+  final int total;
 
-  EmployeeServicesOrdersLoadedState(this.orders, this.canLoadMore);
+  EmployeeServicesOrdersLoadedState(this.orders, this.canLoadMore, this.total);
   bool get canLoadMoreOrders => canLoadMore;
 }
 

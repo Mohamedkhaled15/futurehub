@@ -41,6 +41,10 @@ class VerifyOtpBottomSheetState extends State<OtpBottomSheetScreen> {
   bool _loading = false;
   Future<String?> _onActivate(String otp) async {
     if (mounted) {
+      setState(() => _loading = true);
+      await _ordersService.confirmOrder(
+          otp, widget.referenceNumber, editedImage ?? XFile(""), widget.type, widget.odometerImage);
+      // ignore: use_build_context_synchronously
       context.pushReplacementNamed(
         'pump-image',
         pathParameters: {

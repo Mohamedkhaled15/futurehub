@@ -1,10 +1,11 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import '../../../l10n/app_localizations.dart';
 import 'package:future_hub/common/shared/palette.dart';
 import 'package:future_hub/puncher/orders/model/service_provider_order_model.dart';
 import 'package:intl/intl.dart';
+
+import '../../../l10n/app_localizations.dart';
 
 class ServiceProviderOrderCard extends StatelessWidget {
   const ServiceProviderOrderCard({
@@ -19,27 +20,20 @@ class ServiceProviderOrderCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final direction = Directionality.of(context);
     String formatDateTime(DateTime dateTime) {
-      final timeFormat = DateFormat('hh:mm a',
-          direction == ui.TextDirection.rtl ? 'ar' : 'en'); // Time in Arabic
-      final month =
-          DateFormat('MMMM', direction == ui.TextDirection.rtl ? 'ar' : 'en');
+      final timeFormat = DateFormat('hh:mm a', direction == ui.TextDirection.rtl ? 'ar' : 'en');
+      final month = DateFormat('MMMM', direction == ui.TextDirection.rtl ? 'ar' : 'en');
       final day = DateFormat('dd', 'en');
       final year = DateFormat('yyyy', 'en');
 
-      // final dateFormat = DateFormat('yyyy dd',
-      //     direction == ui.TextDirection.rtl ? 'en' : 'en'); // Date in Arabic
-
       final timeString = timeFormat.format(dateTime);
-      // final dateString = dateFormat.format(dateTime);
       final monthString = month.format(dateTime);
       final dayString = day.format(dateTime);
       final yearString = year.format(dateTime);
 
-      return '$timeString\n$dayString $monthString ,$yearString';
+      return '$dayString $monthString $yearString, $timeString';
     }
 
-    String formattedDateTime =
-        formatDateTime(DateTime.parse(order.createdAt ?? ''));
+    String formattedDateTime = formatDateTime(DateTime.parse(order.createdAt ?? ''));
     final t = AppLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.all(12.0),
@@ -81,21 +75,14 @@ class ServiceProviderOrderCard extends StatelessWidget {
             ],
           ),
           const Divider(color: Colors.grey, thickness: 1),
-          Wrap(
-            spacing: 12,
-            runSpacing: 12,
-            alignment: WrapAlignment.spaceBetween,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _buildDetailColumn(
-                  t.fuelType,
-                  _getLocalizedText(order.fuelType ?? ""),
-                  Icons.local_gas_station),
-              _buildDetailColumn(
-                  t.date, formattedDateTime ?? "", Icons.date_range),
-              _buildDetailColumn(
-                  t.paymentType, t.employeeBalance, Icons.payment),
-              _buildDetailColumn(t.reference_number,
-                  order.referenceNumber ?? "", Icons.qr_code),
+                  t.fuelType, _getLocalizedText(order.fuelType ?? ""), Icons.local_gas_station),
+              _buildDetailColumn(t.date, formattedDateTime ?? "", Icons.date_range),
+              _buildDetailColumn(t.paymentType, t.employeeBalance, Icons.payment),
+              _buildDetailColumn(t.reference_number, order.referenceNumber ?? "", Icons.qr_code),
             ],
           ),
         ],
@@ -223,45 +210,42 @@ class ServiceProviderOrderCard extends StatelessWidget {
   }
 
   Widget _buildDetailColumn(String title, String value, IconData icon) {
-    return SizedBox(
-      width: 60, // Set a fixed width or adapt as needed
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Icon(icon, size: 20, color: Colors.purple),
-          const SizedBox(height: 4),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Icon(icon, size: 20, color: Colors.purple),
+        const SizedBox(height: 4),
+        Text(
+          title,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
           ),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              color: Palette.background,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            color: Palette.background,
           ),
-        ],
-      ),
+          maxLines: 2, // Allow more lines
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
     );
   }
 }
 
 Widget _buildColumn({required String title, required String value}) {
   return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
+    crossAxisAlignment: CrossAxisAlignment.center,
     children: [
       Text(
         title,

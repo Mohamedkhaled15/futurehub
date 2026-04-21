@@ -9,10 +9,8 @@ class EmployeeOrderModel {
     this.meta,
   });
 
-  factory EmployeeOrderModel.fromJson(Map<String, dynamic> json) =>
-      EmployeeOrderModel(
-        data: List<EmployeeOrder>.from(
-            json["data"].map((x) => EmployeeOrder.fromJson(x))),
+  factory EmployeeOrderModel.fromJson(Map<String, dynamic> json) => EmployeeOrderModel(
+        data: List<EmployeeOrder>.from(json["data"].map((x) => EmployeeOrder.fromJson(x))),
         links: Links.fromJson(json["links"]),
         meta: Meta.fromJson(json["meta"]),
       );
@@ -34,7 +32,7 @@ class EmployeeOrder {
   String? vehicleBrand;
   String? vehicleModel;
   String? vehicleYear;
-  int? totalQuantity;
+  num? totalQuantity;
   PlateLettersClass? plateLetters;
   final String? fuelType;
   String? serviceImage;
@@ -222,8 +220,7 @@ class PlateLettersClass {
     this.ar,
   });
 
-  factory PlateLettersClass.fromJson(Map<String, dynamic> json) =>
-      PlateLettersClass(
+  factory PlateLettersClass.fromJson(Map<String, dynamic> json) => PlateLettersClass(
         en: json["en"],
         ar: json["ar"],
       );

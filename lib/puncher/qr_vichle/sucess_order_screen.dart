@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
-import '../../../l10n/app_localizations.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:future_hub/common/auth/cubit/auth_cubit.dart';
+import 'package:future_hub/common/auth/cubit/auth_state.dart';
 import 'package:future_hub/common/shared/router.dart';
+import 'package:future_hub/puncher/daily_report/cubit/puncher_report_cubit.dart';
+import 'package:future_hub/puncher/orders/order_cubit/service_provider_orders_cubit.dart';
+
+import '../../../l10n/app_localizations.dart';
 
 class SucessOrderScreen extends StatelessWidget {
   const SucessOrderScreen({super.key});
@@ -51,6 +57,28 @@ class SucessOrderScreen extends StatelessWidget {
           // Bottom Button
           GestureDetector(
             onTap: () {
+              final ordersCubit = context.read<ServiceProviderOrdersCubit>();
+              final authState = context.read<AuthCubit>().state;
+
+              if (authState is AuthSignedIn) {
+                // Reload Orders based on user type
+                final userTypes = authState.user.puncherTypes ?? [];
+                if (userTypes.contains('Fuel')) {
+                  ordersCubit.updatOrders();
+                } else {
+                  ordersCubit.updateServicesOrders();
+                }
+
+                // Reload Report
+                final now = DateTime.now();
+                final dateStr = "${now.year}-${now.month}-${now.day}";
+                context.read<PincherReportCubit>().getDailyReport(
+                      dateStr,
+                      authState.user.id!,
+                      'fuel_orders',
+                    );
+              }
+
               router.go('/puncher');
             },
             child: Container(
@@ -60,10 +88,6 @@ class SucessOrderScreen extends StatelessWidget {
               alignment: Alignment.center,
               decoration: const BoxDecoration(
                 color: Color(0xff07A479),
-                // borderRadius: BorderRadius.only(
-                //   topLeft: Radius.circular(20),
-                //   topRight: Radius.circular(20),
-                // ),
               ),
               child: Text(
                 t.back,

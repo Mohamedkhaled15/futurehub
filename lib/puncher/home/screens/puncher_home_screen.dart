@@ -20,6 +20,7 @@ import 'package:future_hub/common/shared/widgets/home_hint.dart';
 import 'package:future_hub/puncher/components/orders_listview.dart';
 import 'package:future_hub/puncher/components/puncher_bottom_navbar.dart';
 import 'package:future_hub/puncher/components/puncher_new_order_card.dart';
+import 'package:future_hub/puncher/orders/order_cubit/service_provider_orders_cubit.dart';
 import 'package:go_router/go_router.dart';
 
 class PuncherHomeScreen extends StatefulWidget {
@@ -29,14 +30,12 @@ class PuncherHomeScreen extends StatefulWidget {
   State<PuncherHomeScreen> createState() => _PuncherHomeScreenState();
 }
 
-class _PuncherHomeScreenState extends State<PuncherHomeScreen>
-    with WidgetsBindingObserver {
+class _PuncherHomeScreenState extends State<PuncherHomeScreen> with WidgetsBindingObserver {
   bool isDrawerOpen = false;
   bool showHint = false;
   bool showFirstImage = true;
   Timer? _imageTimer;
-  late AuthSignedIn authState; // Declare here
-  late User user; // Declare here
+  late final ScrollController _scrollController;
 
   showHintFunc() async {
     if (await CacheManager.getData('home-hint') == null) {
@@ -55,22 +54,20 @@ class _PuncherHomeScreenState extends State<PuncherHomeScreen>
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
     WidgetsBinding.instance.addObserver(this); // Add the observer
-    authState = context.read<AuthCubit>().state as AuthSignedIn;
-    user = authState.user;
-    log("mmmmmmmmmmmmmmmmmrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrmo");
-    log("Initializing Pusher for user ${user.id}");
-    super.initState();
-    pusherConfig.initPusher((event) {
-      if (event.eventName == "user-selected") {}
-    }, channelName: 'tracking.${user.id}');
+
+    final authState = context.read<AuthCubit>().state;
+    if (authState is AuthSignedIn) {
+      final user = authState.user;
+      log("Initializing Pusher for user ${user.id}");
+      pusherConfig.initPusher((event) {
+        if (event.eventName == "user-selected") {}
+      }, channelName: 'tracking.${user.id}');
+    }
+
     showHintFunc();
     _startImageTimer();
-    // Timer.periodic(const Duration(seconds: 3), (timer) {
-    //   setState(() {
-    //     showFirstImage = !showFirstImage; // Toggle between the two images
-    //   });
-    // });
   }
 
   void _startImageTimer() {
@@ -90,6 +87,8 @@ class _PuncherHomeScreenState extends State<PuncherHomeScreen>
   void dispose() {
     _imageTimer?.cancel();
     _imageTimer = null;
+    _scrollController.dispose();
+    pusherConfig.disconnectPusher(); // Cleanup Pusher connection
     WidgetsBinding.instance.removeObserver(this); // Remove the observer
     super.dispose();
   }
@@ -102,8 +101,18 @@ class _PuncherHomeScreenState extends State<PuncherHomeScreen>
   }
 
   Future<void> _refreshOrders() async {
-    // Call the updateOrder method from the order cubit
-    // context.read<ServiceProviderOrdersCubit>().loadOrders();
+    final ordersCubit = context.read<ServiceProviderOrdersCubit>();
+    final authState = context.read<AuthCubit>().state;
+
+    if (authState is AuthSignedIn) {
+      // Reload Orders based on user type
+      final userTypes = authState.user.puncherTypes ?? [];
+      if (userTypes.contains('Fuel')) {
+        ordersCubit.updatOrders();
+      } else {
+        ordersCubit.updateServicesOrders();
+      }
+    }
   }
 
   @override
@@ -141,9 +150,7 @@ class _PuncherHomeScreenState extends State<PuncherHomeScreen>
               duration: const Duration(milliseconds: 300),
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.2),
-                borderRadius: isDrawerOpen
-                    ? BorderRadius.circular(40)
-                    : BorderRadius.circular(0),
+                borderRadius: isDrawerOpen ? BorderRadius.circular(40) : BorderRadius.circular(0),
               ),
             ),
             AnimatedContainer(
@@ -169,9 +176,7 @@ class _PuncherHomeScreenState extends State<PuncherHomeScreen>
               duration: const Duration(milliseconds: 300),
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.2),
-                borderRadius: isDrawerOpen
-                    ? BorderRadius.circular(40)
-                    : BorderRadius.circular(0),
+                borderRadius: isDrawerOpen ? BorderRadius.circular(40) : BorderRadius.circular(0),
               ),
             ),
             AnimatedContainer(
@@ -197,62 +202,49 @@ class _PuncherHomeScreenState extends State<PuncherHomeScreen>
               duration: const Duration(milliseconds: 300),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: isDrawerOpen
-                    ? BorderRadius.circular(40)
-                    : BorderRadius.circular(0),
+                borderRadius: isDrawerOpen ? BorderRadius.circular(40) : BorderRadius.circular(0),
               ),
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: paddingTop),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    HomeAppBar(
-                      icon: GestureDetector(
-                        onTap: () => setState(() {
-                          context.read<DrawerCubit>().changeDrawerState();
-                        }),
-                        child: Transform.flip(
-                          flipX: !arabic,
-                          child: SvgPicture.asset(
-                            isDrawerOpen
-                                ? 'assets/icons/close.svg'
-                                : 'assets/icons/drawer.svg',
-                            height: isDrawerOpen ? 40 : 20,
+                child: RefreshIndicator(
+                  onRefresh: _refreshOrders,
+                  child: CustomScrollView(
+                    controller: _scrollController,
+                    slivers: [
+                      SliverToBoxAdapter(
+                        child: HomeAppBar(
+                          icon: GestureDetector(
+                            onTap: () => setState(() {
+                              context.read<DrawerCubit>().changeDrawerState();
+                            }),
+                            child: Transform.flip(
+                              flipX: !arabic,
+                              child: SvgPicture.asset(
+                                isDrawerOpen ? 'assets/icons/close.svg' : 'assets/icons/drawer.svg',
+                                height: isDrawerOpen ? 40 : 20,
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: 24.0,
-                        right: 24.0,
-                        bottom: 18.0,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          GestureDetector(
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: 24.0,
+                            right: 24.0,
+                            bottom: 18.0,
+                          ),
+                          child: GestureDetector(
                             onTap: () => context.push('/puncher/recieve-order'),
                             child: const PuncherNewOrderCard(),
                           ),
-                          // ListView.separated(
-                          //   itemBuilder: (context, index) {
-                          //     return Container();
-                          //   },
-                          //   separatorBuilder: (context, index) {
-                          //     return const Divider();
-                          //   },
-                          //   itemCount: 1,
-                          // )
-                        ],
+                        ),
                       ),
-                    ),
-                    Expanded(
-                      child: RefreshIndicator(
-                          onRefresh: _refreshOrders,
-                          child: const PuncherOrdersListView()),
-                    ),
-                  ],
+                      PuncherOrdersListView(
+                        controller: _scrollController,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -360,8 +352,7 @@ class _PuncherHomeScreenState extends State<PuncherHomeScreen>
               children: [
                 // First Image
                 AnimatedOpacity(
-                  opacity:
-                      showFirstImage ? 1.0 : 0.0, // Show/hide based on state
+                  opacity: showFirstImage ? 1.0 : 0.0, // Show/hide based on state
                   duration: const Duration(milliseconds: 500), // Fade duration
                   child: Image.asset(
                     'assets/images/home-logo.png',
@@ -370,8 +361,7 @@ class _PuncherHomeScreenState extends State<PuncherHomeScreen>
                 ),
                 // Second Image
                 AnimatedOpacity(
-                  opacity:
-                      showFirstImage ? 0.0 : 1.0, // Show/hide based on state
+                  opacity: showFirstImage ? 0.0 : 1.0, // Show/hide based on state
                   duration: const Duration(milliseconds: 500), // Fade duration
                   child: Image.asset(
                     'assets/images/Service Provider.png', // Your second image

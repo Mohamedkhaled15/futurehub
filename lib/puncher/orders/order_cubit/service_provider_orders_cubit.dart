@@ -10,114 +10,95 @@ import 'order_states/service_provider_order_states.dart';
 class ServiceProviderOrdersCubit extends Cubit<ServiceProviderOrderStates> {
   ServiceProviderOrdersCubit() : super(ServiceProviderOrdersInitState());
   static ServiceProviderOrdersCubit get(context) => BlocProvider.of(context);
-  int page = 1;
-  bool canLoadMore = true;
+  int fuelPage = 1;
+  int servicePage = 1;
+  bool canLoadMoreFuel = true;
+  bool canLoadMoreServices = true;
   final _ordersService = PuncherOrderServices();
-  List<Datum> cubitOrders = [];
+  List<Datum> fuelOrders = [];
+  List<Datum> serviceOrders = [];
+
   Future<void> loadOrders({bool refresh = false}) async {
     if (state is ServiceProviderOrdersLoadingState) return;
 
-    // final currentState = state;
-    // var oldOrders = <Datum>[];
-    //
-    // if (currentState is ServiceProviderOrdersLoadedState) {
-    //   oldOrders = currentState.orders;
-    // }
-
     if (refresh) {
-      page = 1;
-      cubitOrders = [];
+      fuelPage = 1;
+      fuelOrders = [];
     }
 
-    emit(ServiceProviderOrdersLoadingState(cubitOrders, isFirstFetch: page == 1));
+    emit(ServiceProviderOrdersLoadingState(fuelOrders, isFirstFetch: fuelPage == 1));
 
     try {
-      final newOrders = await _ordersService.fetchOrders(page: page);
-      canLoadMore = newOrders.meta?.currentPage != newOrders.meta?.lastPage;
-      page++;
-      // final orders = (state as ServiceProviderOrdersLoadingState).oldOrders;
+      final newOrders = await _ordersService.fetchOrders(page: fuelPage);
+      canLoadMoreFuel = newOrders.meta?.currentPage != newOrders.meta?.lastPage;
+      fuelPage++;
       if (newOrders.data != null) {
-        cubitOrders.addAll(newOrders.data!); // Append new data
+        fuelOrders.addAll(newOrders.data!);
       }
 
-      // cubitOrders = orders;
-
-      emit(ServiceProviderOrdersLoadedState(
-        cubitOrders,
-      ));
+      emit(ServiceProviderOrdersLoadedState(fuelOrders, newOrders.meta?.total ?? 0));
     } catch (e) {
-      print('Error loading orders: $e');
+      print('Error loading fuel orders: $e');
       emit(ServiceProviderOrdersErrorState(e.toString()));
     }
   }
 
   Future<void> updatOrders() async {
     if (state is ServiceProviderOrdersLoadingState) return;
-    final currentState = state;
-    var oldOrders = <Datum>[];
 
-    if (currentState is ServiceProviderOrdersLoadedState) {
-      oldOrders = currentState.orders;
+    emit(ServiceProviderOrdersLoadingState(fuelOrders, isFirstFetch: false));
+    try {
+      var newOrders = await _ordersService.fetchOrders(page: 1, cache: false);
+      fuelOrders = newOrders.data ?? [];
+      fuelPage = 2; // Reset pagination to next page
+      canLoadMoreFuel = newOrders.meta?.currentPage != newOrders.meta?.lastPage;
+
+      emit(ServiceProviderOrdersLoadedState(fuelOrders, newOrders.meta?.total ?? 0));
+    } catch (e) {
+      print('Error updating fuel orders: $e');
+      emit(ServiceProviderOrdersErrorState(e.toString()));
     }
-    emit(ServiceProviderOrdersLoadingState(oldOrders, isFirstFetch: false));
-    var newOrders = await _ordersService.fetchOrders(page: 1, cache: false);
-
-    cubitOrders = newOrders.data!;
-    emit(
-      ServiceProviderOrdersLoadedState(
-        cubitOrders,
-      ),
-    );
   }
 
   Future<void> loadServicesOrders({bool refresh = false}) async {
     if (state is ServiceProviderOrdersServicesLoadingState) return;
-    // final currentState = state;
-    // var oldOrders = <Datum>[];
-    // if (currentState is ServiceProviderServicesOrdersLoadedState) {
-    //   oldOrders = currentState.orders;
-    // }
+
     if (refresh) {
-      page = 1;
-      cubitOrders = [];
+      servicePage = 1;
+      serviceOrders = [];
     }
-    emit(ServiceProviderOrdersServicesLoadingState(cubitOrders, isFirstFetch: page == 1));
+    emit(ServiceProviderOrdersServicesLoadingState(serviceOrders, isFirstFetch: servicePage == 1));
     try {
-      final newOrders = await _ordersService.fetchServicesOrders(page: page);
-      canLoadMore = newOrders.meta?.currentPage != newOrders.meta?.lastPage;
-      page++;
-      // final orders =
-      //     (state as ServiceProviderOrdersServicesLoadingState).oldOrders;
+      final newOrders = await _ordersService.fetchServicesOrders(page: servicePage);
+      canLoadMoreServices = newOrders.meta?.currentPage != newOrders.meta?.lastPage;
+      servicePage++;
+
       if (newOrders.data != null) {
-        cubitOrders.addAll(newOrders.data!); // Append new data
+        serviceOrders.addAll(newOrders.data!);
       }
-      // cubitOrders = orders;
-      emit(ServiceProviderServicesOrdersLoadedState(
-        cubitOrders,
-      ));
+
+      emit(ServiceProviderServicesOrdersLoadedState(serviceOrders, newOrders.meta?.total ?? 0));
     } catch (e) {
-      print('Error loading orders: $e');
+      print('Error loading service orders: $e');
       emit(ServiceProviderOrdersErrorState(e.toString()));
     }
   }
 
   Future<void> updateServicesOrders() async {
     if (state is ServiceProviderOrdersServicesLoadingState) return;
-    final currentState = state;
-    var oldOrders = <Datum>[];
 
-    if (currentState is ServiceProviderServicesOrdersLoadedState) {
-      oldOrders = currentState.orders;
+    emit(ServiceProviderOrdersServicesLoadingState(serviceOrders, isFirstFetch: false));
+    try {
+      var newOrders = await _ordersService.fetchServicesOrders(page: 1, cache: false);
+      serviceOrders = newOrders.data ?? [];
+      servicePage = 2; // Reset pagination to next page
+      canLoadMoreServices = newOrders.meta?.currentPage != newOrders.meta?.lastPage;
+
+      emit(ServiceProviderServicesOrdersLoadedState(serviceOrders, newOrders.meta?.total ?? 0));
+    } catch (e) {
+      print('Error updating service orders: $e');
+      emit(ServiceProviderOrdersErrorState(e.toString()));
     }
-    emit(ServiceProviderOrdersServicesLoadingState(oldOrders, isFirstFetch: false));
-    var newOrders = await _ordersService.fetchServicesOrders(page: 1, cache: false);
-
-    cubitOrders = newOrders.data!;
-    emit(
-      ServiceProviderServicesOrdersLoadedState(
-        cubitOrders,
-      ),
-    );
   }
 
   //=========================== ocr plate ==========================

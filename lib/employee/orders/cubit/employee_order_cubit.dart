@@ -41,7 +41,7 @@ class EmployeeOrderCubit extends Cubit<EmployeeOrderStates> {
         fuelOrders.addAll(newOrders.data!);
       }
 
-      emit(EmployeeOrdersLoadedState(fuelOrders, canLoadMoreFuel));
+      emit(EmployeeOrdersLoadedState(fuelOrders, canLoadMoreFuel, newOrders.meta?.total ?? 0));
     } catch (e) {
       emit(EmployeeOrdersOrdersErrorState(e.toString()));
     }
@@ -74,6 +74,7 @@ class EmployeeOrderCubit extends Cubit<EmployeeOrderStates> {
       emit(EmployeeServicesOrdersLoadedState(
         servicesOrders,
         canLoadMoreServices,
+        newOrders.meta?.total ?? 0,
       ));
     } catch (e) {
       emit(EmployeeOrdersOrdersErrorState(e.toString()));

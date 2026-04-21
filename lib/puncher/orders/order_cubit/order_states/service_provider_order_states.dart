@@ -5,16 +5,18 @@ abstract class ServiceProviderOrderStates {}
 class ServiceProviderOrdersInitState extends ServiceProviderOrderStates {}
 
 class ServiceProviderOrdersLoadedState extends ServiceProviderOrderStates {
-  final List<Datum> orders; // Use Datum instead of ServiceProviderOrderModel
+  final List<Datum> orders;
+  final int total;
 
-  ServiceProviderOrdersLoadedState(this.orders);
+  ServiceProviderOrdersLoadedState(this.orders, this.total);
 }
 
 class ServiceProviderServicesOrdersLoadedState
     extends ServiceProviderOrderStates {
-  final List<Datum> orders; // Use Datum instead of ServiceProviderOrderModel
+  final List<Datum> orders;
+  final int total;
 
-  ServiceProviderServicesOrdersLoadedState(this.orders);
+  ServiceProviderServicesOrdersLoadedState(this.orders, this.total);
 }
 
 class ServiceProviderOrdersServicesLoadingState

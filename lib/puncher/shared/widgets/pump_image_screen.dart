@@ -121,18 +121,20 @@ class _PumpImageScreenState extends State<PumpImageScreen>
             await ImageCompressionHelper.compressImage(File(widget.plateImage!.path));
         compressedPlate = XFile(compressedFile.path);
       }
-      _ordersService.uploadPumpImage(
+
+      // // 4. Call APIs
+      // await _ordersService.confirmOrder(
+      //   widget.otp,
+      //   widget.referenceNumber,
+      //   compressedPlate ?? XFile(""),
+      //   widget.type,
+      //   compressedOdometer,
+      // );
+
+      await _ordersService.uploadPumpImage(
         orderId: widget.orderId,
         image: croppedImage,
         imageWithTimestamp: XFile(compressedWatermarkedFile.path),
-      );
-      // 4. Call APIs
-      _ordersService.confirmOrder(
-        widget.otp,
-        widget.referenceNumber,
-        compressedPlate ?? XFile(""),
-        widget.type,
-        compressedOdometer,
       );
 
       await _playSuccessEffects();
@@ -264,6 +266,17 @@ class _PumpImageScreenState extends State<PumpImageScreen>
               children: [
                 CameraPreview(_controller!),
                 const CameraOverlay(),
+                Positioned(
+                  top: 60,
+                  left: 20,
+                  right: 20,
+                  child: Image.asset(
+                    "assets/images/gas-pump.png",
+                    height: MediaQuery.of(context).size.height * 0.12,
+                    filterQuality: FilterQuality.none,
+                    isAntiAlias: false,
+                  ),
+                )
               ],
             ),
       bottomNavigationBar: SafeArea(

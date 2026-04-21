@@ -93,9 +93,9 @@ class _EmployeeOrdersScreenState extends State<EmployeeOrdersScreen>
               builder: (context, state) {
                 int ordersCount = 0;
                 if (state is EmployeeOrdersLoadedState) {
-                  ordersCount = state.orders.length;
+                  ordersCount = state.total;
                 } else if (state is EmployeeServicesOrdersLoadedState) {
-                  ordersCount = state.orders.length;
+                  ordersCount = state.total;
                 } else if (state is EmployeeOrdersLoadingState) {
                   ordersCount = state.oldOrders.length;
                 } else if (state is EmployeeServicesOrdersLoadingState) {

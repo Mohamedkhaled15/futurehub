@@ -1,14 +1,34 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
-import '../../../l10n/app_localizations.dart';
 import 'package:future_hub/common/shared/palette.dart';
 import 'package:future_hub/common/shared/utils/cache_manager.dart';
 import 'package:future_hub/employee/orders/models/employee_order_model.dart';
+import 'package:intl/intl.dart';
+
+import '../../../l10n/app_localizations.dart';
 
 class EmployeeOrderCard extends StatelessWidget {
   final EmployeeOrder order;
   const EmployeeOrderCard({super.key, required this.order});
   @override
   Widget build(BuildContext context) {
+    final direction = Directionality.of(context);
+    String formatDateTime(DateTime dateTime) {
+      final timeFormat = DateFormat('hh:mm a', direction == ui.TextDirection.rtl ? 'ar' : 'en');
+      final month = DateFormat('MMMM', direction == ui.TextDirection.rtl ? 'ar' : 'en');
+      final day = DateFormat('dd', 'en');
+      final year = DateFormat('yyyy', 'en');
+
+      final timeString = timeFormat.format(dateTime);
+      final monthString = month.format(dateTime);
+      final dayString = day.format(dateTime);
+      final yearString = year.format(dateTime);
+
+      return '$dayString $monthString $yearString, $timeString';
+    }
+
+    String formattedDateTime = formatDateTime(DateTime.parse(order.createdAt ?? ''));
     final t = AppLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.all(12.0),
@@ -50,22 +70,17 @@ class EmployeeOrderCard extends StatelessWidget {
             ],
           ),
           const Divider(color: Colors.grey, thickness: 1),
-          Wrap(
-            spacing: 12,
-            runSpacing: 12,
-            alignment: WrapAlignment.spaceBetween,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _buildDetailColumn(
                   t.fuelType,
                   // _getLocalizedText(order.products![0]),
                   order.fuelType ?? "",
                   Icons.local_gas_station),
-              _buildDetailColumn(
-                  t.date, order.createdAt ?? "", Icons.date_range),
-              _buildDetailColumn(
-                  t.paymentType, t.employeeBalance, Icons.payment),
-              _buildDetailColumn(t.reference_number,
-                  order.referenceNumber ?? "", Icons.qr_code),
+              _buildDetailColumn(t.date, formattedDateTime ?? "", Icons.date_range),
+              _buildDetailColumn(t.paymentType, t.employeeBalance, Icons.payment),
+              _buildDetailColumn(t.reference_number, order.referenceNumber ?? "", Icons.qr_code),
             ],
           ),
         ],
@@ -101,9 +116,7 @@ class EmployeeOrderCard extends StatelessWidget {
   }
 
   String _getLocalizedText(Packing? title) {
-    return CacheManager.locale == const Locale("en")
-        ? title?.en ?? ""
-        : title?.ar ?? "";
+    return CacheManager.locale == const Locale("en") ? title?.en ?? "" : title?.ar ?? "";
   }
 }
 
@@ -227,37 +240,34 @@ Widget _buildLicensePlate(EmployeeOrder order) {
 }
 
 Widget _buildDetailColumn(String title, String value, IconData icon) {
-  return SizedBox(
-    width: 60, // Set a fixed width or adapt as needed
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Icon(icon, size: 20, color: Colors.purple),
-        const SizedBox(height: 4),
-        Text(
-          title,
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+      Icon(icon, size: 20, color: Colors.purple),
+      const SizedBox(height: 4),
+      Text(
+        title,
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
         ),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-            color: Palette.background,
-          ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+      const SizedBox(height: 4),
+      Text(
+        value,
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+          color: Palette.background,
         ),
-      ],
-    ),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+    ],
   );
 }

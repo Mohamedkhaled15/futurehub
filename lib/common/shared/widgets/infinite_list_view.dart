@@ -9,6 +9,9 @@ class InfiniteListView extends StatefulWidget {
   final Future<void> Function() onLoadMore;
   final bool canLoadMore;
   final Widget? empty;
+  final bool shrinkWrap;
+  final ScrollPhysics? physics;
+  final ScrollController? controller;
 
   const InfiniteListView({
     super.key,
@@ -18,6 +21,9 @@ class InfiniteListView extends StatefulWidget {
     required this.onLoadMore,
     required this.canLoadMore,
     this.empty,
+    this.shrinkWrap = false,
+    this.physics,
+    this.controller,
   });
 
   @override
@@ -48,7 +54,7 @@ class _InfiniteListViewState extends State<InfiniteListView> {
 
   @override
   void initState() {
-    _scrollController = ScrollController();
+    _scrollController = widget.controller ?? ScrollController();
     _scrollController.addListener(_scrollListener);
     super.initState();
   }
@@ -67,7 +73,9 @@ class _InfiniteListViewState extends State<InfiniteListView> {
   @override
   void dispose() {
     _scrollController.removeListener(_scrollListener);
-    _scrollController.dispose();
+    if (widget.controller == null) {
+      _scrollController.dispose();
+    }
     super.dispose();
   }
 
@@ -78,8 +86,9 @@ class _InfiniteListViewState extends State<InfiniteListView> {
       return widget.empty!;
     }
     return ListView.builder(
-      controller: _scrollController,
-      physics: const AlwaysScrollableScrollPhysics(),
+      controller: widget.shrinkWrap ? null : _scrollController,
+      physics: widget.physics ?? const AlwaysScrollableScrollPhysics(),
+      shrinkWrap: widget.shrinkWrap,
       padding: widget.padding,
       itemCount: showEmpty ? 1 : widget.itemCount + (_isLoadingMore ? 1 : 0),
       itemBuilder: (context, index) {

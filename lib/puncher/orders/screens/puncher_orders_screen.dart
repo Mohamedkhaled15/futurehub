@@ -23,6 +23,17 @@ class PuncherOrdersScreen extends StatefulWidget {
 }
 
 class _PuncherOrdersScreenState extends State<PuncherOrdersScreen> {
+  Future<void> _onRefresh() async {
+    final authState = context.read<AuthCubit>().state;
+    final ordersCubit = context.read<ServiceProviderOrdersCubit>();
+    if (authState is AuthSignedIn &&
+        authState.user.puncherTypes!.contains('Fuel')) {
+      await ordersCubit.loadOrders(refresh: true);
+    } else {
+      await ordersCubit.loadServicesOrders(refresh: true);
+    }
+  }
+
   Future<void> _onLoadMore() async {
     final authState = context.read<AuthCubit>().state;
     final ordersCubit = context.read<ServiceProviderOrdersCubit>();
@@ -54,8 +65,9 @@ class _PuncherOrdersScreenState extends State<PuncherOrdersScreen> {
       body: BlocBuilder<ServiceProviderOrdersCubit, ServiceProviderOrderStates>(
         builder: (context, state) {
           List<Datum> orders = [];
-          bool canLoadMore =
-              context.read<ServiceProviderOrdersCubit>().canLoadMore;
+          bool canLoadMore = isFuelUser
+              ? context.read<ServiceProviderOrdersCubit>().canLoadMoreFuel
+              : context.read<ServiceProviderOrdersCubit>().canLoadMoreServices;
           bool isLoadingMore = false;
 
           if (state is ServiceProviderOrdersLoadingState &&
@@ -85,85 +97,79 @@ class _PuncherOrdersScreenState extends State<PuncherOrdersScreen> {
               return dateB.compareTo(dateA); // Newest first
             });
 
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // const SizedBox(height: 16),
-              // Row(
-              //   children: [
-              //     const SizedBox(width: 15),
-              //     _buildTabButton(context, t.fuel, 0),
-              //     const SizedBox(width: 15),
-              //     _buildTabButton(context, t.services, 1),
-              //   ],
-              // ),
-              const SizedBox(height: 30),
-              Expanded(
-                child: InfiniteListView(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  canLoadMore: canLoadMore,
-                  onLoadMore: _onLoadMore,
-                  itemCount: filteredOrders.length + (isLoadingMore ? 1 : 0),
-                  itemBuilder: (context, index) {
-                    if (index >= filteredOrders.length) {
-                      return const Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Center(child: CircularProgressIndicator()),
+          return RefreshIndicator(
+            onRefresh: _onRefresh,
+            child: ListView(
+              children: [
+                const SizedBox(height: 30),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.8,
+                  child: InfiniteListView(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    canLoadMore: canLoadMore,
+                    onLoadMore: _onLoadMore,
+                    itemCount: filteredOrders.length + (isLoadingMore ? 1 : 0),
+                    itemBuilder: (context, index) {
+                      if (index >= filteredOrders.length) {
+                        return const Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Center(child: CircularProgressIndicator()),
+                        );
+                      }
+
+                      final order = filteredOrders[index];
+
+                      return Padding(
+                        padding: EdgeInsets.only(
+                          bottom: index == filteredOrders.length - 1 ? 80 : 16.0,
+                          left: 24.0,
+                          right: 24.0,
+                        ),
+                        child: GestureDetector(
+                          onTap: () => context.push(
+                            '/puncher/order-details-screen',
+                            extra: order,
+                          ),
+                          child: !isFuelUser
+                              ? ServicesPuncherOrderCard(
+                                  order: order,
+                                  isLast: filteredOrders.last == order,
+                                )
+                              : ServiceProviderOrderCard(
+                                  order: order,
+                                  isLast: filteredOrders.last == order,
+                                ),
+                        ),
                       );
-                    }
-
-                    final order = filteredOrders[index];
-
-                    return Padding(
-                      padding: EdgeInsets.only(
-                        bottom: index == filteredOrders.length - 1 ? 80 : 16.0,
-                        left: 24.0,
-                        right: 24.0,
-                      ),
-                      child: GestureDetector(
-                        onTap: () => context.push(
-                          '/puncher/order-details-screen',
-                          extra: order,
+                    },
+                    empty: Column(
+                      children: [
+                        SvgPicture.asset(
+                          'assets/images/orders.svg',
+                          height: MediaQuery.of(context).size.height * 0.25,
                         ),
-                        child: !isFuelUser
-                            ? ServicesPuncherOrderCard(
-                                order: order,
-                                isLast: filteredOrders.last == order,
-                              )
-                            : ServiceProviderOrderCard(
-                                order: order,
-                                isLast: filteredOrders.last == order,
-                              ),
-                      ),
-                    );
-                  },
-                  empty: Column(
-                    children: [
-                      SvgPicture.asset(
-                        'assets/images/orders.svg',
-                        height: MediaQuery.of(context).size.height * 0.25,
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        t.the_place_here_is_empty,
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
+                        const SizedBox(height: 10),
+                        Text(
+                          t.the_place_here_is_empty,
+                          style: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        t.you_can_find_your_orders_here,
-                        style: const TextStyle(
-                          fontSize: 20,
-                          color: Palette.textGreyColor,
+                        const SizedBox(height: 10),
+                        Text(
+                          t.you_can_find_your_orders_here,
+                          style: const TextStyle(
+                            fontSize: 20,
+                            color: Palette.textGreyColor,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         },
       ),
