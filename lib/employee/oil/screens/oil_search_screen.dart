@@ -72,7 +72,7 @@ class _OilSearchScreenState extends State<OilSearchScreen> {
                           (brand) => DropdownMenuItem(
                             value: brand,
                             child: Text(
-                                CacheManager.locale! == const Locale("en")
+                                CacheManager.locale == const Locale("en")
                                     ? brand.title?.en ?? ""
                                     : brand.title?.ar ?? ""),
                           ),
@@ -88,7 +88,7 @@ class _OilSearchScreenState extends State<OilSearchScreen> {
                           (model) => DropdownMenuItem(
                             value: model,
                             child: Text(
-                                CacheManager.locale! == const Locale("en")
+                                CacheManager.locale == const Locale("en")
                                     ? model.title?.en ?? ""
                                     : model.title?.ar ?? ""),
                           ),
@@ -104,7 +104,7 @@ class _OilSearchScreenState extends State<OilSearchScreen> {
                           (year) => DropdownMenuItem(
                             value: year,
                             child: Text(
-                                CacheManager.locale! == const Locale("en")
+                                CacheManager.locale == const Locale("en")
                                     ? year.title?.en ?? ""
                                     : year.title?.ar ?? ""),
                           ),

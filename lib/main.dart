@@ -53,13 +53,15 @@ void main() async {
   await DioHelper.init();
 
   // Initialize Firebase only if not already initialized
-  try{
-  if (Firebase.apps.isEmpty) {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-  }}catch(e) {
-    print('Firebase initialization error: $e');}
+  try {
+    if (Firebase.apps.isEmpty) {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    }
+  } catch (e) {
+    print('Firebase initialization error: $e');
+  }
 
   await NotificationsService().initializeNotifications();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -96,8 +98,7 @@ Future<void> _createNotificationChannel() async {
 
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
+      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
 }
 
@@ -139,21 +140,20 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
         name: 'Future-hub',
       );
     }
-  }catch(e) {
-    print('Firebase initialization error: $e');}
+  } catch (e) {
+    print('Firebase initialization error: $e');
+  }
   NotificationsService().showNotification(message);
 }
 
 class FutureHubApp extends StatelessWidget {
   const FutureHubApp({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     genContext = context;
     final media = MediaQuery.of(context);
-    final textScaleFactor =
-        media.textScaleFactor * (Platform.isAndroid ? 0.70 : 0.85);
+    final textScaleFactor = media.textScaleFactor * (Platform.isAndroid ? 0.70 : 0.85);
 
     return BlocProvider(
       create: (context) => AuthCubit()..init(),
@@ -162,8 +162,7 @@ class FutureHubApp extends StatelessWidget {
         child: BlocBuilder<AuthCubit, AuthState>(
           builder: (context, state) {
             final signedInProviders = [
-              BlocProvider(
-                  create: (context) => InfoCubit()..init(), lazy: false),
+              BlocProvider(create: (context) => InfoCubit()..init(), lazy: false),
               BlocProvider(create: (context) => LocaleCubit()),
               BlocProvider(create: (context) => NotificationsCubit()..init()),
               BlocProvider(
@@ -171,8 +170,7 @@ class FutureHubApp extends StatelessWidget {
                     ..init()
                     ..fetchBranches()
                     ..fetchVehicles()),
-              BlocProvider(
-                  create: (context) => EmployeePunchersCubit()..loadPunchers()),
+              BlocProvider(create: (context) => EmployeePunchersCubit()..loadPunchers()),
               BlocProvider(create: (_) => ServicesPunchersCubit()),
               BlocProvider(create: (context) => ProductsCubit()),
               BlocProvider(create: (context) => OrdersCubit()),
@@ -190,12 +188,9 @@ class FutureHubApp extends StatelessWidget {
                   return cubit;
                 },
               ),
-              BlocProvider(
-                  create: (context) => EmployeeOrderCubit()..loadOrders()),
+              BlocProvider(create: (context) => EmployeeOrderCubit()..loadOrders()),
               BlocProvider(create: (context) => PincherReportCubit()),
-              BlocProvider(
-                  create: (context) =>
-                      CompanyOrderCubit()..loadCompanyOrders()),
+              BlocProvider(create: (context) => CompanyOrderCubit()..loadCompanyOrders()),
               BlocProvider(create: (context) => OrderCubit()),
               BlocProvider(create: (context) => WalletCubit()),
               BlocProvider(create: (context) => OilCubit()..init()),
@@ -209,10 +204,8 @@ class FutureHubApp extends StatelessWidget {
               providers: [
                 BlocProvider(create: (context) => LocaleCubit()),
                 BlocProvider(create: (context) => DrawerCubit()),
-                BlocProvider(
-                    create: (context) => SplashCubit()..onInit(context)),
-                BlocProvider(
-                    create: (context) => InfoCubit()..init(), lazy: false),
+                BlocProvider(create: (context) => SplashCubit()..onInit(context)),
+                BlocProvider(create: (context) => InfoCubit()..init(), lazy: false),
                 if (state is AuthSignedIn) ...signedInProviders,
               ],
               child: BlocBuilder<LocaleCubit, Locale?>(
@@ -234,17 +227,15 @@ class FutureHubApp extends StatelessWidget {
                     ],
                     locale: state,
                     theme: ThemeData(
-                      appBarTheme: const AppBarTheme(
-                          backgroundColor: Palette.whiteColor),
+                      appBarTheme: const AppBarTheme(backgroundColor: Palette.whiteColor),
                       useMaterial3: false,
                       fontFamily: state == const Locale("en") ? 'sf' : null,
-                      textTheme: state == const Locale("ar")
-                          ? GoogleFonts.almaraiTextTheme()
-                          : null,
+                      textTheme:
+                          state == const Locale("ar") ? GoogleFonts.almaraiTextTheme() : null,
                       dividerColor: Palette.primaryLightColor,
                       primaryColor: Palette.primaryColor,
-                      colorScheme: const ColorScheme.light()
-                          .copyWith(primary: Palette.primaryColor),
+                      colorScheme:
+                          const ColorScheme.light().copyWith(primary: Palette.primaryColor),
                       scaffoldBackgroundColor: Palette.whiteColor,
                     ),
                   );

@@ -209,7 +209,7 @@ class _MapWidgetState extends State<ServicesMapWidget> with WidgetsBindingObserv
                         },
                         id: _selectedPuncher!.id ?? 0,
                         title:
-                            "${CacheManager.locale! == const Locale("en") ? _selectedPuncher!.title?.en : _selectedPuncher!.title?.ar}  (${CacheManager.locale! == const Locale("en") ? _selectedPuncher!.title?.en : _selectedPuncher!.title?.ar})",
+                            "${CacheManager.locale == const Locale("en") ? _selectedPuncher!.title?.en : _selectedPuncher!.title?.ar}  (${CacheManager.locale == const Locale("en") ? _selectedPuncher!.title?.en : _selectedPuncher!.title?.ar})",
                         imageUrl: _selectedPuncher!.image,
                         location: _selectedPuncher!.city!,
                       ),

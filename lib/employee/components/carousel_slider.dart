@@ -52,7 +52,7 @@ class _EmployeeHomeCarouselState extends State<EmployeeHomeCarousel> {
             return ClipRRect(
               borderRadius: BorderRadius.circular(10.0),
               child: Image.network(
-                CacheManager.locale! == const Locale("en")
+                CacheManager.locale == const Locale("en")
                     ? slider['image']['en']
                     : slider['image']['ar'],
                 fit: BoxFit.cover,

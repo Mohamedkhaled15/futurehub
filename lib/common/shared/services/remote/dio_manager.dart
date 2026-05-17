@@ -15,12 +15,11 @@ class DioHelper {
     dio = customDio ??
         Dio(
           BaseOptions(
-            baseUrl: ApiConstants.baseTestURL,
+            baseUrl: ApiConstants.baseLiveURL,
             receiveDataWhenStatusError: true,
           ),
         );
-    dio!.interceptors.add(
-      PrettyDioLogger(
+    dio!.interceptors.add(PrettyDioLogger(
         error: true,
         enabled: true,
         responseHeader: true,
@@ -29,9 +28,7 @@ class DioHelper {
         requestBody: true,
         responseBody: true,
         compact: true,
-        maxWidth: 90
-        )
-        );
+        maxWidth: 90));
   }
 
   Future<Response> getData({
@@ -64,7 +61,7 @@ class DioHelper {
       'Authorization': token != null ? "Bearer $token" : "",
       'Accept': '*/*',
       'Connection': 'keep-alive',
-      'Accept-Language': CacheManager.locale!.languageCode,
+      'Accept-Language': CacheManager.locale?.languageCode ?? 'ar',
     };
     dio!.options.validateStatus = (status) {
       if (status == 401) {
@@ -100,7 +97,7 @@ class DioHelper {
       if (token != null) 'Authorization': "Bearer $token",
       'Accept': 'application/json',
       'Connection': 'keep-alive',
-      'Accept-Language': CacheManager.locale!.languageCode,
+      'Accept-Language': CacheManager.locale?.languageCode ?? 'ar',
     };
     dio!.options.followRedirects = false; // Prevent automatic redirection
     debugPrint("post data => $url ${data.toString()}");
@@ -136,7 +133,7 @@ class DioHelper {
       'Authorization': token != null ? "Bearer $token" : "",
       'Accept': 'application/json',
       'Connection': 'keep-alive',
-      'Accept-Language': CacheManager.locale!.languageCode,
+      'Accept-Language': CacheManager.locale?.languageCode ?? 'ar',
     };
     dio!.options.followRedirects = false; // Enable redirect following
     dio!.options.maxRedirects = 5; // Specify max number of redirects

@@ -107,7 +107,7 @@ class _ServicesListWidgetState extends State<ServicesListWidget> {
                       );
                     },
                     child: _ServiceItem(
-                      title: CacheManager.locale! == const Locale("en")
+                      title: CacheManager.locale == const Locale("en")
                           ? snapshot.data!.categories[index].title.en
                           : snapshot.data!.categories[index].title.ar,
                       imageUrl: snapshot.data!.categories[index].image,

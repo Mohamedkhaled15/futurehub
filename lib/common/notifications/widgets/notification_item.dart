@@ -57,7 +57,7 @@ class NotificationItem extends StatelessWidget {
               Padding(
                 padding: const EdgeInsetsDirectional.only(end: 15.0),
                 child: Text(
-                  CacheManager.locale! == const Locale("en")
+                  CacheManager.locale == const Locale("en")
                       ? notification.message.en
                       : notification.message.ar,
                   style: theme.textTheme.bodyMedium!.copyWith(height: 1.5),

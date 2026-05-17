@@ -71,7 +71,7 @@ class CompanyEmployeeOrderProudcutCardItem extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        CacheManager.locale! == const Locale("en")
+                        CacheManager.locale == const Locale("en")
                             ? product.title?.en ?? ""
                             : product.title?.ar ?? "",
                         style:
@@ -91,7 +91,7 @@ class CompanyEmployeeOrderProudcutCardItem extends StatelessWidget {
                         children: [
                           if (showQuantity)
                             Text(
-                              CacheManager.locale! == const Locale("en")
+                              CacheManager.locale == const Locale("en")
                                   ? product.packing?.en ?? ""
                                   : product.packing?.ar ?? "",
                               style: theme.textTheme.titleSmall!.copyWith(

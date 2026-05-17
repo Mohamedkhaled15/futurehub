@@ -43,7 +43,7 @@ class _QuestionCardState extends State<QuestionCard> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  CacheManager.locale! == const Locale("en")
+                  CacheManager.locale == const Locale("en")
                       ? widget.question.title.en
                       : widget.question.title.ar,
                   style: theme.textTheme.titleLarge!
@@ -78,7 +78,7 @@ class _QuestionCardState extends State<QuestionCard> {
                   // ),
                   width: double.infinity,
                   child: Text(
-                    CacheManager.locale! == const Locale("en")
+                    CacheManager.locale == const Locale("en")
                         ? widget.question.description.en
                         : widget.question.description.ar,
                     style: theme.textTheme.bodyMedium!.copyWith(

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../../l10n/app_localizations.dart';
 import 'package:future_hub/common/shared/palette.dart';
 import 'package:future_hub/common/shared/utils/cache_manager.dart';
 import 'package:future_hub/company/employees/model/driver_model.dart';
+
+import '../../../l10n/app_localizations.dart';
 
 class CompanyOrderProductCardItem extends StatelessWidget {
   final bool showPrice;
@@ -71,11 +72,10 @@ class CompanyOrderProductCardItem extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        CacheManager.locale! == const Locale("en")
+                        CacheManager.locale == const Locale("en")
                             ? product.title?.en ?? ""
                             : product.title?.ar ?? "",
-                        style:
-                            theme.textTheme.titleLarge!.copyWith(fontSize: 20),
+                        style: theme.textTheme.titleLarge!.copyWith(fontSize: 20),
                       ),
                       const SizedBox(
                         height: 10,
@@ -83,8 +83,7 @@ class CompanyOrderProductCardItem extends StatelessWidget {
                       if (showPrice)
                         Text(
                           "${product.price} ${t.sar}",
-                          style: theme.textTheme.titleSmall!
-                              .copyWith(fontSize: 20),
+                          style: theme.textTheme.titleSmall!.copyWith(fontSize: 20),
                         ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -92,8 +91,8 @@ class CompanyOrderProductCardItem extends StatelessWidget {
                           if (showQuantity)
                             Text(
                               "${product.sku}",
-                              style: theme.textTheme.titleSmall!.copyWith(
-                                  fontSize: 20, color: Palette.primaryColor),
+                              style: theme.textTheme.titleSmall!
+                                  .copyWith(fontSize: 20, color: Palette.primaryColor),
                             ),
                         ],
                       ),

@@ -66,7 +66,7 @@ class _PaginatedDropdownState extends State<PaginatedDropdown> {
           items: widget.branches.map((branch) {
             return DropdownMenuItem<BranchData>(
               value: branch,
-              child: Text(CacheManager.locale! == const Locale("en")
+              child: Text(CacheManager.locale == const Locale("en")
                   ? branch.title?.en ?? ""
                   : branch.title?.ar ?? ''),
             );

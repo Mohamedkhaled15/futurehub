@@ -154,7 +154,7 @@ class _AddSingleEmployeeState extends State<AddSingleEmployee> {
                                         .map(
                                           (model) => DropdownMenuItem(
                                             value: model,
-                                            child: Text(CacheManager.locale! ==
+                                            child: Text(CacheManager.locale ==
                                                     const Locale("en")
                                                 ? model.plateLetters?.en ?? ""
                                                 : model.plateLetters?.ar ?? ""),

@@ -71,7 +71,7 @@ class CompanyOrderCardItem extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        CacheManager.locale! == const Locale("en")
+                        CacheManager.locale == const Locale("en")
                             ? product.title?.en ?? ""
                             : product.title?.ar ?? "",
                         style:

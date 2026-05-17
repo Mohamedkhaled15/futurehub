@@ -235,8 +235,7 @@ class _EmployeeNewOrderScreenState extends State<EmployeeNewOrderScreen> with Wi
                                               children: [
                                                 Expanded(
                                                   child: Text(
-                                                    CacheManager.locale! ==
-                                                            const Locale("en")
+                                                    CacheManager.locale == const Locale("en")
                                                         ? station.title?.en ??
                                                             ''
                                                         : station.title?.ar ??
@@ -266,8 +265,7 @@ class _EmployeeNewOrderScreenState extends State<EmployeeNewOrderScreen> with Wi
                                             const Spacer(),
                                             // Address below
                                             Text(
-                                              CacheManager.locale! ==
-                                                      const Locale("en")
+                                              CacheManager.locale == const Locale("en")
                                                   ? station.address?.en ??
                                                       '75HP+MVF, Al-Thuqbah, Al Khobar 34623'
                                                   : station.address?.ar ??
@@ -345,8 +343,7 @@ class _EmployeeNewOrderScreenState extends State<EmployeeNewOrderScreen> with Wi
                                             cubit.cubitPunchers[index].latitude,
                                         lng: cubit
                                             .cubitPunchers[index].longitude,
-                                        address: CacheManager.locale! ==
-                                                const Locale("en")
+                                        address: CacheManager.locale == const Locale("en")
                                             ? cubit.cubitPunchers[index].address
                                                 ?.en
                                             : cubit.cubitPunchers[index].address
@@ -356,8 +353,7 @@ class _EmployeeNewOrderScreenState extends State<EmployeeNewOrderScreen> with Wi
                                         distance:
                                             "${cubit.cubitPunchers[index].distanceInKm}" ??
                                                 "",
-                                        title: CacheManager.locale! ==
-                                                const Locale("en")
+                                        title: CacheManager.locale == const Locale("en")
                                             ? cubit.cubitPunchers[index].title
                                                     ?.en ??
                                                 ""

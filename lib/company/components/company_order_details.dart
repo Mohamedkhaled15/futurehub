@@ -105,7 +105,7 @@ class _CompanyOrdersDetailsScreenState extends State<CompanyOrderDetailsScreen> 
                             ),
                             const SizedBox(width: 5.0),
                             Text(
-                              "${CacheManager.locale! == const Locale("en") ? widget.order.plateLetters?.en : widget.order.plateLetters?.ar} ${widget.order.vehiclePlateNumbers}" ??
+                              "${CacheManager.locale == const Locale("en") ? widget.order.plateLetters?.en : widget.order.plateLetters?.ar} ${widget.order.vehiclePlateNumbers}" ??
                                   "",
                               style: theme.textTheme.bodySmall!.copyWith(
                                 color: Palette.blackColor,

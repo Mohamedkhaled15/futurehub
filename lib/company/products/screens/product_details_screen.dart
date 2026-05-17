@@ -85,7 +85,7 @@ class ProductDetailsScreen extends StatelessWidget {
 
                   // Product Title
                   Text(
-                    CacheManager.locale! == const Locale("en")
+                    CacheManager.locale == const Locale("en")
                         ? product.title.en ?? ""
                         : product.title.ar ?? "",
                     style: theme.textTheme.headlineSmall?.copyWith(
@@ -106,7 +106,7 @@ class ProductDetailsScreen extends StatelessWidget {
 
                   // Product Description
                   Text(
-                    CacheManager.locale! == const Locale("en")
+                    CacheManager.locale == const Locale("en")
                         ? product.description?.en ?? "No description available"
                         : product.description?.ar ?? "No description available",
                     style: theme.textTheme.headlineSmall?.copyWith(

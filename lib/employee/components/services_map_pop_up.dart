@@ -165,7 +165,7 @@ class ServicesMapPopUpWidget extends StatelessWidget {
                             onPressed: () => context.push(
                                 '/employee/puncher-screen/${selectedPuncher!.id}?categoryId=${categories!.id}',
                                 extra:
-                                    CacheManager.locale! == const Locale("en")
+                                    CacheManager.locale == const Locale("en")
                                         ? selectedPuncher?.title?.en ?? ""
                                         : selectedPuncher?.title?.ar ?? ""),
                             child: Text(

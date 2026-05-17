@@ -58,8 +58,9 @@ class AuthCubit extends Cubit<AuthState> {
       final user = await _authService.me();
       await login(user, token);
       
-    } catch (error) {
-      debugPrint("Error is ${error.toString()}");
+    } catch (error, stackTrace) {
+      debugPrint("Error in AuthCubit.init(): ${error.toString()}");
+      debugPrint("Stack trace: $stackTrace");
       // Client.authenticate(null);
       CacheManager.deleteToken();
       return emit(AuthSignedOut());
@@ -107,8 +108,17 @@ class AuthCubit extends Cubit<AuthState> {
       final currentPlatformVersion = Platform.isAndroid
           ? appVersionData.version.androidVersion
           : appVersionData.version.appleVersion;
-      debugPrint(version);
-      return currentPlatformVersion != version;
+      debugPrint("Server version: $currentPlatformVersion, Installed version: $version");
+      
+      // Compare versions: Force update only if installed version < server version
+      final serverParts = currentPlatformVersion.split('.').map(int.parse).toList();
+      final installedParts = version.split('.').map(int.parse).toList();
+      
+      for (int i = 0; i < serverParts.length; i++) {
+        if (installedParts[i] < serverParts[i]) return true;
+        if (installedParts[i] > serverParts[i]) return false;
+      }
+      return false;
     } catch (e) {
       // If version check fails, continue normal flow
       debugPrint("Version check error: ${e.toString()}");

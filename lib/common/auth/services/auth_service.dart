@@ -34,18 +34,21 @@ class AuthService {
       checkUser = CheckUser.fromJson(responseData);
 
       // Check the success field
-      if (!checkUser!.success) {
+      if (checkUser?.success == false) {
         // If success is false, throw an exception with the message
-        throw Exception(checkUser!.message);
+        throw Exception(checkUser?.message ?? 'Unknown error');
       }
 
       // Determine if the account exists based on the message
-      final exists = checkUser!.message == 'complete login';
+      final exists = checkUser?.message == 'complete login';
       return exists;
     } catch (e) {
       // Handle errors gracefully
       debugPrint('Error validating mobile: $e');
-      throw Exception(checkUser!.message);
+      if (e is DioException) {
+        throw Exception(e.response?.data['message'] ?? e.message);
+      }
+      throw Exception(checkUser?.message ?? e.toString());
     }
   }
 
@@ -64,7 +67,7 @@ class AuthService {
       );
 
       // Parse the response
-      final success = response.data['success'];
+      final success = response.data['success'] ?? false;
       final message = response.data['message'];
 
       // Check the success field
@@ -97,7 +100,7 @@ class AuthService {
       );
 
       // Parse the response
-      final success = response.data['success'];
+      final success = response.data['success'] ?? false;
       final message = response.data['message'];
 
       // Check the success field
@@ -131,7 +134,7 @@ class AuthService {
 
       // Parse the response
       final message = response.data['message'];
-      final success = response.data['success'];
+      final success = response.data['success'] ?? false;
       final id = response.data['data']['user']['id'];
       // Check the success field
       if (!success) {
@@ -168,7 +171,7 @@ class AuthService {
       final responseData = response.data;
 
       // Check for success in the response
-      if (!responseData['success']) {
+      if (responseData['success'] != true) {
         throw Exception(responseData['message']);
       }
 
@@ -220,7 +223,7 @@ class AuthService {
       final responseData = response.data;
 
       // Check for success in the response
-      if (!responseData['success']) {
+      if (responseData['success'] != true) {
         throw Exception(responseData['message']);
       }
 
@@ -296,7 +299,7 @@ class AuthService {
 
       final responseData = response.data;
 
-      if (!responseData['success']) {
+      if (responseData['success'] != true) {
         throw Exception(responseData['message']);
       }
 
